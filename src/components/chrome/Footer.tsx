@@ -143,7 +143,7 @@ export function Footer() {
           </div>
           <a className="ftr__by" href="https://www.webstix.com/" target="_blank" rel="noopener">
             <span>Designed by</span>
-            <img src="/assets/img/webstix.png" width="140" height="28" alt="Webstix" />
+            <img src="/assets/img/webstix.png" width="80" height="16" alt="Webstix" />
           </a>
         </div>
       </div>

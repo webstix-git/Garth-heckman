@@ -1765,7 +1765,7 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .ftr__pipes span { color:rgba(244,241,234,.35); }
 .ftr__by { display:inline-flex; align-items:center; gap:10px; margin-left:auto; color:var(--ash); }
 .ftr__by:hover { color:var(--ash); }
-.ftr__by img { height:22px; width:auto; object-fit:contain; display:block; }
+.ftr__by img { height:16px; width:auto; object-fit:contain; display:block; }
 @media (max-width:900px){ .ftr__top { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:540px){ .ftr__top { grid-template-columns:minmax(0,1fr); } }
 
