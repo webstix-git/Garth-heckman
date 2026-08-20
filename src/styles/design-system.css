@@ -1236,7 +1236,8 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 .pwyw__head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
 .pwyw__row { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
 .pwyw__amt {
-  min-width:88px; padding:16px 16px; border:1px solid var(--line-2); text-align:center;
+  width:100px; min-width:100px; min-height:75px; flex:none;
+  padding:16px 8px; border:1px solid var(--line-2); text-align:center;
   font-size:1.375rem; font-weight:800; font-variation-settings:"wdth" 104; letter-spacing:-.035em;
   line-height:1; font-variant-numeric:tabular-nums; transition:all var(--t1) var(--ease);
 }
@@ -1247,7 +1248,7 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
    one thing the eye should find first. Matches .chip[aria-pressed]. */
 .pwyw__amt[aria-pressed="true"] { background:var(--fg); border-color:var(--fg); color:var(--bg); }
 .pwyw__amt[aria-pressed="true"] span { color:var(--bg); opacity:.72; }
-.pwyw__amt--other { min-width:132px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:1rem; letter-spacing:.02em; color:var(--fg-3); }
+.pwyw__amt--other { width:132px; min-width:132px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:1rem; letter-spacing:.02em; color:var(--fg-3); }
 .pwyw__amt--other b { font-size:1.375rem; letter-spacing:-.035em; }
 /* Same footprint as the amount chips, including the Other control. */
 .pwyw__custom { display:none; margin-top:8px; position:relative; width:132px; }
@@ -1482,7 +1483,7 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .band .btn--line { --bd-b:rgba(14,12,10,.42); }
 .band .btn--line:hover { --bg-b:rgba(14,12,10,.13); --fg-b:var(--ink); --bd-b:var(--ink); }
 
-.book { display:grid; grid-template-columns:minmax(0,.62fr) minmax(0,1fr); gap:clamp(24px,4vw,80px); align-items:center; }
+.book { display:grid; grid-template-columns:auto minmax(0,1fr); gap:clamp(24px,4vw,80px); align-items:stretch; }
 .book__shot { background:var(--paper); padding:0; display:grid; place-items:center; aspect-ratio:3/4; position:relative; border:1px solid var(--line); overflow:hidden; }
 .book__shot img { width:100%; height:100%; object-fit:cover; object-position:center; }
 
@@ -1492,10 +1493,12 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
    as the book falling open. Flat carries the artwork just as well and cannot
    misbehave. The cover is white, so it needs a hairline edge or it dissolves
    into the bone page ground. */
+.book__media { display:flex; min-height:0; }
 .bookflat {
-  margin:0 auto;
-  width:clamp(230px, 27vw, 360px);
-  aspect-ratio:585 / 768;
+  margin:0;
+  height:100%;
+  width:auto;
+  aspect-ratio:1/1;
   background:#111;
   border:0;
   display:grid; place-items:center;
@@ -1503,8 +1506,13 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
   overflow:hidden;
   box-shadow:0 28px 56px -18px rgba(14,12,10,.34), 0 6px 16px rgba(14,12,10,.10);
 }
-.bookflat img { width:100%; height:100%; object-fit:contain; }
-@media (max-width:860px){ .book { grid-template-columns:minmax(0,1fr); } .book__shot { max-width:330px; } }
+.bookflat img { width:100%; height:100%; object-fit:cover; object-position:center; }
+@media (max-width:860px){
+  .book { grid-template-columns:minmax(0,1fr); }
+  .book__media { justify-content:center; }
+  .bookflat { width:min(100%,440px); height:auto; }
+  .book__shot { max-width:330px; }
+}
 
 /* ------------------------------------------------------------- 23. FOOTER */
 /* "to break up your" is the longest of the three authored lines and needs
@@ -1774,7 +1782,7 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .ftr__pipes span { color:rgba(244,241,234,.35); }
 .ftr__by { display:inline-flex; align-items:center; gap:10px; margin-left:auto; color:var(--ash); }
 .ftr__by:hover { color:var(--ash); }
-.ftr__by img { height:35px; width:auto; object-fit:contain; display:block; }
+.ftr__by img { height:20px; width:auto; object-fit:contain; display:block; }
 @media (max-width:900px){ .ftr__top { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:540px){ .ftr__top { grid-template-columns:minmax(0,1fr); } }
 

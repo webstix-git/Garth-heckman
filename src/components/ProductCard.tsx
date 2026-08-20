@@ -99,8 +99,8 @@ export function ProductCard({ p }: { p: Product }) {
         <Shot
           variant={m.variant}
           ratio={m.ratio || "1-1"}
-          label={m.label}
-          note={m.note}
+          label={false}
+          alt={m.label || p.title}
           src={m.src}
           contain={Boolean(m.src)}
         />

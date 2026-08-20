@@ -259,7 +259,7 @@ export default async function HomePage() {
 
         <section className="sec">
           <div className="wrap book">
-            <div data-rv="">
+            <div className="book__media" data-rv="">
               <figure className="bookflat">
                 <img
                   src="/assets/img/products/wtfu-home.png"
