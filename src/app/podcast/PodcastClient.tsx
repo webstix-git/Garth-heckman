@@ -26,8 +26,17 @@ export function PodcastClient({
   }[];
 }) {
   const [activeId, setActiveId] = useState(episodes[0]?.id ?? "");
-  const [autoPlay, setAutoPlay] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const active = episodes.find((ep) => ep.id === activeId) ?? episodes[0];
+
+  function toggleEpisode(id: string) {
+    if (id === activeId && isPlaying) {
+      setIsPlaying(false);
+      return;
+    }
+    setActiveId(id);
+    setIsPlaying(true);
+  }
 
   return (
     <SiteChrome nav="podcast">
@@ -73,7 +82,8 @@ export function PodcastClient({
                 }
                 durationSeconds={active.durationSeconds}
                 audioUrl={active.audioUrl}
-                autoPlay={autoPlay}
+                playing={isPlaying}
+                onPlayingChange={setIsPlaying}
                 showAll={false}
               />
             ) : null}
@@ -85,21 +95,22 @@ export function PodcastClient({
             <div className="between mb5" data-rv="">
               <p className="meta meta--gold">Latest episodes</p>
               <p className="meta meta--dim" id="count">
-                {episodes.length} on this page
+                {episodes.length} episodes
               </p>
             </div>
             <div className="plist" id="list">
               {episodes.map((p, i) => {
                 const current = p.id === active?.id;
+                const rowPlaying = current && isPlaying;
                 return (
-                  <article className={`prow${current ? " playing" : ""}`} key={p.id}>
+                  <article className={`prow${rowPlaying ? " playing" : ""}`} key={p.id}>
                     <button
                       className="prow__play"
                       type="button"
-                      aria-label={current && autoPlay ? `Pause episode ${p.episodeNo || p.title}` : `Play episode ${p.episodeNo || p.title}`}
-                      onClick={() => {
-                        setActiveId(p.id);
-                        setAutoPlay(true);
+                      aria-label={rowPlaying ? `Pause episode ${p.episodeNo || p.title}` : `Play episode ${p.episodeNo || p.title}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleEpisode(p.id);
                       }}
                     >
                       <svg className="ic-play" width="14" height="14" viewBox="0 0 13 13" fill="currentColor" aria-hidden="true">
@@ -126,17 +137,17 @@ export function PodcastClient({
                       <span className="meta meta--dim">{p.dateLabel}</span>
                     </div>
                     <span className="prow__bar">
-                      <i style={{ width: current ? "18%" : "0" }}></i>
+                      <i style={{ width: rowPlaying ? "18%" : "0" }}></i>
                     </span>
-                    <a className="prow__link" href={p.pageUrl} target="_blank" rel="noopener" aria-label={p.title}></a>
+                    <button
+                      className="prow__link"
+                      type="button"
+                      aria-label={rowPlaying ? `Pause ${p.title}` : `Play ${p.title}`}
+                      onClick={() => toggleEpisode(p.id)}
+                    />
                   </article>
                 );
               })}
-            </div>
-            <div className="row mt5" style={{ justifyContent: "center" }}>
-              <a className="btn btn--line btn--lg" id="more" href={PODBEAN} target="_blank" rel="noopener">
-                Load more episodes
-              </a>
             </div>
           </div>
         </section>

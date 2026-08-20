@@ -26,14 +26,26 @@ function firstInStockVariant(p: Product) {
 }
 
 function Price({ p }: { p: Product }) {
-  if (p.type === "pwyw")
+  if (p.type === "pwyw") {
+    const min = p.price.min ?? 0;
+    const max = p.price.max;
+    const suggested = p.price.suggested ?? 0;
+    if (max != null && min > 0 && min < suggested) {
+      return (
+        <>
+          <small>Suggested donation</small>
+          {formatMoney0(min)}–{formatMoney0(max)}
+        </>
+      );
+    }
     return (
       <>
         <small>Pay what you can</small>
-        {formatMoney0(p.price.suggested ?? 0)}
+        {formatMoney0(suggested)}
         <span style={{ fontSize: 14, fontWeight: 600 }}> suggested</span>
       </>
     );
+  }
   if (p.price.amount == null)
     return (
       <>
@@ -86,7 +98,7 @@ export function ProductCard({ p }: { p: Product }) {
       <div className="pcard__media">
         <Shot
           variant={m.variant}
-          ratio="3-4"
+          ratio={m.ratio || "1-1"}
           label={m.label}
           note={m.note}
           src={m.src}

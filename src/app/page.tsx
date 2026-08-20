@@ -55,7 +55,7 @@ export default async function HomePage() {
             </div>
             <div className="hero__shot">
               <div className="cutout">
-                <img src="/assets/img/garth-cutout.png" width={1100} height={1131} alt="Garth Heckman" fetchPriority="high" />
+                <img src="/assets/img/garth-cutout.png" width={1024} height={927} alt="Garth Heckman" fetchPriority="high" />
               </div>
             </div>
           </div>
@@ -223,8 +223,8 @@ export default async function HomePage() {
 
               <article className="arc__i">
                 <div className="arc__media">
-                    <div className="photo photo--top">
-                    <img src="/assets/img/chapter-forged-by-fire.png" width={1200} height={800} loading="lazy" alt="Forged by fire" />
+                    <div className="photo photo--contain">
+                    <img src="/assets/img/chapter-forged-by-fire.png" width={531} height={664} loading="lazy" alt="Forged by fire" />
                     <span className="shot__tick">
                       <i></i>
                       <i></i>
@@ -262,9 +262,9 @@ export default async function HomePage() {
             <div data-rv="">
               <figure className="bookflat">
                 <img
-                  src="/assets/img/wtfu-lockup.png"
-                  width={1545}
-                  height={2000}
+                  src="/assets/img/products/wtfu-home.png"
+                  width={585}
+                  height={768}
                   loading="lazy"
                   alt="Wake The Faith Up, Revelation 3:1–3"
                 />

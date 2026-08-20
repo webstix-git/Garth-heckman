@@ -88,7 +88,7 @@ export default function StorePage() {
           <div className="wrap">
             <div className="split split-b on-dark grain plp__feature" data-rv="">
               <div className="book__shot" style={{ background: "var(--paper)" }}>
-                <img src="/assets/img/wtfu-lockup.png" width={1545} height={2000} loading="lazy" alt="Wake The Faith Up" />
+                <img src="/assets/img/products/wtfu-featured.png" width={718} height={957} loading="lazy" alt="Wake The Faith Up" />
               </div>
               <div>
                 <span className="badge badge--gold">Featured · Pay what you want</span>

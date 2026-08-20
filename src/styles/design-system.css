@@ -793,7 +793,7 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 .prow__meta { text-align:right; flex:none; white-space:nowrap; }
 .prow__meta b { display:block; font-size:14px; font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
 .prow__meta span { display:block; margin-top:4px; }
-.prow__link { position:absolute; inset:0; z-index:2; }
+.prow__link { position:absolute; inset:0; z-index:2; padding:0; }
 .prow__bar { position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--line); display:none; }
 .prow.playing .prow__bar { display:block; }
 .prow.playing .prow__bar i { display:block; height:100%; width:0; background:var(--gold); transition:width 300ms linear; }
@@ -1410,7 +1410,7 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .plp__feature { border:1px solid var(--line); padding:clamp(22px,3vw,52px); align-items:center; }
 @media (max-width:940px){
   .plp__feature { gap:24px; }
-  .plp__feature .book__shot { max-width:190px; margin-inline:auto; aspect-ratio:3/4; padding:16px; }
+  .plp__feature .book__shot { max-width:190px; margin-inline:auto; aspect-ratio:3/4; padding:0; }
 }
 .plp { display:grid; grid-template-columns:236px minmax(0,1fr); gap:clamp(24px,3.6vw,56px); align-items:start; }
 @media (max-width:960px){ .plp { grid-template-columns:minmax(0,1fr); } .plp__side { position:static !important; } }
@@ -1483,8 +1483,8 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .band .btn--line:hover { --bg-b:rgba(14,12,10,.13); --fg-b:var(--ink); --bd-b:var(--ink); }
 
 .book { display:grid; grid-template-columns:minmax(0,.62fr) minmax(0,1fr); gap:clamp(24px,4vw,80px); align-items:center; }
-.book__shot { background:var(--paper); padding:clamp(24px,3vw,48px); display:grid; place-items:center; aspect-ratio:3/4; position:relative; border:1px solid var(--line); }
-.book__shot img { width:80%; }
+.book__shot { background:var(--paper); padding:0; display:grid; place-items:center; aspect-ratio:3/4; position:relative; border:1px solid var(--line); overflow:hidden; }
+.book__shot img { width:100%; height:100%; object-fit:cover; object-position:center; }
 
 /* ------------------------------------------------------- 13l. BOOK MOCKUP
    A still cover with a drop shadow. The 3D build glitched along its rotated
@@ -1495,14 +1495,15 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .bookflat {
   margin:0 auto;
   width:clamp(230px, 27vw, 360px);
-  aspect-ratio:1545 / 2000;          /* the real file's proportion */
-  background:var(--paper);
-  border:1px solid var(--line);
+  aspect-ratio:585 / 768;
+  background:#111;
+  border:0;
   display:grid; place-items:center;
-  padding:9% 11%;
+  padding:0;
+  overflow:hidden;
   box-shadow:0 28px 56px -18px rgba(14,12,10,.34), 0 6px 16px rgba(14,12,10,.10);
 }
-.bookflat img { width:100%; height:auto; }
+.bookflat img { width:100%; height:100%; object-fit:contain; }
 @media (max-width:860px){ .book { grid-template-columns:minmax(0,1fr); } .book__shot { max-width:330px; } }
 
 /* ------------------------------------------------------------- 23. FOOTER */
@@ -1764,6 +1765,7 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .socials { display:flex; gap:8px; margin-top:24px; }
 .soc { width:44px; height:44px; border:1px solid rgba(244,241,234,.28); display:grid; place-items:center; color:var(--taupe); transition:all var(--t2) var(--ease); }
 .soc:hover { background:var(--gold); border-color:var(--gold); color:var(--ink); }
+.card .soc { border-color:rgba(14,12,10,.4); color:var(--fg-2); }
 .ftr__bot { margin-top:clamp(32px,4vw,64px); padding-top:16px; border-top:1px solid rgba(244,241,234,.14); display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; color:var(--ash); }
 .ftr__bot a:hover { color:var(--bone); }
 .ftr__legal { display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; }
@@ -1772,7 +1774,7 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .ftr__pipes span { color:rgba(244,241,234,.35); }
 .ftr__by { display:inline-flex; align-items:center; gap:10px; margin-left:auto; color:var(--ash); }
 .ftr__by:hover { color:var(--ash); }
-.ftr__by img { height:16px; width:auto; object-fit:contain; display:block; }
+.ftr__by img { height:35px; width:auto; object-fit:contain; display:block; }
 @media (max-width:900px){ .ftr__top { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media (max-width:540px){ .ftr__top { grid-template-columns:minmax(0,1fr); } }
 

@@ -2,7 +2,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 
 const FEED = "https://feed.podbean.com/tda/feed.xml";
-const LIST_COUNT = 10;
+const FEED_LIMIT = 500;
 
 export type PodcastEpisode = {
   id: string;
@@ -156,7 +156,7 @@ function parseItem(item: string, cover: string): PodcastEpisode | null {
   };
 }
 
-async function fetchRecentEpisodes(): Promise<PodcastEpisode[]> {
+async function fetchEpisodes(count: number): Promise<PodcastEpisode[]> {
   const res = await fetch(FEED, {
     cache: "no-store",
     headers: {
@@ -167,10 +167,10 @@ async function fetchRecentEpisodes(): Promise<PodcastEpisode[]> {
   });
   if (!res.ok) throw new Error(`Podbean RSS ${res.status}`);
 
-  const xml = await readItems(res, LIST_COUNT);
+  const xml = await readItems(res, count);
   const cover = attrTag(xml, "itunes:image", "href");
   const episodes = [...xml.matchAll(/<item\b[\s\S]*?<\/item>/gi)]
-    .slice(0, LIST_COUNT)
+    .slice(0, count)
     .map((match) => parseItem(match[0], cover))
     .filter((ep): ep is PodcastEpisode => ep !== null);
 
@@ -181,16 +181,24 @@ async function fetchRecentEpisodes(): Promise<PodcastEpisode[]> {
 export const getRecentEpisodes = unstable_cache(
   async (): Promise<PodcastEpisode[]> => {
     try {
-      return await fetchRecentEpisodes();
+      return await fetchEpisodes(FEED_LIMIT);
     } catch {
       return [FALLBACK];
     }
   },
-  ["tda-recent-episodes"],
+  ["tda-feed-episodes"],
   { revalidate: 1800 },
 );
 
-export async function getLatestEpisode(): Promise<PodcastEpisode> {
-  const [latest] = await getRecentEpisodes();
-  return latest ?? FALLBACK;
-}
+export const getLatestEpisode = unstable_cache(
+  async (): Promise<PodcastEpisode> => {
+    try {
+      const [latest] = await fetchEpisodes(1);
+      return latest ?? FALLBACK;
+    } catch {
+      return FALLBACK;
+    }
+  },
+  ["tda-latest-episode"],
+  { revalidate: 1800 },
+);

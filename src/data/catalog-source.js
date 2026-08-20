@@ -96,7 +96,7 @@ export const PRODUCTS = [
       compareAt: null
     },
     media: [
-      { kind: 'image', variant: 'light', ratio: '3-4', label: 'WTFU book cover', note: 'Front cover', src: '/assets/img/products/wtfu-book.png' },
+      { kind: 'image', variant: 'light', ratio: '1-1', label: 'WTFU book cover', note: 'Front cover', src: '/assets/img/products/wtfu-book.png' },
       { kind: 'placeholder', variant: 'ember', ratio: '3-4', label: 'Book in hand', note: 'Lifestyle 01' },
       { kind: 'placeholder', variant: 'default', ratio: '3-4', label: 'Interior spread', note: 'Lifestyle 02' },
       { kind: 'placeholder', variant: 'cool', ratio: '3-4', label: 'Garth signing', note: 'Lifestyle 03' }
@@ -138,7 +138,7 @@ export const PRODUCTS = [
     categories: ['books', 'audiobooks'],
     collections: ['wtfu-collection'],
     tags: ['audiobook', 'digital'],
-    badge: { label: 'Pay what you want', variant: 'gold' },
+    badge: { label: 'Suggested donation', variant: 'gold' },
     price: {
       currency: CURRENCY,
       amount: 10,
@@ -149,7 +149,7 @@ export const PRODUCTS = [
       presetLabels: ['Suggested', 'Supporter', 'Partner', 'Champion'],
       compareAt: null
     },
-    media: [{ kind: 'image', variant: 'cool', ratio: '3-4', label: 'Audiobook artwork', note: 'Cover', src: '/assets/img/products/wtfu-book.png' }],
+    media: [{ kind: 'image', variant: 'cool', ratio: '1-1', label: 'Audiobook artwork', note: 'Cover', src: '/assets/img/products/wtfu-audiobook.png' }],
     descriptionShort: 'Wake the Faith Up in Garth’s own voice. Men were made for war. Suggested donation, from $1 to $500.',
     descriptionLong: [
       'The whole book, read by the man who lived it. Same words as the paperback, which turns out to matter more than you would expect on the harder chapters.',
@@ -186,7 +186,7 @@ export const PRODUCTS = [
     tags: ['pdf', 'digital', 'devotional'],
     badge: null,
     price: { currency: CURRENCY, amount: 5, suggested: null, presets: [], compareAt: null },
-    media: [{ kind: 'image', variant: 'ember', ratio: '3-4', label: 'Burn This Book', note: 'Cover', src: '/assets/img/products/burn-this-book.png' }],
+    media: [{ kind: 'image', variant: 'ember', ratio: '1-1', label: 'Burn This Book', note: 'Cover', src: '/assets/img/products/burn-this-book.png' }],
     descriptionShort: 'A 30-chapter Christian devotional for youth. Print it, read it, write in it and BURN IT.',
     descriptionLong: [
       'Thirty chapters, written for young people who are done sitting still. Print it. Read it. Write in it. Then burn it, because this one is meant to be used up, not shelved.'
@@ -219,7 +219,7 @@ export const PRODUCTS = [
     tags: ['pdf', 'training', 'bridgeworks', 'leadership'],
     badge: { label: 'Free', variant: 'digital' },
     price: { currency: CURRENCY, amount: 0, suggested: null, presets: [], compareAt: null,  },
-    media: [{ kind: 'image', variant: 'cool', ratio: '4-3', label: 'Generations deck', note: 'Deck cover', src: '/assets/img/products/generations-training-deck.png' }],
+    media: [{ kind: 'image', variant: 'cool', ratio: '1-1', label: 'Generations deck', note: 'Deck cover', src: '/assets/img/products/generations-training-deck.png' }],
     descriptionShort: 'Free training on generational dynamics. The deck Garth uses with pastors, staff teams and boards to Understand, Attract, Connect and Disciple.',
     descriptionLong: ['Five generations in one room, each hearing a different sermon. This is the deck Garth walks senior pastors, church staffs and business teams through, and it is free.'],
     details: [
@@ -403,7 +403,7 @@ export const PRODUCTS = [
     badge: { label: 'Instant download', variant: 'digital' },
     price: { currency: CURRENCY, amount: 5, suggested: null, presets: [], compareAt: null },
     media: [
-      { kind: 'image', variant: 'light', ratio: '3-4', label: '365 Quotes', note: 'Cover', src: '/assets/img/products/365-quotes.png' }
+      { kind: 'image', variant: 'light', ratio: '1-1', label: '365 Quotes', note: 'Cover', src: '/assets/img/products/365-quotes.png' }
     ],
     descriptionShort: 'A quote a day for the year you did not plan for.',
     descriptionLong: ['One short line for each day of the year, gathered from four decades of ministry and three rounds of cancer. Made to be read in the ten seconds you have, not the hour you do not.'],
@@ -435,7 +435,7 @@ export const PRODUCTS = [
     badge: { label: 'Instant download', variant: 'digital' },
     price: { currency: CURRENCY, amount: 5, suggested: null, presets: [], compareAt: null },
     media: [
-      { kind: 'image', variant: 'light', ratio: '3-4', label: '365-Day Journal', note: 'Cover', src: '/assets/img/products/365-day-journal.png' }
+      { kind: 'image', variant: 'light', ratio: '1-1', label: '365-Day Journal', note: 'Cover', src: '/assets/img/products/365-day-journal.png' }
     ],
     descriptionShort: 'A page a day, for the year treatment takes.',
     descriptionLong: ['A dated page for every day, with room for what the appointment actually said, what you felt about it, and one thing worth keeping. Print it or write into it on a tablet.'],
@@ -467,7 +467,7 @@ export const PRODUCTS = [
     badge: { label: 'Instant download', variant: 'digital' },
     price: { currency: CURRENCY, amount: 5, suggested: null, presets: [], compareAt: null },
     media: [
-      { kind: 'image', variant: 'light', ratio: '3-4', label: 'Cancer Terminology', note: 'Cover', src: '/assets/img/products/cancer-terminology.png' }
+      { kind: 'image', variant: 'light', ratio: '1-1', label: 'Cancer Terminology', note: 'Cover', src: '/assets/img/products/cancer-terminology.png' }
     ],
     descriptionShort: 'The words they use, in the words you use.',
     descriptionLong: ['Plain-English translations of the terms that get said quickly in a consulting room and looked up frantically afterwards. Staging, margins, markers, protocols, and what each one does and does not mean.'],
@@ -499,7 +499,7 @@ export const PRODUCTS = [
     badge: { label: 'Instant download', variant: 'digital' },
     price: { currency: CURRENCY, amount: 5, suggested: null, presets: [], compareAt: null },
     media: [
-      { kind: 'image', variant: 'light', ratio: '3-4', label: 'Nourishing Your Body Through Cancer', note: 'Cover', src: '/assets/img/products/nourishing-your-body-through-cancer.png' }
+      { kind: 'image', variant: 'light', ratio: '1-1', label: 'Nourishing Your Body Through Cancer', note: 'Cover', src: '/assets/img/products/nourishing-your-body-through-cancer.png' }
     ],
     descriptionShort: 'Eating when nothing tastes right and nothing stays down.',
     descriptionLong: ['What to reach for when treatment has taken your appetite, your taste and your energy. Practical, unfussy, and written by somebody who has been on the receiving end of it three times.'],
@@ -531,7 +531,7 @@ export const PRODUCTS = [
     badge: { label: 'Instant download', variant: 'digital' },
     price: { currency: CURRENCY, amount: 5, suggested: null, presets: [], compareAt: null },
     media: [
-      { kind: 'image', variant: 'light', ratio: '3-4', label: 'The Faith Based Cancer Survival Mindset Manual', note: 'Cover', src: '/assets/img/products/faith-based-cancer-survival-mindset-manual.png' }
+      { kind: 'image', variant: 'light', ratio: '1-1', label: 'The Faith Based Cancer Survival Mindset Manual', note: 'Cover', src: '/assets/img/products/faith-based-cancer-survival-mindset-manual.png' }
     ],
     descriptionShort: 'The inner work, for the days the scans do not decide.',
     descriptionLong: ['Garth’s own framework for holding faith and fear at the same time. Not a promise that it will go your way, and not a lecture about believing harder.'],

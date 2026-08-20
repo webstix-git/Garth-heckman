@@ -33,6 +33,8 @@ export function NowPlaying({
   audioUrl,
   autoPlay = false,
   showAll = true,
+  playing: playingProp,
+  onPlayingChange,
 }: {
   title: string;
   kicker: string;
@@ -40,25 +42,46 @@ export function NowPlaying({
   audioUrl?: string;
   autoPlay?: boolean;
   showAll?: boolean;
+  playing?: boolean;
+  onPlayingChange?: (playing: boolean) => void;
 }) {
   const heights = useMemo(() => barHeights(), []);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const timer = useRef<number | null>(null);
   const [pos, setPos] = useState(0);
-  const [playing, setPlaying] = useState(false);
+  const [localPlaying, setLocalPlaying] = useState(false);
   const [duration, setDuration] = useState(durationSeconds);
+  const controlled = playingProp !== undefined;
+  const playing = controlled ? playingProp : localPlaying;
+
+  function setPlaying(next: boolean) {
+    if (!controlled) setLocalPlaying(next);
+    onPlayingChange?.(next);
+  }
 
   useEffect(() => {
     setPos(0);
-    setPlaying(false);
     setDuration(durationSeconds);
+    if (audioRef.current) audioRef.current.currentTime = 0;
   }, [title, audioUrl, durationSeconds]);
 
   useEffect(() => {
+    if (controlled || !autoPlay) return;
+    setLocalPlaying(true);
+  }, [autoPlay, audioUrl, controlled]);
+
+  useEffect(() => {
     const el = audioRef.current;
-    if (!autoPlay || !el || !audioUrl) return;
-    void el.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
-  }, [autoPlay, audioUrl]);
+    if (!el || !audioUrl) return;
+    if (playing) {
+      void el.play().catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setPlaying(false);
+      });
+    } else {
+      el.pause();
+    }
+  }, [playing, audioUrl]);
 
   useEffect(() => {
     const el = audioRef.current;
@@ -110,23 +133,8 @@ export function NowPlaying({
     if (audioRef.current) audioRef.current.currentTime = next;
   }
 
-  async function toggle() {
-    const el = audioRef.current;
-    if (el && audioUrl) {
-      if (playing) {
-        el.pause();
-        setPlaying(false);
-        return;
-      }
-      try {
-        await el.play();
-        setPlaying(true);
-      } catch {
-        setPlaying(false);
-      }
-      return;
-    }
-    setPlaying((p) => !p);
+  function toggle() {
+    setPlaying(!playing);
   }
 
   return (

@@ -198,7 +198,7 @@ function ProductViewInner({
               <div>
                 <Shot
                   variant={m.variant}
-                  ratio="3-4"
+                  ratio={m.ratio || "1-1"}
                   label={false}
                   alt={m.label || p.title}
                   src={m.src}
@@ -216,7 +216,7 @@ function ProductViewInner({
                         aria-label={`View ${x.label}`}
                         onClick={() => setMedia(i)}
                       >
-                        <Shot variant={x.variant} ratio="3-4" label={false} src={x.src} contain={Boolean(x.src)} />
+                        <Shot variant={x.variant} ratio={x.ratio || "1-1"} label={false} src={x.src} contain={Boolean(x.src)} />
                       </button>
                     ))}
                   </div>
