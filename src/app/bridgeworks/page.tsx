@@ -30,7 +30,7 @@ export default function Page() {
                     <a className="btn btn--line btn--lg" href="/product/generations-training-deck">Get the free deck</a>
                   </div>
                 </div>
-                <Shot variant="cool" ratio="4-3" label="Leadership team" note="Staff room · five ages, one table" src="/assets/img/room-bridgeworks.png" />
+                <Shot variant="cool" ratio="4-3" label="Leadership team" note="The room, packed" src="/assets/img/room-bridgeworks.png" anchor="top" />
               </div>
             </div>
           </section>

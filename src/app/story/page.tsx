@@ -111,6 +111,7 @@ export default function Page() {
                   label="Chapter one"
                   note="Madison, WI"
                   src="/assets/img/chapter-raised-by-the-best.png"
+                  anchor="top"
                 />
                 <div>
                   <p className="meta meta--dim">Chapter one</p>
@@ -154,6 +155,7 @@ export default function Page() {
                   label="Chapter two"
                   note="Ministry · mentoring"
                   src="/assets/img/chapter-raised-in-ministry.png"
+                  anchor="top"
                 />
               </div>
 
@@ -162,8 +164,9 @@ export default function Page() {
                   variant="cool"
                   ratio="4-5"
                   label="Chapter three"
-                  note="The hardest treatment"
-                  src="/assets/img/chapter-forged-by-fire.png"
+                  note="On the road"
+                  src="/assets/img/chapter-business-passion.png"
+                  anchor="top"
                 />
                 <div>
                   <p className="meta meta--dim">Chapter three</p>

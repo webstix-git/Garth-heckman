@@ -30,7 +30,7 @@ export function PodcastClient({
   const active = episodes.find((ep) => ep.id === activeId) ?? episodes[0];
 
   return (
-    <SiteChrome nav="">
+    <SiteChrome nav="podcast">
       <main id="main">
         <section className="phead on-dark grain">
           <div className="wrap np-reserve">

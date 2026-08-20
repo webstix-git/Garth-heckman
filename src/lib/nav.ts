@@ -1,11 +1,14 @@
 export const NAV = [
+  { id: "podcast", href: "/podcast", label: "Podcast" },
+  { id: "work", href: "/work", label: "What I Do" },
   { id: "story", href: "/story", label: "My Story" },
+  { id: "speaking", href: "/speaking", label: "Speaking" },
   { id: "store", href: "/store", label: "Store" },
   { id: "blog", href: "/blog", label: "Blog" },
   { id: "connect", href: "/contact", label: "Connect" },
 ] as const;
 
-export type NavId = (typeof NAV)[number]["id"] | "work" | "";
+export type NavId = (typeof NAV)[number]["id"] | "";
 
 export const SOCIALS: Array<{ name: string; href: string; d: string }> = [
   {

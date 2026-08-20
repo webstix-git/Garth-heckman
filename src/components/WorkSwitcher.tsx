@@ -57,7 +57,7 @@ export function WorkSwitcher({ className = "work" }: { className?: string }) {
             aria-labelledby={`t-${n}`}
             hidden={n !== i}
           >
-            <Shot variant={w.v} ratio="4-5" label={w.t} note={w.cap} src={w.src} />
+            <Shot variant={w.v} ratio="4-5" label={w.t} note={w.cap} src={w.src} anchor={"anchor" in w ? w.anchor : undefined} />
             <div>
               <p className="meta meta--gold">
                 {n + 1} · {w.t}

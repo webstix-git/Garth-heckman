@@ -160,7 +160,7 @@ export default async function HomePage() {
             <div className="arc mt7" data-rv="80" data-stagger="">
               <article className="arc__i">
                 <div className="arc__media">
-                  <div className="photo">
+                    <div className="photo photo--top">
                     <img src="/assets/img/chapter-raised-by-the-best.png" width={1200} height={800} loading="lazy" alt="Raised by the best" />
                     <span className="shot__tick">
                       <i></i>
@@ -192,7 +192,7 @@ export default async function HomePage() {
 
               <article className="arc__i">
                 <div className="arc__media">
-                  <div className="photo">
+                    <div className="photo photo--top">
                     <img src="/assets/img/chapter-raised-in-ministry.png" width={1200} height={800} loading="lazy" alt="Raised in ministry" />
                     <span className="shot__tick">
                       <i></i>
@@ -223,7 +223,7 @@ export default async function HomePage() {
 
               <article className="arc__i">
                 <div className="arc__media">
-                  <div className="photo">
+                    <div className="photo photo--top">
                     <img src="/assets/img/chapter-forged-by-fire.png" width={1200} height={800} loading="lazy" alt="Forged by fire" />
                     <span className="shot__tick">
                       <i></i>

@@ -53,7 +53,7 @@ export default function Page() {
                 </div>
               </div>
               <div data-rv="120">
-                <Shot variant="pale" ratio="4-5" label="Portrait" note="Warm, honest, not heroic" src="/assets/img/room-cancer.png" />
+                <Shot variant="pale" ratio="4-5" label="Portrait" note="In the fight" src="/assets/img/room-cancer.png" anchor="top" />
               </div>
             </div>
           </section>

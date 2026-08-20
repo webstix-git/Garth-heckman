@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <SiteChrome nav="work">
+    <SiteChrome nav="speaking">
       <main id="main">
         {/* Two-column hero. A short headline in a constrained column so it cannot
                run away, with Garth's own line carried as the pull statement. */}
@@ -43,7 +43,7 @@ export default function Page() {
                   </div>
                 </div>
 
-                <Shot variant="warm" ratio="4-5" label="On stage" note="House lights down" src="/assets/img/room-speaking.png" />
+                <Shot variant="warm" ratio="4-5" label="On stage" note="On stage, hands up" src="/assets/img/room-speaking.png" anchor="top" />
               </div>
             </div>
           </section>

@@ -92,9 +92,6 @@ export function Footer() {
                 <li>
                   <a href="/contact">Connect</a>
                 </li>
-                <li>
-                  <a href="/style-guide">Design system</a>
-                </li>
               </ul>
             </div>
           </div>
