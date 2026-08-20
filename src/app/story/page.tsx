@@ -21,9 +21,9 @@ export default function Page() {
               <p className="meta meta--gold">The story</p>
               <h1 className="d1 mt3">Forged<br />by fire</h1>
               <div className="between mt5" style={{ alignItems: "flex-end" }}>
-                <p className="lede mw dim">
-                  Raised by the best. Raised in ministry for ministry. Forged by fire. Three
-                  sentences that took forty-two years and several near misses to earn.
+                <p className="lede dim" style={{ maxWidth: "76ch" }}>
+                  Raised by the best. Raised in ministry for ministry. Forged by fire.<br />
+                  Three sentences that took forty-two years and several near misses to earn.
                 </p>
                 <a className="btn" href="/contact">Work with Garth</a>
               </div>

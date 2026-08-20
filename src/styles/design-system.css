@@ -234,6 +234,7 @@ h1:has(br),h2:has(br),h3:has(br),h4:has(br),
 .wrap { width:100%; max-width:var(--wrap); margin-inline:auto; padding-inline:var(--gutter); }
 .wrap-n { width:100%; max-width:1140px; margin-inline:auto; padding-inline:var(--gutter); }
 .wrap-t { width:100%; max-width:820px;  margin-inline:auto; padding-inline:var(--gutter); }
+.wrap-t--post { max-width:950px; }
 /* Section rhythm. Both neighbours pay, so the perceived gap is double these
    numbers: at 7vw/120px two adjacent sections put 202px between themselves at
    1440 and 240px at 1920, which read as the page falling apart rather than as
@@ -1248,12 +1249,18 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 .pwyw__amt[aria-pressed="true"] span { color:var(--bg); opacity:.72; }
 .pwyw__amt--other { min-width:132px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:1rem; letter-spacing:.02em; color:var(--fg-3); }
 .pwyw__amt--other b { font-size:1.375rem; letter-spacing:-.035em; }
-/* Sized to the content it actually holds: a currency mark and up to four
-   digits. At 220px it read as an empty box rather than an amount. */
-.pwyw__custom { display:none; margin-top:8px; position:relative; max-width:144px; }
+/* Same footprint as the amount chips, including the Other control. */
+.pwyw__custom { display:none; margin-top:8px; position:relative; width:132px; }
 .pwyw__custom.show { display:block; }
-.pwyw__custom .input { padding-left:32px; font-size:1.25rem; font-weight:800; font-variation-settings:"wdth" 104; }
-.pwyw__cur { position:absolute; left:15px; top:50%; transform:translateY(-50%); font-size:1.25rem; font-weight:800; color:var(--fg-3); pointer-events:none; }
+.pwyw__custom .input {
+  width:100%; min-height:75px; padding:16px 12px 16px 28px;
+  font-size:1.375rem; font-weight:800; font-variation-settings:"wdth" 104;
+  letter-spacing:-.035em; line-height:1; text-align:center;
+  appearance:textfield; -moz-appearance:textfield;
+}
+.pwyw__custom .input::-webkit-outer-spin-button,
+.pwyw__custom .input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+.pwyw__cur { position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:1.375rem; font-weight:800; color:var(--fg-3); pointer-events:none; }
 /* Stacked, so the button is the single target rather than one of three things
    sharing a row. */
 .pwyw__foot { display:grid; gap:16px; margin-top:24px; padding-top:16px; border-top:1px solid var(--line); }

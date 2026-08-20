@@ -30,7 +30,7 @@ export default async function BlogPostPage({ params }: Props) {
       <main id="main">
         <article>
           <header className="phead on-dark grain">
-            <div className="wrap-t" style={{ position: "relative", zIndex: 2 }}>
+            <div className="wrap-t wrap-t--post" style={{ position: "relative", zIndex: 2 }}>
               <nav className="crumbs meta mb4" aria-label="Breadcrumb">
                 <a href="/">Home</a>
                 <s>/</s>
@@ -68,12 +68,12 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           </header>
 
-          <div className="wrap-t" style={{ marginTop: "clamp(-48px,-2.4vw,-24px)", position: "relative", zIndex: 5 }}>
+          <div className="wrap-t wrap-t--post" style={{ marginTop: "clamp(-48px,-2.4vw,-24px)", position: "relative", zIndex: 5 }}>
             <Shot variant={post.v} ratio="16-9" label={false} alt={post.imgAlt} src={post.img} />
           </div>
 
           <div className="sec tint" style={{ marginTop: 0 }}>
-            <div className="wrap-t prose">
+            <div className="wrap-t wrap-t--post prose">
               <div className="tldr">
                 <p className="tldr__h">TL;DR</p>
                 <p className="tldr__l">{post.tldr}</p>
@@ -81,7 +81,7 @@ export default async function BlogPostPage({ params }: Props) {
               {body}
             </div>
 
-            <div className="wrap-t mt6">
+            <div className="wrap-t wrap-t--post mt6">
               <div className="card">
                 <div className="between">
                   <div>
