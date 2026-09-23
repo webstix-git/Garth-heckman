@@ -244,7 +244,7 @@ export const PRODUCTS = [
     type: 'variable',
     fulfillment: 'printify',
     title: 'WTFU Tee',
-    subtitle: 'Heavyweight cotton, front lockup',
+    subtitle: '',
     categories: ['merch', 'apparel'],
     collections: ['featured', 'wtfu-collection'],
     tags: ['apparel', 'printify'],
@@ -257,19 +257,17 @@ export const PRODUCTS = [
       { kind: 'printify', variant: 'cool',    ratio: '1-1', label: 'Collar', note: '', src: 'https://images-api.printify.com/mockup/6a81c07e42e8d58d9209fbfc/33793/131080/unisex-ultra-cotton-long-sleeve-tee.jpg?camera_label=collar-closeup&v=20260818' },
       { kind: 'printify', variant: 'ember',   ratio: '1-1', label: 'Worn', note: '', src: 'https://images-api.printify.com/mockup/6a81c07e42e8d58d9209fbfc/33793/131081/unisex-ultra-cotton-long-sleeve-tee.jpg?camera_label=person-left&v=20260818' }
     ],
-    descriptionShort: 'The lockup on a shirt heavy enough to survive a Wisconsin winter.',
-    descriptionLong: ['Printed and shipped on demand through Printify. Nothing is warehoused, so allow a little longer than a stocked item.'],
-    details: [
-      { label: 'Fabric', value: '100% ring-spun cotton, 6.0 oz' },
-      { label: 'Fit', value: 'Classic, true to size' },
-      { label: 'Care', value: 'Cold wash, tumble low, do not iron the print' },
-      { label: 'Made', value: 'Printed on demand by Printify' }
-    ],
+    // Printify prose fallback (live enrich overwrites)
+    descriptionShort:
+      'A bit more formal than a standard-issue t-shirt, the ultra cotton long sleeve tee is a clear comfort winner. The sleeves also act as a nice frame. There are no side seams. The shoulders are taped for improved durability. This makes for a good fitting around the shoulders and neck. The cotton used for these shirts is environmentally friendly.',
+    descriptionLong: [],
+    details: [],
     options: [
       { name: 'Color', type: 'swatch', values: [
         { label: 'White', value: 'white', hex: '#ffffff' } // Printify White only
       ]},
       { name: 'Size', type: 'button', values: [
+        // Labels match Printify size titles; values are stable cart keys
         { label: 'S', value: 's' }, { label: 'M', value: 'm' }, { label: 'L', value: 'l' },
         { label: 'XL', value: 'xl' }, { label: '2XL', value: '2xl' }, { label: '3XL', value: '3xl' }
       ]}
@@ -298,7 +296,7 @@ export const PRODUCTS = [
     type: 'simple',
     fulfillment: 'printify',
     title: 'WTFU Tank Top',
-    subtitle: 'Men’s premium, White · L',
+    subtitle: '',
     categories: ['merch', 'apparel'],
     collections: ['wtfu-collection', 'new'],
     tags: ['apparel', 'printify', 'tank'],
@@ -308,23 +306,17 @@ export const PRODUCTS = [
       { kind: 'printify', variant: 'light', ratio: '1-1', label: 'WTFU tank, front', note: '', src: 'https://images-api.printify.com/mockup/6ab2a06fe4786b291d0532fc/119785/109930/mens-premium-tank-top.jpg?camera_label=front' },
       { kind: 'printify', variant: 'cool', ratio: '1-1', label: 'WTFU tank, back', note: '', src: 'https://images-api.printify.com/mockup/6ab2a06fe4786b291d0532fc/119785/109967/mens-premium-tank-top.jpg?camera_label=back' }
     ],
-    descriptionShort: 'Soft-washed cotton for the workout and the weekend. Currently offered in White, Large.',
-    descriptionLong: [
-      'Stay cool in a men’s premium tank: 100% combed ring-spun cotton, soft-washed mid/heavyweight knit, relaxed drop-arm fit.',
-      'Printed on demand through Printify. Currently available in White, Large.'
-    ],
-    details: [
-      { label: 'Fabric', value: '100% combed ring-spun cotton' },
-      { label: 'Fit', value: 'Relaxed, drop-arm' },
-      { label: 'Color / Size', value: 'White · Large' },
-      { label: 'Made', value: 'Printed on demand by Printify' }
-    ],
+    // Printify prose fallback (live enrich overwrites)
+    descriptionShort:
+      'Stay cool and comfortable in this Men’s Tank Top, crafted from 100% combed ring-spun cotton for a soft, breathable feel. Featuring a soft-washed, mid/heavyweight knit and a relaxed fit, it’s designed to transition effortlessly from intense workouts to casual weekend outings.',
+    descriptionLong: [],
+    details: [],
     options: [], variants: [],
     inventory: { tracked: false, quantity: null, allowBackorder: true },
     shipping: { required: true, weightOz: 6, originNote: 'Printed and shipped on demand, allow 2–7 business days' },
     digital: null,
     related: ['p_wtfu_tee', 'p_wtfu_mug', 'p_leather_bracelet'],
-    seo: { title: 'WTFU Tank Top | Garth Heckman', description: 'Men’s premium WTFU tank top, White Large.' }
+    seo: { title: 'Men\'s Premium Tank Top | Garth Heckman', description: 'Men’s premium tank top, White Large.' }
   },
 
   {
@@ -335,7 +327,7 @@ export const PRODUCTS = [
     type: 'simple',
     fulfillment: 'printify',
     title: 'Leather Bracelet with Beads',
-    subtitle: '8.5″ · Stainless steel accents',
+    subtitle: '',
     categories: ['merch', 'accessories'],
     collections: ['wtfu-collection', 'new'],
     tags: ['accessories', 'printify', 'bracelet'],
@@ -344,16 +336,11 @@ export const PRODUCTS = [
     media: [
       { kind: 'printify', variant: 'light', ratio: '1-1', label: 'Leather bracelet, front', note: '', src: 'https://images-api.printify.com/mockup/6ab2a0d2abbcc6610304e118/253999/128121/leather-bracelet-with-beads-engraving.jpg?camera_label=front' }
     ],
-    descriptionShort: 'Leather wrap with polished beads — a small piece that still says something.',
-    descriptionLong: [
-      'Sleek leather bracelet with stainless steel beaded accents. Size 8.5″. Printed and fulfilled on demand through Printify.',
-      'Engraving is configured in the Printify product. Contact Garth after checkout if you need specific names or dates on the beads.'
-    ],
-    details: [
-      { label: 'Size', value: '8.5″' },
-      { label: 'Finish', value: 'Leather wrap, stainless steel beads' },
-      { label: 'Made', value: 'Printed on demand by Printify' }
-    ],
+    // Printify prose fallback (live enrich overwrites)
+    descriptionShort:
+      'Sleek, bold, and deeply personal - this bracelet is designed to tell your story. Featuring four customizable engraved beads, it lets you carry meaningful names, dates, or words wherever you go. The smooth leather wrap pairs effortlessly with the polished accents, creating a timeless piece. Perfect for everyday wear or as a thoughtful gift.',
+    descriptionLong: [],
+    details: [],
     options: [], variants: [],
     inventory: { tracked: false, quantity: null, allowBackorder: true },
     shipping: { required: true, weightOz: 3, originNote: 'Made and shipped on demand, allow 2–7 business days' },
@@ -369,8 +356,8 @@ export const PRODUCTS = [
     status: 'active',
     type: 'variable',
     fulfillment: 'printify',
-    title: 'WTFU Mug',
-    subtitle: 'Ceramic, dishwasher safe',
+    title: 'Accent Coffee Mug (11oz)',
+    subtitle: '',
     categories: ['merch', 'drinkware'],
     collections: ['wtfu-collection'],
     tags: ['drinkware', 'printify'],
@@ -383,25 +370,24 @@ export const PRODUCTS = [
       { kind: 'printify', variant: 'cool', ratio: '1-1', label: 'Mug, left', note: '', src: 'https://images-api.printify.com/mockup/6a81bf8042e8d58d9209f92e/72180/102756/accent-coffee-mug-11-15oz.jpg?camera_label=left&v=20260818' },
       { kind: 'printify', variant: 'ember', ratio: '1-1', label: 'Mug, back', note: '', src: 'https://images-api.printify.com/mockup/6a81bf8042e8d58d9209f92e/72180/102758/accent-coffee-mug-11-15oz.jpg?camera_label=back&v=20260818' }
     ],
-    descriptionShort: 'For the 5am cup, before anybody else is awake.',
-    descriptionLong: ['Printed on demand. Microwave and dishwasher safe.'],
-    details: [
-      { label: 'Material', value: 'White ceramic' },
-      { label: 'Care', value: 'Dishwasher and microwave safe' },
-      { label: 'Made', value: 'Printed on demand by Printify' }
-    ],
+    // Printify prose fallback (live enrich overwrites). Specs-only <p> blanks need this
+    // so cards are never empty if the API briefly fails.
+    descriptionShort:
+      'Meet your next favorite morning companion, the accented ceramic mug. This mug brings the perfect blend of style and functionality to elevate your coffee or tea ritual. Offered in 11oz (0.33 l), this mug offers ample space for your favorite brew. Made with white ceramic and sporting a sleek glossy finish with eye-catching contrast, this mug is a bliss both to use and to look at.',
+    descriptionLong: [],
+    details: [],
     options: [
-      { name: 'Size', type: 'button', values: [ { label: '11 oz', value: '11oz' }, { label: '15 oz', value: '15oz' } ] }
+      // Printify size title is "11oz" (15oz Black is disabled in Printify — not offered)
+      { name: 'Size', type: 'button', values: [ { label: '11oz', value: '11oz' } ] }
     ],
     variants: [
-      { id: 'v_mug_11', sku: 'GH-MUG-11', options: { 'Size': '11oz' }, price: 15.59, inventory: 999 },
-      { id: 'v_mug_15', sku: 'GH-MUG-15', options: { 'Size': '15oz' }, price: 16.87, inventory: 999 }
+      { id: 'v_mug_11', sku: 'GH-MUG-11', options: { 'Size': '11oz' }, price: 15.59, inventory: 999 }
     ],
     inventory: { tracked: false, quantity: null, allowBackorder: true },
     shipping: { required: true, weightOz: 16, originNote: 'Printed and shipped on demand, allow 2–7 business days' },
     digital: null,
     related: ['p_wtfu_tee', 'p_wtfu_journal', 'p_wtfu_tank'],
-    seo: { title: 'WTFU Mug | Garth Heckman', description: 'Ceramic WTFU mug, 11oz or 15oz.' }
+    seo: { title: 'Accent Coffee Mug (11oz) | Garth Heckman', description: 'Ceramic accent coffee mug, 11oz.' }
   },
 
   {
@@ -411,8 +397,8 @@ export const PRODUCTS = [
     status: 'active',
     type: 'simple',
     fulfillment: 'printify',
-    title: 'WTFU Journal',
-    subtitle: 'Hardcover, lined, 128 pages',
+    title: 'Hardcover Journal Matte',
+    subtitle: '',
     categories: ['merch', 'stationery'],
     collections: ['wtfu-collection', 'new'],
     tags: ['stationery', 'printify'],
@@ -425,19 +411,17 @@ export const PRODUCTS = [
       { kind: 'printify', variant: 'light', ratio: '1-1', label: 'Journal, back', note: '', src: 'https://images-api.printify.com/mockup/6a81c32700177bb8ff0d06c4/65223/7339/hardcover-journal-matte.jpg?camera_label=back&v=20260818' },
       { kind: 'printify', variant: 'cool', ratio: '1-1', label: 'Journal, inside', note: '', src: 'https://images-api.printify.com/mockup/6a81c32700177bb8ff0d06c4/65223/7341/hardcover-journal-matte.jpg?camera_label=inside&v=20260818' }
     ],
-    descriptionShort: 'Somewhere to put the thing God said at 3am so you still have it at 3pm.',
-    descriptionLong: ['Hardcover, lined, printed on demand.'],
-    details: [
-      { label: 'Pages', value: '128, lined' },
-      { label: 'Cover', value: 'Hardcover, matte' },
-      { label: 'Made', value: 'Printed on demand by Printify' }
-    ],
+    // Printify prose fallback (live enrich overwrites)
+    descriptionShort:
+      'Make your everyday journaling more personal, private, and stylish with this matte hardcover journal. Available in 5.75"x8", with 150 lined pages, these sturdy hardcover journals are fully customizable on the front and on the back covers. The matte laminate coating on the cover will make them stay true to your personal style.',
+    descriptionLong: [],
+    details: [],
     options: [], variants: [],
     inventory: { tracked: false, quantity: null, allowBackorder: true },
     shipping: { required: true, weightOz: 14, originNote: 'Printed and shipped on demand, allow 2–7 business days' },
     digital: null,
     related: ['p_wtfu_tee', 'p_wtfu_mug', 'p_leather_bracelet'],
-    seo: { title: 'WTFU Journal | Garth Heckman', description: 'Hardcover lined WTFU journal.' }
+    seo: { title: 'Hardcover Journal Matte | Garth Heckman', description: 'Hardcover lined journal, 150 pages.' }
   },
 
   /* ---- Triple C Survivor: the cancer set, $5 each -------------------- */

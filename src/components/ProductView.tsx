@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
+import { Fragment, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import type { Product } from "@/lib/catalog";
 import { Catalog } from "@/lib/catalog";
 import { formatMoney } from "@/lib/money";
@@ -10,7 +10,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { IconCheck, IconDownload, IconMail, IconShield, IconTruck } from "@/components/icons";
 import { addProductToCart, useCart } from "@/components/CartProvider";
 
-function Accordion({ product: p }: { product: Product }) {
+function Accordion({ product: p, sku }: { product: Product; sku?: string }) {
   const deliver = p.shipping.required ? (
     <p>
       <strong>Shipping.</strong> {p.shipping.originNote ? `${p.shipping.originNote}.` : ""} Flat rate $6.95, free
@@ -42,9 +42,13 @@ function Accordion({ product: p }: { product: Product }) {
         <div className="acc__panel">
           <div>
             <div className="in prose">
-              {p.descriptionLong.map((t) => (
-                <p key={t.slice(0, 24)} dangerouslySetInnerHTML={{ __html: t }} />
-              ))}
+              {p.descriptionLong.map((t, i) =>
+                /<[a-z][\s\S]*>/i.test(t) ? (
+                  <div key={i} className="printify-desc" dangerouslySetInnerHTML={{ __html: t }} />
+                ) : (
+                  <p key={i}>{t}</p>
+                ),
+              )}
             </div>
           </div>
         </div>
@@ -58,13 +62,13 @@ function Accordion({ product: p }: { product: Product }) {
             <div className="in">
               <dl className="spec">
                 {p.details.map((d, i) => (
-                  <span key={`${d.label}-${i}`}>
+                  <Fragment key={`${d.label}-${i}`}>
                     <dt>{d.label}</dt>
                     <dd>{d.value || "—"}</dd>
-                  </span>
+                  </Fragment>
                 ))}
                 <dt>SKU</dt>
-                <dd className="tnum">{p.sku}</dd>
+                <dd className="tnum">{sku || p.sku}</dd>
               </dl>
             </div>
           </div>
@@ -238,7 +242,7 @@ function ProductViewInner({
                 ) : null}
               </div>
               <div className="hide-s">
-                <Accordion product={p} />
+                <Accordion product={p} sku={variant?.sku || p.sku} />
               </div>
             </div>
             <div className="buybox">
@@ -268,7 +272,7 @@ function ProductViewInner({
                   </p>
                 </div>
               )}
-              <p className="lede mt4">{p.descriptionShort}</p>
+              {p.descriptionShort ? <p className="lede mt4">{p.descriptionShort}</p> : null}
               {(p.options || []).map((o) => {
                 const cur = o.values.find((v) => v.value === sel[o.name]);
                 return (
@@ -398,7 +402,7 @@ function ProductViewInner({
                 </div>
               )}
               <div className="only-s">
-                <Accordion product={p} />
+                <Accordion product={p} sku={variant?.sku || p.sku} />
               </div>
             </div>
           </div>

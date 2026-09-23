@@ -43,8 +43,8 @@ export const PRINTIFY_MAP: Record<string, PrintifyProductMap> = {
   p_wtfu_mug: {
     printifyProductId: "6a81bf8042e8d58d9209f92e",
     variants: {
+      // 11oz only — Printify variant 105883 (15oz Black) is disabled
       v_mug_11: 72180,
-      v_mug_15: 105883,
     },
   },
 };

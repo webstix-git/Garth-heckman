@@ -63,6 +63,11 @@ export type PrintifyProductDetail = {
   title: string;
   description?: string;
   tags?: string[];
+  options?: Array<{
+    name: string;
+    type?: string;
+    values: Array<{ id: number; title: string; colors?: string[] }>;
+  }>;
   variants: Array<{
     id: number;
     sku: string;
@@ -71,6 +76,7 @@ export type PrintifyProductDetail = {
     cost?: number;
     is_enabled: boolean;
     is_available: boolean;
+    options?: number[];
   }>;
   images?: Array<{
     src: string;

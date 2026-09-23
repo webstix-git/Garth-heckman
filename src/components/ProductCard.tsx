@@ -96,7 +96,7 @@ export function ProductCard({ p }: { p: Product }) {
   }
 
   return (
-    <article className="pcard">
+    <article className={`pcard${p.fulfillment === "printify" ? " pcard--printify" : ""}`}>
       <div className="pcard__media">
         <Shot
           variant={m.variant}
@@ -121,7 +121,7 @@ export function ProductCard({ p }: { p: Product }) {
         <h3 className="pcard__t">
           <a href={`/product/${p.slug}`}>{p.title}</a>
         </h3>
-        <p className="pcard__d">{p.descriptionShort}</p>
+        {p.descriptionShort ? <p className="pcard__d">{p.descriptionShort}</p> : null}
         <div className="pcard__foot">
           <p className="pcard__price">
             <Price p={p} />

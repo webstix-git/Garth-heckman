@@ -220,7 +220,14 @@ h1:has(br),h2:has(br),h3:has(br),h4:has(br),
 .prose > * + * { margin-top:1.05em; }
 .prose strong { color:var(--fg); font-weight:700; }
 .prose h3 { color:var(--fg); font-size:clamp(1.1rem,1.6vw,1.4rem); font-weight:800; text-transform:uppercase; font-variation-settings:"wdth" 104; letter-spacing:-.025em; margin-top:1.9em; }
-.prose ul { padding-left:1.05em; }
+.prose ul { padding-left:1.05em; margin:0.65em 0 0; }
+.prose ul:first-child { margin-top:0; }
+/* Printify HTML: no empty-tag / default-p gaps above the spec list */
+.printify-desc > p { margin:0 0 .75em; }
+.printify-desc > p:last-child { margin-bottom:0; }
+.printify-desc > ul { margin:.55em 0 0; padding-left:1.05em; }
+.printify-desc > ul:first-child { margin-top:0; }
+.printify-desc > * + * { margin-top:.55em; }
 .prose li + li { margin-top:.42em; }
 .prose li::marker { color:var(--acc); }
 .prose a { color:var(--acc); text-decoration:underline; text-underline-offset:3px; }
@@ -1092,6 +1099,11 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 .pcard__body { padding:clamp(16px,2vw,24px); display:flex; flex-direction:column; gap:8px; flex:1; }
 .pcard__t { font-size:1.125rem; font-weight:800; font-variation-settings:"wdth" 104; letter-spacing:-.022em; line-height:1.14; }
 .pcard__d { font-size:var(--fs-body); line-height:1.6; color:var(--fg-3); }
+/* Truncate long Printify blank copy on listing cards only — not product detail, not other catalog items */
+.pcard--printify .pcard__d {
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3;
+  overflow:hidden;
+}
 .pcard__foot { margin-top:auto; padding-top:16px; }
 /* Two real controls, always. The card is not a giant link, because an overlay
    swallowed every click and the "View" chip was a span pretending to be a
