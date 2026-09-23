@@ -61,13 +61,22 @@ export function listPrintifyProducts(shopId = printifyShopId()) {
 export type PrintifyProductDetail = {
   id: string;
   title: string;
+  description?: string;
+  tags?: string[];
   variants: Array<{
     id: number;
     sku: string;
     title: string;
     price: number;
+    cost?: number;
     is_enabled: boolean;
     is_available: boolean;
+  }>;
+  images?: Array<{
+    src: string;
+    position?: string;
+    is_default?: boolean;
+    variant_ids?: number[];
   }>;
 };
 

@@ -207,14 +207,19 @@ export function validateCart(items: CartItem[]): CartIssue[] {
     if (i.variantId && p.variants.length) {
       const v = p.variants.find((x) => x.id === i.variantId);
       if (!v) out.push({ key: i.key, level: "gone", msg: "That option is no longer available." });
-      else if (v.inventory === 0) out.push({ key: i.key, level: "gone", msg: "That option has sold out." });
-      else if (i.qty > v.inventory)
-        out.push({
-          key: i.key,
-          level: "qty",
-          max: v.inventory,
-          msg: `Only ${v.inventory} left. Quantity reduced.`,
-        });
+      else if (p.fulfillment !== "printify") {
+        // Printify is POD — don't enforce fake warehouse counts
+        if (v.inventory === 0) out.push({ key: i.key, level: "gone", msg: "That option has sold out." });
+        else if (i.qty > v.inventory)
+          out.push({
+            key: i.key,
+            level: "qty",
+            max: v.inventory,
+            msg: `Only ${v.inventory} left. Quantity reduced.`,
+          });
+      } else if (v.inventory === 0) {
+        out.push({ key: i.key, level: "gone", msg: "That option has sold out." });
+      }
     }
     if (i.pwywCents != null && p.price.min != null && i.pwywCents < p.price.min) {
       out.push({

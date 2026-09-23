@@ -130,7 +130,7 @@ export default function OrderConfirmationPage() {
                       <IconTruck />
                       <span>
                         We will email tracking to {order.email} as soon as it ships. Printed items are made to order.
-                        Allow 5–9 business days.
+                        Allow 2–7 business days.
                       </span>
                     </div>
                     <div className="mt4">

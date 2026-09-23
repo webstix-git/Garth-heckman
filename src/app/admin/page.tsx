@@ -84,7 +84,7 @@ Hi Tony,
 Thanks, your order is in.
 
   Wake The Faith Up      $25.00   (your contribution)
-  WTFU Tee  Slate / L    $32.00
+  WTFU Tee  White / L    $32.00
   ─────────────────────────────
   Shipping                $6.95
   Tax                     $3.92
@@ -94,7 +94,7 @@ Your downloads
   Burn This Book.pdf  [ signed link, 12 months ]
 
 Shipping
-  Printed items ship in 5–9 business days.
+  Printed items ship in 2–7 business days.
   Tracking follows in a second email.
 
 Garth`}
@@ -109,7 +109,7 @@ Customer   Tony Herman
             tony@webstix.com
 
 Items      WTFU (contribution $25)
-            WTFU Tee, Slate / L
+            WTFU Tee, White / L
 
 Fulfilment 1 to ship yourself (the book)
             1 sent to Printify automatically

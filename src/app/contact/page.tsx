@@ -49,7 +49,7 @@ export default function Page() {
                   </div>
                 </div>
                 <div className="notice notice--info mt3">
-                  <span><strong>Support the mission.</strong> Wake the Faith Up is a $10 suggested donation, and every contribution goes back into getting it into more hands. <a href="/product/wtfu-book" style={{ color: "var(--acc)", textDecoration: "underline" }}>Get WTFU</a>.</span>
+                  <span><strong>Support the mission.</strong> Wake the Faith Up is a $1 suggested donation, and every contribution goes back into getting it into more hands. <a href="/product/wtfu-book" style={{ color: "var(--acc)", textDecoration: "underline" }}>Get WTFU</a>.</span>
                 </div>
               </div>
 

@@ -1,14 +1,12 @@
 /**
  * Maps storefront catalog ids to Printify shop products.
  *
- * Storefront titles, prices, options and copy stay in catalog-source.js.
- * This file only records the Printify ids needed to submit an order.
+ * Storefront structure (slug, options, variant ids) stays in catalog-source.js.
+ * Title, description, media, and prices are loaded live from Printify
+ * (prices = Printify selling × 1.20 via enrich-printify.ts).
  *
- * Colour aliases (storefront label → Printify colour):
- *   White is Printify's primary colour for the tee.
- *   Bone  → Ash
- *   Slate → Dark Heather
- * Mug has no colour in the UI; orders use Printify Black.
+ * Tee colours offered on the site: White only (Printify name + hex).
+ * Mug has no colour picker; mapped variants use Printify’s configured colours.
  */
 export const PRINTIFY_SHOP_ID = "28272515";
 
@@ -23,6 +21,14 @@ export const PRINTIFY_MAP: Record<string, PrintifyProductMap> = {
     printifyProductId: "6a81c32700177bb8ff0d06c4",
     printifyVariantId: 65223,
   },
+  p_wtfu_tank: {
+    printifyProductId: "6ab2a06fe4786b291d0532fc",
+    printifyVariantId: 119785, // White / L — only enabled variant in Printify today
+  },
+  p_leather_bracelet: {
+    printifyProductId: "6ab2a0d2abbcc6610304e118",
+    printifyVariantId: 253999, // 8.5" / Stainless Steel
+  },
   p_wtfu_tee: {
     printifyProductId: "6a81c07e42e8d58d9209fbfc",
     variants: {
@@ -32,24 +38,6 @@ export const PRINTIFY_MAP: Record<string, PrintifyProductMap> = {
       v_tee_white_xl: 33794,
       v_tee_white_2xl: 33795,
       v_tee_white_3xl: 64722,
-      v_tee_black_s: 33796,
-      v_tee_black_m: 33797,
-      v_tee_black_l: 33798,
-      v_tee_black_xl: 33799,
-      v_tee_black_2xl: 33800,
-      v_tee_black_3xl: 64723,
-      v_tee_bone_s: 42641,
-      v_tee_bone_m: 42642,
-      v_tee_bone_l: 42643,
-      v_tee_bone_xl: 42644,
-      v_tee_bone_2xl: 42645,
-      v_tee_bone_3xl: 64705,
-      v_tee_slate_s: 42691,
-      v_tee_slate_m: 42692,
-      v_tee_slate_l: 42693,
-      v_tee_slate_xl: 42694,
-      v_tee_slate_2xl: 42695,
-      v_tee_slate_3xl: 64709,
     },
   },
   p_wtfu_mug: {

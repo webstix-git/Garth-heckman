@@ -13,8 +13,8 @@ import { addProductToCart, useCart } from "@/components/CartProvider";
 function Accordion({ product: p }: { product: Product }) {
   const deliver = p.shipping.required ? (
     <p>
-      <strong>Shipping.</strong> {p.shipping.originNote || ""} Flat rate $6.95, free over $75. You get a confirmation
-      email as soon as the order is placed and a second one when it ships.
+      <strong>Shipping.</strong> {p.shipping.originNote ? `${p.shipping.originNote}.` : ""} Flat rate $6.95, free
+      over $75. You get a confirmation email as soon as the order is placed and a second one when it ships.
     </p>
   ) : (
     <p>
@@ -57,10 +57,10 @@ function Accordion({ product: p }: { product: Product }) {
           <div>
             <div className="in">
               <dl className="spec">
-                {p.details.map((d) => (
-                  <span key={d.label}>
+                {p.details.map((d, i) => (
+                  <span key={`${d.label}-${i}`}>
                     <dt>{d.label}</dt>
-                    <dd>{d.value}</dd>
+                    <dd>{d.value || "—"}</dd>
                   </span>
                 ))}
                 <dt>SKU</dt>
@@ -94,16 +94,21 @@ function Accordion({ product: p }: { product: Product }) {
 
 export function ProductView({
   slug,
+  product,
+  relatedProducts,
   className,
   style,
   children,
 }: {
   slug: string;
+  /** Server-enriched product (e.g. live Printify content). */
+  product?: Product;
+  relatedProducts?: Product[];
   className?: string;
   style?: CSSProperties;
   children?: ReactNode;
 }) {
-  const p = Catalog.bySlug(slug);
+  const p = product ?? Catalog.bySlug(slug);
   if (!p) {
     return (
       <div className={["sec", className].filter(Boolean).join(" ")} id="pdp" style={style}>
@@ -122,16 +127,26 @@ export function ProductView({
       </div>
     );
   }
-  return <ProductViewInner p={p} className={className} style={style} chrome={children} />;
+  return (
+    <ProductViewInner
+      p={p}
+      relatedProducts={relatedProducts}
+      className={className}
+      style={style}
+      chrome={children}
+    />
+  );
 }
 
 function ProductViewInner({
   p,
+  relatedProducts,
   className,
   style,
   chrome,
 }: {
   p: Product;
+  relatedProducts?: Product[];
   className?: string;
   style?: CSSProperties;
   chrome?: ReactNode;
@@ -170,7 +185,7 @@ function ProductViewInner({
   const m = gallery[Math.min(media, gallery.length - 1)] ?? gallery[0];
   const isPwyw = p.type === "pwyw";
   const unit = variant ? variant.price : p.price.amount;
-  const related = Catalog.related(p);
+  const related = relatedProducts ?? Catalog.related(p);
 
   function add() {
     addProductToCart(cart, p, { variant, qty });

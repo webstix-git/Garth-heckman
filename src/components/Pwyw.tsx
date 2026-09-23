@@ -57,7 +57,7 @@ export function Pwyw({
       <div className="pwyw__head">
         <p className="meta">Choose your contribution</p>
         <p className="meta meta--dim">
-          {pr.max != null && min < suggested
+          {pr.max != null && min > 0
             ? `Anywhere from ${formatMoney0(min)} to ${formatMoney0(pr.max)}`
             : `Minimum ${formatMoney0(min)}`}
         </p>

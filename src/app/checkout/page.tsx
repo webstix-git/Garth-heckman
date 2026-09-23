@@ -287,7 +287,7 @@ export default function CheckoutPage() {
                             <IconTruck />
                             <span>
                               <strong>Printed on demand.</strong> Merchandise is produced and shipped by Printify once the
-                              order is placed. Allow 5–9 business days.
+                              order is placed. Allow 2–7 business days.
                             </span>
                           </div>
                         </fieldset>

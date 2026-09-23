@@ -22,20 +22,31 @@ function featuredElsewhere(p: StoreProduct) {
   return p.slug === "wtfu-book";
 }
 
-const MERCH_SLUGS = ["wtfu-tee", "wtfu-mug", "wtfu-journal"];
+const MERCH_SLUGS = ["wtfu-tee", "wtfu-tank", "wtfu-mug", "wtfu-journal", "leather-bracelet"];
 
 function merchOrder(p: StoreProduct) {
   const i = MERCH_SLUGS.indexOf(p.slug);
   return i === -1 ? 99 : i;
 }
 
-export default function StorePage() {
+export default function StoreClient({ products }: { products?: StoreProduct[] }) {
   const params = useSearchParams();
   const [q, setQ] = useState(params.get("q") || "");
   const [sort, setSort] = useState("featured");
+  const catalog = products ?? Catalog.all();
 
   const list = useMemo(() => {
-    const next = q ? Catalog.search(q) : Catalog.all().filter((p) => !featuredElsewhere(p));
+    const needle = q.trim().toLowerCase();
+    let next = catalog.filter((p) => !featuredElsewhere(p));
+    if (needle) {
+      next = next.filter(
+        (p) =>
+          p.title.toLowerCase().includes(needle) ||
+          p.descriptionShort.toLowerCase().includes(needle) ||
+          p.tags.some((t) => t.toLowerCase().includes(needle)) ||
+          p.categories.some((c) => c.toLowerCase().includes(needle)),
+      );
+    }
     if (sort === "price-asc") next.sort((a, b) => eff(a) - eff(b));
     if (sort === "price-desc") next.sort((a, b) => eff(b) - eff(a));
     if (sort === "az") next.sort((a, b) => a.title.localeCompare(b.title));
@@ -46,7 +57,7 @@ export default function StorePage() {
         return Number(b.collections.indexOf("featured") > -1) - Number(a.collections.indexOf("featured") > -1);
       });
     return next;
-  }, [q, sort]);
+  }, [q, sort, catalog]);
 
   const resources = useMemo(
     () => list.filter((p) => p.fulfillment !== "printify"),
@@ -76,7 +87,7 @@ export default function StorePage() {
                   resources
                 </h1>
                 <p className="lede mt5 mw dim">
-                  Everything Garth has put on paper, on tape or on a shirt. Wake the Faith Up is a $10
+                  Everything Garth has put on paper, on tape or on a shirt. Wake the Faith Up is a $1
                   suggested donation. The Generations Training Deck is free.
                 </p>
               </div>
@@ -98,7 +109,7 @@ export default function StorePage() {
                   faith up
                 </h2>
                 <p className="body mt3 mw-s">
-                  Men were made for war. Suggested donation $10. Give more if the mission is worth it to you. The
+                  Men were made for war. Suggested donation $1. Give more if the mission is worth it to you. The
                   paperback includes a 30-day devotional, and either way the book ships.
                 </p>
                 <div className="row mt5">
@@ -167,13 +178,13 @@ export default function StorePage() {
                         <div>
                           <p className="meta meta--gold">Branded merchandise</p>
                           <h2 className="d2 mt3">
-                            Tee, mug
+                            Tee, tank,
                             <br />
-                            and journal
+                            mug and more
                           </h2>
                         </div>
                         <p className="body sm" style={{ maxWidth: "36ch" }}>
-                          The WTFU lockup on three Printify pieces. Printed when you order, shipped to you. Nothing sits in a warehouse.
+                          The WTFU lockup on Printify pieces — apparel, drinkware, and more. Printed when you order, shipped to you. Nothing sits in a warehouse.
                         </p>
                       </div>
                       <div className="pgrid" data-stagger="">

@@ -10,6 +10,8 @@ import { addProductToCart, useCart } from "@/components/CartProvider";
 
 function stockOf(p: Product) {
   if (p.status === "coming-soon") return { ok: false, label: "Coming soon", v: "" };
+  // Print-on-demand: no warehouse stock — don't show fake "low stock" / counts
+  if (p.fulfillment === "printify") return { ok: true, label: null as string | null };
   if (p.variants && p.variants.length) {
     const left = p.variants.reduce((a, v) => a + v.inventory, 0);
     if (!left) return { ok: false, label: "Sold out", v: "bad" };
@@ -30,7 +32,7 @@ function Price({ p }: { p: Product }) {
     const min = p.price.min ?? 0;
     const max = p.price.max;
     const suggested = p.price.suggested ?? 0;
-    if (max != null && min > 0 && min < suggested) {
+    if (max != null && min > 0) {
       return (
         <>
           <small>Suggested donation</small>

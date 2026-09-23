@@ -49,7 +49,8 @@ export const TAXONOMY = {
       children: [
         { slug: 'apparel',    name: 'Apparel' },
         { slug: 'drinkware',  name: 'Drinkware' },
-        { slug: 'stationery', name: 'Stationery' }
+        { slug: 'stationery', name: 'Stationery' },
+        { slug: 'accessories', name: 'Accessories' }
       ]
     }
   ],
@@ -87,11 +88,11 @@ export const PRODUCTS = [
     badge: { label: 'Pay what you want', variant: 'gold' },
     price: {
       currency: CURRENCY,
-      amount: 10,          // display / default amount
-      suggested: 10,       // client: $10 suggested donation
-      min: 10,
+      amount: 1,           // display / default amount
+      suggested: 1,        // client: $1 suggested donation
+      min: 1,
       max: 500,
-      presets: [10, 25, 50, 100],
+      presets: [1, 10, 25, 50],
       presetLabels: ['Suggested', 'Supporter', 'Partner', 'Champion'],
       compareAt: null
     },
@@ -122,7 +123,7 @@ export const PRODUCTS = [
     related: ['p_burn_this_book', 'p_wtfu_audiobook', 'p_wtfu_tee'],
     seo: {
       title: 'Wake The Faith Up (WTFU), pay what you want | Garth Heckman',
-      description: 'Garth Heckman’s Wake the Faith Up, including a 30-day devotional. Suggested donation $10.'
+      description: 'Garth Heckman’s Wake the Faith Up, including a 30-day devotional. Suggested donation $1.'
     }
   },
 
@@ -141,11 +142,11 @@ export const PRODUCTS = [
     badge: { label: 'Suggested donation', variant: 'gold' },
     price: {
       currency: CURRENCY,
-      amount: 10,
-      suggested: 10,
+      amount: 1,
+      suggested: 1,
       min: 1,            // client: suggested donation $1–$500
       max: 500,
-      presets: [10, 25, 50, 100],
+      presets: [1, 10, 25, 50],
       presetLabels: ['Suggested', 'Supporter', 'Partner', 'Champion'],
       compareAt: null
     },
@@ -248,8 +249,8 @@ export const PRODUCTS = [
     collections: ['featured', 'wtfu-collection'],
     tags: ['apparel', 'printify'],
     badge: null,
-    price: { currency: CURRENCY, amount: 36.99,       // Printify selling price, L/White
-      listPrice: 36.99, compareAt: null, presets: [] },
+    price: { currency: CURRENCY, amount: 44.39,       // Printify selling + 20%, L/White
+      listPrice: 44.39, compareAt: null, presets: [] },
     media: [
       { kind: 'printify', variant: 'light', ratio: '1-1', label: 'WTFU tee, front', note: '', src: 'https://images-api.printify.com/mockup/6a81c07e42e8d58d9209fbfc/33793/105264/unisex-ultra-cotton-long-sleeve-tee.jpg?camera_label=front&v=20260818' },
       { kind: 'printify', variant: 'light',   ratio: '1-1', label: 'WTFU tee, back', note: '', src: 'https://images-api.printify.com/mockup/6a81c07e42e8d58d9209fbfc/33793/105265/unisex-ultra-cotton-long-sleeve-tee.jpg?camera_label=back&v=20260818' },
@@ -266,10 +267,7 @@ export const PRODUCTS = [
     ],
     options: [
       { name: 'Color', type: 'swatch', values: [
-        { label: 'White', value: 'white', hex: '#F4F1EA' },
-        { label: 'Black', value: 'black', hex: '#1E1913' },
-        { label: 'Bone',  value: 'bone',  hex: '#E3DACB' },
-        { label: 'Slate', value: 'slate', hex: '#49535C' }
+        { label: 'White', value: 'white', hex: '#ffffff' } // Printify White only
       ]},
       { name: 'Size', type: 'button', values: [
         { label: 'S', value: 's' }, { label: 'M', value: 'm' }, { label: 'L', value: 'l' },
@@ -277,36 +275,91 @@ export const PRODUCTS = [
       ]}
     ],
     variants: [
-      { id: 'v_tee_white_s',  sku: 'GH-TEE-WH-S',  options: { 'Color': 'white', 'Size': 's'  }, price: 35.99, inventory: 40 },
-      { id: 'v_tee_white_m',  sku: 'GH-TEE-WH-M',  options: { 'Color': 'white', 'Size': 'm'  }, price: 36.99, inventory: 40 },
-      { id: 'v_tee_white_l',  sku: 'GH-TEE-WH-L',  options: { 'Color': 'white', 'Size': 'l'  }, price: 36.99, inventory: 40 },
-      { id: 'v_tee_white_xl', sku: 'GH-TEE-WH-XL', options: { 'Color': 'white', 'Size': 'xl' }, price: 33.99, inventory: 22 },
-      { id: 'v_tee_white_2xl',sku: 'GH-TEE-WH-2XL',options: { 'Color': 'white', 'Size': '2xl'}, price: 35.99, inventory: 8  },
-      { id: 'v_tee_white_3xl',sku: 'GH-TEE-WH-3XL',options: { 'Color': 'white', 'Size': '3xl'}, price: 33.99, inventory: 4  },
-      { id: 'v_tee_black_s',  sku: 'GH-TEE-BK-S',  options: { 'Color': 'black', 'Size': 's'  }, price: 24.99, inventory: 12 },
-      { id: 'v_tee_black_m',  sku: 'GH-TEE-BK-M',  options: { 'Color': 'black', 'Size': 'm'  }, price: 33.99, inventory: 40 },
-      { id: 'v_tee_black_l',  sku: 'GH-TEE-BK-L',  options: { 'Color': 'black', 'Size': 'l'  }, price: 26.99, inventory: 40 },
-      { id: 'v_tee_black_xl', sku: 'GH-TEE-BK-XL', options: { 'Color': 'black', 'Size': 'xl' }, price: 24.99, inventory: 22 },
-      { id: 'v_tee_black_2xl',sku: 'GH-TEE-BK-2XL',options: { 'Color': 'black', 'Size': '2xl'}, price: 34.99, inventory: 8  },
-      { id: 'v_tee_black_3xl',sku: 'GH-TEE-BK-3XL',options: { 'Color': 'black', 'Size': '3xl'}, price: 33.99, inventory: 0  },
-      { id: 'v_tee_bone_s',   sku: 'GH-TEE-BN-S',  options: { 'Color': 'bone',  'Size': 's'  }, price: 31.25, inventory: 5  },
-      { id: 'v_tee_bone_m',   sku: 'GH-TEE-BN-M',  options: { 'Color': 'bone',  'Size': 'm'  }, price: 31.25, inventory: 18 },
-      { id: 'v_tee_bone_l',   sku: 'GH-TEE-BN-L',  options: { 'Color': 'bone',  'Size': 'l'  }, price: 31.25, inventory: 18 },
-      { id: 'v_tee_bone_xl',  sku: 'GH-TEE-BN-XL', options: { 'Color': 'bone',  'Size': 'xl' }, price: 31.25, inventory: 0  },
-      { id: 'v_tee_bone_2xl', sku: 'GH-TEE-BN-2XL',options: { 'Color': 'bone',  'Size': '2xl'}, price: 34.48, inventory: 4  },
-      { id: 'v_tee_bone_3xl', sku: 'GH-TEE-BN-3XL',options: { 'Color': 'bone',  'Size': '3xl'}, price: 36.48, inventory: 2  },
-      { id: 'v_tee_slate_s',  sku: 'GH-TEE-SL-S',  options: { 'Color': 'slate', 'Size': 's'  }, price: 31.25, inventory: 0  },
-      { id: 'v_tee_slate_m',  sku: 'GH-TEE-SL-M',  options: { 'Color': 'slate', 'Size': 'm'  }, price: 31.25, inventory: 9  },
-      { id: 'v_tee_slate_l',  sku: 'GH-TEE-SL-L',  options: { 'Color': 'slate', 'Size': 'l'  }, price: 31.25, inventory: 14 },
-      { id: 'v_tee_slate_xl', sku: 'GH-TEE-SL-XL', options: { 'Color': 'slate', 'Size': 'xl' }, price: 31.25, inventory: 6  },
-      { id: 'v_tee_slate_2xl',sku: 'GH-TEE-SL-2XL',options: { 'Color': 'slate', 'Size': '2xl'}, price: 34.48, inventory: 3  },
-      { id: 'v_tee_slate_3xl',sku: 'GH-TEE-SL-3XL',options: { 'Color': 'slate', 'Size': '3xl'}, price: 36.43, inventory: 0  }
+      // Prices = Printify selling × 1.20; White only (Printify variant ids in printify-map)
+      { id: 'v_tee_white_s',  sku: 'GH-TEE-WH-S',  options: { 'Color': 'white', 'Size': 's'  }, price: 43.19, inventory: 999 },
+      { id: 'v_tee_white_m',  sku: 'GH-TEE-WH-M',  options: { 'Color': 'white', 'Size': 'm'  }, price: 44.39, inventory: 999 },
+      { id: 'v_tee_white_l',  sku: 'GH-TEE-WH-L',  options: { 'Color': 'white', 'Size': 'l'  }, price: 44.39, inventory: 999 },
+      { id: 'v_tee_white_xl', sku: 'GH-TEE-WH-XL', options: { 'Color': 'white', 'Size': 'xl' }, price: 40.79, inventory: 999 },
+      { id: 'v_tee_white_2xl',sku: 'GH-TEE-WH-2XL',options: { 'Color': 'white', 'Size': '2xl'}, price: 43.19, inventory: 999 },
+      { id: 'v_tee_white_3xl',sku: 'GH-TEE-WH-3XL',options: { 'Color': 'white', 'Size': '3xl'}, price: 40.79, inventory: 999 }
     ],
-    inventory: { tracked: true, allowBackorder: false },
-    shipping: { required: true, weightOz: 7, originNote: 'Printed and shipped on demand, allow 5–9 business days' },
+    inventory: { tracked: false, quantity: null, allowBackorder: true },
+    shipping: { required: true, weightOz: 7, originNote: 'Printed and shipped on demand, allow 2–7 business days' },
     digital: null,
-    related: ['p_wtfu_mug', 'p_wtfu_journal', 'p_wtfu_book'],
+    related: ['p_wtfu_mug', 'p_wtfu_journal', 'p_wtfu_book', 'p_wtfu_tank'],
     seo: { title: 'WTFU Tee | Garth Heckman', description: 'Heavyweight cotton tee with the WTFU lockup.' }
+  },
+
+  {
+    id: 'p_wtfu_tank',
+    sku: 'GH-WTFU-TANK',
+    slug: 'wtfu-tank',
+    status: 'active',
+    type: 'simple',
+    fulfillment: 'printify',
+    title: 'WTFU Tank Top',
+    subtitle: 'Men’s premium, White · L',
+    categories: ['merch', 'apparel'],
+    collections: ['wtfu-collection', 'new'],
+    tags: ['apparel', 'printify', 'tank'],
+    badge: { label: 'New', variant: 'ink' },
+    price: { currency: CURRENCY, amount: 38.92, listPrice: 38.92, compareAt: null, presets: [] }, // Printify selling + 20%
+    media: [
+      { kind: 'printify', variant: 'light', ratio: '1-1', label: 'WTFU tank, front', note: '', src: 'https://images-api.printify.com/mockup/6ab2a06fe4786b291d0532fc/119785/109930/mens-premium-tank-top.jpg?camera_label=front' },
+      { kind: 'printify', variant: 'cool', ratio: '1-1', label: 'WTFU tank, back', note: '', src: 'https://images-api.printify.com/mockup/6ab2a06fe4786b291d0532fc/119785/109967/mens-premium-tank-top.jpg?camera_label=back' }
+    ],
+    descriptionShort: 'Soft-washed cotton for the workout and the weekend. Currently offered in White, Large.',
+    descriptionLong: [
+      'Stay cool in a men’s premium tank: 100% combed ring-spun cotton, soft-washed mid/heavyweight knit, relaxed drop-arm fit.',
+      'Printed on demand through Printify. Currently available in White, Large.'
+    ],
+    details: [
+      { label: 'Fabric', value: '100% combed ring-spun cotton' },
+      { label: 'Fit', value: 'Relaxed, drop-arm' },
+      { label: 'Color / Size', value: 'White · Large' },
+      { label: 'Made', value: 'Printed on demand by Printify' }
+    ],
+    options: [], variants: [],
+    inventory: { tracked: false, quantity: null, allowBackorder: true },
+    shipping: { required: true, weightOz: 6, originNote: 'Printed and shipped on demand, allow 2–7 business days' },
+    digital: null,
+    related: ['p_wtfu_tee', 'p_wtfu_mug', 'p_leather_bracelet'],
+    seo: { title: 'WTFU Tank Top | Garth Heckman', description: 'Men’s premium WTFU tank top, White Large.' }
+  },
+
+  {
+    id: 'p_leather_bracelet',
+    sku: 'GH-LEATHER-BRACELET',
+    slug: 'leather-bracelet',
+    status: 'active',
+    type: 'simple',
+    fulfillment: 'printify',
+    title: 'Leather Bracelet with Beads',
+    subtitle: '8.5″ · Stainless steel accents',
+    categories: ['merch', 'accessories'],
+    collections: ['wtfu-collection', 'new'],
+    tags: ['accessories', 'printify', 'bracelet'],
+    badge: { label: 'New', variant: 'ink' },
+    price: { currency: CURRENCY, amount: 72.36, listPrice: 72.36, compareAt: null, presets: [] }, // Printify selling + 20%
+    media: [
+      { kind: 'printify', variant: 'light', ratio: '1-1', label: 'Leather bracelet, front', note: '', src: 'https://images-api.printify.com/mockup/6ab2a0d2abbcc6610304e118/253999/128121/leather-bracelet-with-beads-engraving.jpg?camera_label=front' }
+    ],
+    descriptionShort: 'Leather wrap with polished beads — a small piece that still says something.',
+    descriptionLong: [
+      'Sleek leather bracelet with stainless steel beaded accents. Size 8.5″. Printed and fulfilled on demand through Printify.',
+      'Engraving is configured in the Printify product. Contact Garth after checkout if you need specific names or dates on the beads.'
+    ],
+    details: [
+      { label: 'Size', value: '8.5″' },
+      { label: 'Finish', value: 'Leather wrap, stainless steel beads' },
+      { label: 'Made', value: 'Printed on demand by Printify' }
+    ],
+    options: [], variants: [],
+    inventory: { tracked: false, quantity: null, allowBackorder: true },
+    shipping: { required: true, weightOz: 3, originNote: 'Made and shipped on demand, allow 2–7 business days' },
+    digital: null,
+    related: ['p_wtfu_tank', 'p_wtfu_journal', 'p_wtfu_tee'],
+    seo: { title: 'Leather Bracelet with Beads | Garth Heckman', description: 'Leather bracelet with stainless steel beads, 8.5 inches.' }
   },
 
   {
@@ -322,8 +375,8 @@ export const PRODUCTS = [
     collections: ['wtfu-collection'],
     tags: ['drinkware', 'printify'],
     badge: null,
-    price: { currency: CURRENCY, amount: 12.99,       // Printify selling price, 11oz
-      listPrice: 12.99, compareAt: null, presets: [] },
+    price: { currency: CURRENCY, amount: 15.59,       // Printify selling + 20%, 11oz
+      listPrice: 15.59, compareAt: null, presets: [] },
     media: [
       { kind: 'printify', variant: 'light', ratio: '1-1', label: 'WTFU mug, front', note: '', src: 'https://images-api.printify.com/mockup/6a81bf8042e8d58d9209f92e/72180/102752/accent-coffee-mug-11-15oz.jpg?camera_label=front&v=20260818' },
       { kind: 'printify', variant: 'default', ratio: '1-1', label: 'Mug, right', note: '', src: 'https://images-api.printify.com/mockup/6a81bf8042e8d58d9209f92e/72180/102754/accent-coffee-mug-11-15oz.jpg?camera_label=right&v=20260818' },
@@ -341,13 +394,13 @@ export const PRODUCTS = [
       { name: 'Size', type: 'button', values: [ { label: '11 oz', value: '11oz' }, { label: '15 oz', value: '15oz' } ] }
     ],
     variants: [
-      { id: 'v_mug_11', sku: 'GH-MUG-11', options: { 'Size': '11oz' }, price: 12.99, inventory: 50 },
-      { id: 'v_mug_15', sku: 'GH-MUG-15', options: { 'Size': '15oz' }, price: 13.71, inventory: 50 }
+      { id: 'v_mug_11', sku: 'GH-MUG-11', options: { 'Size': '11oz' }, price: 15.59, inventory: 999 },
+      { id: 'v_mug_15', sku: 'GH-MUG-15', options: { 'Size': '15oz' }, price: 16.87, inventory: 999 }
     ],
-    inventory: { tracked: true, allowBackorder: false },
-    shipping: { required: true, weightOz: 16, originNote: 'Printed and shipped on demand, allow 5–9 business days' },
+    inventory: { tracked: false, quantity: null, allowBackorder: true },
+    shipping: { required: true, weightOz: 16, originNote: 'Printed and shipped on demand, allow 2–7 business days' },
     digital: null,
-    related: ['p_wtfu_tee', 'p_wtfu_journal'],
+    related: ['p_wtfu_tee', 'p_wtfu_journal', 'p_wtfu_tank'],
     seo: { title: 'WTFU Mug | Garth Heckman', description: 'Ceramic WTFU mug, 11oz or 15oz.' }
   },
 
@@ -364,8 +417,8 @@ export const PRODUCTS = [
     collections: ['wtfu-collection', 'new'],
     tags: ['stationery', 'printify'],
     badge: { label: 'New', variant: 'ink' },
-    price: { currency: CURRENCY, amount: 16.99,       // Printify selling price
-      listPrice: 16.99, compareAt: null, presets: [] },
+    price: { currency: CURRENCY, amount: 20.39,       // Printify selling + 20%
+      listPrice: 20.39, compareAt: null, presets: [] },
     media: [
       { kind: 'printify', variant: 'ember', ratio: '1-1', label: 'WTFU journal, open', note: '', src: 'https://images-api.printify.com/mockup/6a81c32700177bb8ff0d06c4/65223/7340/hardcover-journal-matte.jpg?camera_label=opened&v=20260818' },
       { kind: 'printify', variant: 'default', ratio: '1-1', label: 'WTFU journal, front', note: '', src: 'https://images-api.printify.com/mockup/6a81c32700177bb8ff0d06c4/65223/7338/hardcover-journal-matte.jpg?camera_label=front&v=20260818' },
@@ -380,10 +433,10 @@ export const PRODUCTS = [
       { label: 'Made', value: 'Printed on demand by Printify' }
     ],
     options: [], variants: [],
-    inventory: { tracked: true, quantity: 25, allowBackorder: false },
-    shipping: { required: true, weightOz: 14, originNote: 'Printed and shipped on demand, allow 5–9 business days' },
+    inventory: { tracked: false, quantity: null, allowBackorder: true },
+    shipping: { required: true, weightOz: 14, originNote: 'Printed and shipped on demand, allow 2–7 business days' },
     digital: null,
-    related: ['p_wtfu_tee', 'p_wtfu_mug'],
+    related: ['p_wtfu_tee', 'p_wtfu_mug', 'p_leather_bracelet'],
     seo: { title: 'WTFU Journal | Garth Heckman', description: 'Hardcover lined WTFU journal.' }
   },
 
