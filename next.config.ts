@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   turbopack: { root: path.resolve(__dirname) },
 
   experimental: {
+    // Use the TypeScript compiler API with the project's TypeScript 5.x.
+    // Next's CLI checker currently fails to parse its --showConfig output in
+    // this environment even though `tsc --noEmit` passes.
+    useTypeScriptCli: false,
     // Product gallery / media uploads often exceed the 10MB proxy default.
     // Truncated bodies surface as "Failed to parse body as FormData".
     proxyClientMaxBodySize: "32mb",

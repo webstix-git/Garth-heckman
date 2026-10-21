@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 
-export default function CustomerAccountSetupPage() {
+function AccountSetupForm() {
   const router = useRouter();
   const params = useSearchParams();
   const [password, setPassword] = useState("");
@@ -24,4 +24,12 @@ export default function CustomerAccountSetupPage() {
   }
 
   return <main className="sec"><div className="wrap-n" style={{ maxWidth: 560 }}><div className="card"><p className="meta meta--gold">Account setup</p><h1 className="d3 mt2">Create your password</h1><p className="body sm mt2">Use this account to view your purchases and order history.</p><form className="mt5" onSubmit={submit}><div className="field"><label className="label" htmlFor="password">Password</label><input className="input" id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} /></div><div className="field mt3"><label className="label" htmlFor="confirm">Confirm password</label><input className="input" id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required minLength={8} /></div>{error ? <p className="mt3" role="alert">{error}</p> : null}<button className="btn mt4" type="submit" disabled={saving}>{saving ? "Saving…" : "Create account"}</button></form></div></div></main>;
+}
+
+export default function CustomerAccountSetupPage() {
+  return (
+    <Suspense fallback={<main className="sec"><div className="wrap-n" style={{ maxWidth: 560 }}><div className="card"><p className="meta meta--gold">Account setup</p><h1 className="d3 mt2">Create your password</h1><p className="body sm mt2">Loading…</p></div></div></main>}>
+      <AccountSetupForm />
+    </Suspense>
+  );
 }

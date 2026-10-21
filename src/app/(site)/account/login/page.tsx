@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
 
-export default function CustomerLoginPage() {
+function CustomerLoginForm() {
   const router = useRouter(); const params = useSearchParams();
   const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [error, setError] = useState(""); const [saving, setSaving] = useState(false);
   async function submit(event: FormEvent) {
@@ -16,4 +16,12 @@ export default function CustomerLoginPage() {
     router.replace("/account"); router.refresh();
   }
   return <main className="sec"><div className="wrap-n" style={{ maxWidth: 560 }}><div className="card"><p className="meta meta--gold">My account</p><h1 className="d3 mt2">Sign in</h1>{params.get("setup") ? <p className="body sm mt2">Your account is ready. Sign in to view your purchases.</p> : null}<form className="mt5" onSubmit={submit}><div className="field"><label className="label" htmlFor="email">Email</label><input className="input" id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required /></div><div className="field mt3"><label className="label" htmlFor="password">Password</label><input className="input" id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></div>{error ? <p className="mt3" role="alert">{error}</p> : null}<button className="btn mt4" type="submit" disabled={saving}>{saving ? "Signing in…" : "Sign in"}</button></form><p className="body sm mt4">Need to set up your account? Complete a purchase first, then use the setup link from your order email.</p><Link className="btn btn--line btn--sm mt3" href="/store">Continue shopping</Link></div></div></main>;
+}
+
+export default function CustomerLoginPage() {
+  return (
+    <Suspense fallback={<main className="sec"><div className="wrap-n" style={{ maxWidth: 560 }}><div className="card"><p className="meta meta--gold">My account</p><h1 className="d3 mt2">Sign in</h1><p className="body sm mt2">Loading…</p></div></div></main>}>
+      <CustomerLoginForm />
+    </Suspense>
+  );
 }
