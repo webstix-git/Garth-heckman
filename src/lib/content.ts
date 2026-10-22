@@ -195,6 +195,12 @@ export const EPISODES = [
 
 export const SEARCH_PAGES = [
   {
+    t: "Straight From Garth",
+    d: "Five topics. Five questions. Five answers. Nutrition, training, personal development, spiritual life, and marriage.",
+    href: "/ask-garth",
+    tags: "questions answers nutrition training marriage spiritual personal development ask garth",
+  },
+  {
     t: "The David Alliance",
     d: "The podcast. Short, unsentimental episodes on faith, leadership and getting back up.",
     href: "/podcast",

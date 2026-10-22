@@ -21,3 +21,7 @@ export function hrefFromPrototype(href: string): string {
 }
 
 export const WTFU_HREF = "/product/wtfu-book";
+
+export const ASK_GARTH_HREF = "/ask-garth";
+export const GARTH_EMAIL = "garthwheckman@gmail.com";
+export const ASK_GARTH_MAILTO = `mailto:${GARTH_EMAIL}?subject=${encodeURIComponent("A question for Garth")}`;

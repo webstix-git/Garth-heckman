@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { NavId } from "@/lib/nav";
+import { AskBar } from "@/components/chrome/AskBar";
 import { StickyBar, TopNav } from "@/components/chrome/Nav";
 import { Footer, Sheet } from "@/components/chrome/Footer";
 import { CartDrawer } from "@/components/chrome/CartDrawer";
@@ -47,6 +48,36 @@ function withTopNav(node: ReactNode, nav: NavId, sheetOpen: boolean, onSheet: ()
   const patched = patchSection(target as ReactElement<{ className?: string; style?: CSSProperties; children?: ReactNode }>, nav, sheetOpen, onSheet);
   return cloneElement(mainEl, {
     children: [patched, ...mainKids.slice(1)],
+  });
+}
+
+/** The gold notice follows the page banner, so the header stays the first thing on the page. */
+function withAskBar(node: ReactNode): ReactNode {
+  const arr = Children.toArray(node);
+  const main = arr[0];
+  if (!isValidElement(main)) return node;
+
+  const mainEl = main as ReactElement<{ children?: ReactNode }>;
+  const kids = Children.toArray(mainEl.props.children);
+  const first = kids[0];
+
+  if (isValidElement(first) && first.type === "article") {
+    const article = first as ReactElement<{ children?: ReactNode }>;
+    const articleKids = Children.toArray(article.props.children);
+    if (!articleKids.length) return node;
+    return cloneElement(mainEl, {
+      children: [
+        cloneElement(article, {
+          children: [articleKids[0], <AskBar key="askbar" />, ...articleKids.slice(1)],
+        }),
+        ...kids.slice(1),
+      ],
+    });
+  }
+
+  if (!kids.length) return node;
+  return cloneElement(mainEl, {
+    children: [kids[0], <AskBar key="askbar" />, ...kids.slice(1)],
   });
 }
 
@@ -282,7 +313,7 @@ export function SiteChrome({
   return (
     <>
       <StickyBar nav={nav} show={barShow} sheetOpen={sheetOpen} onSheet={toggleSheet} />
-      {withTopNav(children, nav, sheetOpen, toggleSheet)}
+      {withAskBar(withTopNav(children, nav, sheetOpen, toggleSheet))}
       <Sheet nav={nav} open={sheetOpen} onClose={() => setSheetOpen(false)} />
       <Footer />
       <CartDrawer />

@@ -20,6 +20,7 @@ export default async function Page() {
       heading: "Start here",
       links: [
         { href: "/", label: "Home" },
+        { href: "/ask-garth", label: "Straight From Garth" },
         { href: "/story", label: "My Story" },
         { href: "/work", label: "What I Do" },
         { href: "/contact", label: "Connect" },

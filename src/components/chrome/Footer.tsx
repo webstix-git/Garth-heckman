@@ -1,7 +1,7 @@
 "use client";
 
 import { SOCIALS } from "@/lib/nav";
-import { WTFU_HREF } from "@/lib/links";
+import { ASK_GARTH_HREF, WTFU_HREF } from "@/lib/links";
 import { IconMail, IconPhone, IconPin, IconX } from "@/components/icons";
 import { NavLinks } from "@/components/chrome/Nav";
 import { useCart } from "@/components/CartProvider";
@@ -66,6 +66,9 @@ export function Footer() {
             <p className="meta meta--gold">More</p>
             <div className="fcol__pair">
               <ul>
+                <li>
+                  <a href={ASK_GARTH_HREF}>Straight from Garth</a>
+                </li>
                 <li>
                   <a href="/story">My story</a>
                 </li>
@@ -197,6 +200,9 @@ export function Sheet({
         <span>Search this site</span>
       </button>
       <nav aria-label="Mobile" onClick={onClose}>
+        <a className="sheet__ask" href={ASK_GARTH_HREF}>
+          Straight from Garth
+        </a>
         <NavLinks active={nav} />
       </nav>
       <div className="row mt5">

@@ -10,6 +10,12 @@ export const metadata: Metadata = {
 
 const MORE = [
   {
+    t: "Straight From Garth",
+    d: "Five topics. Five questions. Five answers. Nutrition, training, personal development, spiritual life, and marriage.",
+    href: "/ask-garth",
+    cta: "Read them",
+  },
+  {
     t: "The podcast",
     d: "The David Alliance. Short, unsentimental episodes on faith, leadership and getting back up.",
     href: "/podcast",
