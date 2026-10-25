@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { isAdminUser, toAdminUserFromSupabase } from "@/lib/admin-auth";
+import { hasDatabaseAdminAccess, toAdminUserFromSupabase } from "@/lib/admin-auth";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -20,7 +20,7 @@ export async function GET() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
 
-  if (error || !data.user || !isAdminUser(data.user)) {
+  if (error || !data.user || !(await hasDatabaseAdminAccess(data.user, supabase))) {
     return NextResponse.json({ data: null }, { status: 401 });
   }
 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: message(error, "Invalid email or password") }, { status: 401 });
   }
 
-  if (body.admin && !isAdminUser(data.user)) {
+  if (body.admin && !(await hasDatabaseAdminAccess(data.user, supabase))) {
     await supabase.auth.signOut();
     return NextResponse.json({ error: "This account is not authorized for store admin." }, { status: 403 });
   }

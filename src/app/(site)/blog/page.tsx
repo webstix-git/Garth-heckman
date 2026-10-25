@@ -139,26 +139,6 @@ export default function BlogPage() {
             </div>
           </div>
         </section>
-
-        <section className="sec-s tint">
-          <div className="wrap-t center">
-            <p className="meta meta--gold">Never miss one</p>
-            <h2 className="d3 mt3">Get it in your inbox instead.</h2>
-            <form
-              className="row mt5"
-              style={{ justifyContent: "center", flexWrap: "wrap", maxWidth: 460, marginInline: "auto", gap: 10 }}
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <label className="sr" htmlFor="nl">
-                Email
-              </label>
-              <input className="input" id="nl" type="email" placeholder="you@example.com" />
-              <button className="btn" type="submit" style={{ flex: "none" }}>
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </section>
       </main>
     </SiteChrome>
   );

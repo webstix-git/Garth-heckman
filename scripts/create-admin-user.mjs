@@ -8,9 +8,11 @@
  * Reads from .env.local:
  *   NEXT_PUBLIC_SUPABASE_URL
  *   SUPABASE_SECRET_KEY (or SUPABASE_SERVICE_ROLE_KEY)
- *   AUTH_ADMIN_EMAIL
  *   AUTH_ADMIN_PASSWORD  (required for this script)
  *   AUTH_ADMIN_NAME
+ *
+ * Pass the Auth user's email explicitly:
+ *   node scripts/create-admin-user.mjs user@example.com
  */
 import { createClient } from "@supabase/supabase-js";
 import fs from "node:fs";
@@ -35,7 +37,7 @@ loadEnv(".env");
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
-const email = (process.env.AUTH_ADMIN_EMAIL || "admin@garthheckman.com").toLowerCase();
+const email = (process.argv[2] || "").trim().toLowerCase();
 const password = process.env.AUTH_ADMIN_PASSWORD;
 const name = process.env.AUTH_ADMIN_NAME || "Garth Admin";
 
@@ -45,6 +47,10 @@ if (!url || !serviceKey) {
 }
 if (!password || password.length < 8) {
   console.error("Set AUTH_ADMIN_PASSWORD in .env.local (min 8 characters)");
+  process.exit(1);
+}
+if (!email) {
+  console.error("Pass the Auth user email as the first argument");
   process.exit(1);
 }
 

@@ -160,7 +160,7 @@ export function PodcastClient({
             <p className="meta meta--gold">Subscribe</p>
             <h2 className="d2 mt3">Get every episode.</h2>
             <p className="lede mt3 dim mw" style={{ marginInline: "auto" }}>
-              New ones land most weeks. Pick your app, or get the email.
+              New ones land most weeks. Pick your app.
             </p>
             <div className="subs meta mt5" style={{ justifyContent: "center" }}>
               <a href={PODBEAN} target="_blank" rel="noopener">
@@ -173,19 +173,6 @@ export function PodcastClient({
                 RSS feed
               </a>
             </div>
-            <form
-              className="row mt5"
-              style={{ justifyContent: "center", flexWrap: "nowrap", maxWidth: 460, marginInline: "auto", gap: 10 }}
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <label className="sr" htmlFor="nl">
-                Email
-              </label>
-              <input className="input" id="nl" type="email" placeholder="you@example.com" />
-              <button className="btn" type="submit" style={{ flex: "none" }}>
-                Subscribe
-              </button>
-            </form>
           </div>
         </section>
       </main>

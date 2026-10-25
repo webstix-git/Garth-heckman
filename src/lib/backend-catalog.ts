@@ -71,21 +71,6 @@ export type BackendCategory = {
   productCount: number;
 };
 
-const LOCAL_PRODUCT_IMAGE_FALLBACKS: Record<string, string> = {
-  "wtfu-book": "/assets/img/products/wtfu-book.png",
-  "wtfu-audiobook": "/assets/img/products/wtfu-audiobook.png",
-  "burn-this-book": "/assets/img/products/burn-this-book.png",
-  "generations-training-deck": "/assets/img/products/generations-training-deck.png",
-  "365-quotes": "/assets/img/products/365-quotes.png",
-  "365-day-journal": "/assets/img/products/365-day-journal.png",
-  "cancer-terminology": "/assets/img/products/cancer-terminology.png",
-  "nourishing-your-body-through-cancer": "/assets/img/products/nourishing-your-body-through-cancer.png",
-  "faith-based-cancer-survival-mindset-manual": "/assets/img/products/faith-based-cancer-survival-mindset-manual.png",
-};
-
-/** Stock number the storefront uses for items the backend reports as available but doesn't count. */
-const UNTRACKED_STOCK = 999;
-
 function cents(value: number | null | undefined) {
   if (value == null || Number.isNaN(Number(value))) return null;
   return Math.round(Number(value) * 100);
@@ -104,7 +89,7 @@ function fulfillment(row: BackendCatalogProduct): Fulfillment {
 
 function stock(available: boolean | undefined, quantity: number | null | undefined) {
   if (available === false) return 0;
-  return quantity != null ? Math.max(0, quantity) : UNTRACKED_STOCK;
+  return quantity != null ? Math.max(0, quantity) : 0;
 }
 
 function plainText(html: string) {
@@ -121,9 +106,7 @@ export function mapBackendProduct(row: BackendCatalogProduct): Product {
       ? row.images
       : row.image
         ? [row.image]
-        : LOCAL_PRODUCT_IMAGE_FALLBACKS[row.slug]
-          ? [LOCAL_PRODUCT_IMAGE_FALLBACKS[row.slug]]
-          : []
+        : []
   ).filter(Boolean);
   const description = row.description?.trim() || "";
   const shortDescription = row.shortDescription?.trim() || "";

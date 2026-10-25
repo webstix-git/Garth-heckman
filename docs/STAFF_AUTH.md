@@ -6,28 +6,26 @@ Admin login uses **Supabase Auth** (email + password), not local NextAuth creden
 
 In [Supabase Dashboard](https://supabase.com/dashboard) → **Authentication** → **Users** → **Add user**:
 
-- Email: same as `AUTH_ADMIN_EMAIL` in `.env.local` (e.g. `admin@garthheckman.com`)
+- Email: the Supabase Auth user's email
 - Password: choose a strong password (8+ chars)
 - Auto Confirm User: **on**
 
 Or from the project root:
 
 ```bash
-# .env.local must include AUTH_ADMIN_EMAIL + AUTH_ADMIN_PASSWORD (8+)
+# .env.local must include AUTH_ADMIN_PASSWORD (8+)
 # and SUPABASE_SECRET_KEY / SUPABASE_SERVICE_ROLE_KEY
-node scripts/create-admin-user.mjs
+node scripts/create-admin-user.mjs user@example.com
 ```
 
-## 2. Allowlist
+## 2. Assign database membership
 
-`.env.local`:
+In Supabase, add an active row to `public.store_memberships` for the Auth user's
+UUID and the store they should manage. The frontend authorizes admin access from
+this active database membership. Platform-level users may instead use the
+Supabase Auth `app_metadata.role` value `admin` or `super_admin`.
 
-```bash
-AUTH_ADMIN_EMAIL=admin@garthheckman.com
-AUTH_ADMIN_EMAILS=admin@garthheckman.com
-```
-
-Only allowlisted emails (or users with `app_metadata.role = admin`) can open `/dashboard`.
+There is no email allowlist in the frontend.
 
 ## 3. Sign in
 

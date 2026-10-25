@@ -17,7 +17,6 @@ import { Footer, Sheet } from "@/components/chrome/Footer";
 import { CartDrawer } from "@/components/chrome/CartDrawer";
 import { SearchModal } from "@/components/chrome/SearchModal";
 import { useCart } from "@/components/CartProvider";
-
 function withTopNav(node: ReactNode, nav: NavId, sheetOpen: boolean, onSheet: () => void): ReactNode {
   const arr = Children.toArray(node);
   const main = arr[0];
@@ -202,45 +201,7 @@ function SiteBehaviors() {
       }
     };
     document.addEventListener("click", onClick);
-
-    const onSubmit = (e: Event) => {
-      const form = e.target as HTMLFormElement;
-      if (!(form instanceof HTMLFormElement)) return;
-      if (form.getAttribute("data-native") === "true") return;
-      e.preventDefault();
-      const miss = Array.from(form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("[required]")).filter(
-        (f) => (f.type === "checkbox" ? !(f as HTMLInputElement).checked : !f.value.trim()),
-      );
-      form.querySelectorAll(".field").forEach((f) => f.classList.remove("bad"));
-      const err = form.querySelector(".notice--bad") as HTMLElement | null;
-      const ok = form.querySelector(".notice--ok") as HTMLElement | null;
-      if (miss.length) {
-        miss.forEach((f) => f.closest(".field")?.classList.add("bad"));
-        if (ok) ok.hidden = true;
-        if (err) {
-          err.hidden = false;
-          const span = err.querySelector("span");
-          if (span)
-            span.innerHTML = `<strong>${miss.length} field${miss.length > 1 ? "s" : ""} still needed.</strong>`;
-        }
-        miss[0].focus();
-        return;
-      }
-      if (err) err.hidden = true;
-      if (ok) {
-        ok.hidden = false;
-        const span = ok.querySelector("span");
-        if (span) span.innerHTML = "<strong>Sent.</strong> Garth will come back to you himself.";
-      } else {
-        toast("Sent", "Garth will come back to you himself.");
-      }
-      form.reset();
-    };
-    document.addEventListener("submit", onSubmit);
-    return () => {
-      document.removeEventListener("click", onClick);
-      document.removeEventListener("submit", onSubmit);
-    };
+    return () => document.removeEventListener("click", onClick);
   }, [toast]);
 
   return null;

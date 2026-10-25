@@ -9,14 +9,21 @@ export function ContactForm() {
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const name = String(form.get("name") ?? "").trim();
     const email = String(form.get("email") ?? "").trim();
+    const phone = String(form.get("phone") ?? "").trim();
     const subject = String(form.get("subject") ?? "").trim();
     const body = String(form.get("message") ?? "").trim();
-    if (!name || !email || !subject || !body) {
+    if (!name || !email || !phone || !subject || !body) {
       setState("error");
-      setMessage("Please complete your name, email, subject, and message.");
+      setMessage("Please complete your name, email, phone, subject, and message.");
+      return;
+    }
+    if (phone.replace(/\D/g, "").length < 7) {
+      setState("error");
+      setMessage("Please enter a valid phone number.");
       return;
     }
 
@@ -27,21 +34,20 @@ export function ContactForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          formTitle: "Contact Form",
           name,
           email,
-          phone: String(form.get("phone") ?? "").trim() || undefined,
+          phone,
           subject,
           message: body,
-          acceptsMarketing: form.get("acceptsMarketing") === "on",
           fields: {
-            ...(String(form.get("company") ?? "").trim() ? { company: String(form.get("company")).trim() } : {}),
-            ...(String(form.get("orderNumber") ?? "").trim() ? { "order-number": String(form.get("orderNumber")).trim() } : {}),
+            company: String(form.get("company") ?? "").trim(),
           },
         }),
       });
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error ?? "Unable to send your message.");
-      event.currentTarget.reset();
+      formElement.reset();
       setState("sent");
       setMessage("Thanks — your message has been sent.");
     } catch (error) {
@@ -65,17 +71,13 @@ export function ContactForm() {
       </div>
       <div className="field-row">
         <div className="field">
-          <label className="label" htmlFor="contact-phone">Phone</label>
-          <input className="input" id="contact-phone" name="phone" type="tel" autoComplete="tel" placeholder="Optional" />
+          <label className="label" htmlFor="contact-phone">Phone<span className="req">*</span></label>
+          <input className="input" id="contact-phone" name="phone" type="tel" autoComplete="tel" placeholder="Your phone number" required />
         </div>
         <div className="field">
           <label className="label" htmlFor="contact-company">Company</label>
           <input className="input" id="contact-company" name="company" autoComplete="organization" placeholder="Optional" />
         </div>
-      </div>
-      <div className="field">
-        <label className="label" htmlFor="contact-order">Order number</label>
-        <input className="input" id="contact-order" name="orderNumber" placeholder="Optional" />
       </div>
       <div className="field">
         <label className="label" htmlFor="contact-subject">Subject<span className="req">*</span></label>
@@ -84,12 +86,6 @@ export function ContactForm() {
       <div className="field">
         <label className="label" htmlFor="contact-message">Message<span className="req">*</span></label>
         <textarea className="textarea" id="contact-message" name="message" required placeholder="Tell us how we can help." />
-      </div>
-      <div className="field">
-        <label className="check">
-          <input name="acceptsMarketing" type="checkbox" />
-          <span>Send me store updates by email.</span>
-        </label>
       </div>
       {state !== "idle" && (
         <div className={`notice ${state === "sent" ? "notice--ok" : state === "error" ? "notice--bad" : "notice--info"} mt3`}>

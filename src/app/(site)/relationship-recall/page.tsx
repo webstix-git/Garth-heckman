@@ -82,14 +82,9 @@ export default function Page() {
           <section className="sec tint" id="signup">
             <div className="wrap-t center">
               <p className="meta meta--gold">Sign up</p>
-              <h2 className="d2 mt4">Sign up here for your first email.</h2>
-              <p className="lede mt4 dim">One a week. Unsubscribe whenever, though the people who need it most rarely do.</p>
-              <form className="row mt5" id="rrForm" noValidate style={{ justifyContent: "center", flexWrap: "nowrap", maxWidth: "480px", marginInline: "auto", gap: "10px" }}>
-                <label className="sr" htmlFor="rrEmail">Email address</label>
-                <input className="input" id="rrEmail" type="email" placeholder="you@example.com" required />
-                <button className="btn" type="submit" style={{ flex: "none" }}>Start</button>
-              </form>
-              <div id="rrOk" hidden className="notice notice--ok mt4" style={{ maxWidth: "480px", marginInline: "auto", textAlign: "left" }}><span></span></div>
+              <h2 className="d2 mt4">Ask Garth for your first email.</h2>
+              <p className="lede mt4 dim">One a week. Send him a message and he will get you started.</p>
+              <a className="btn btn--lg mt5" href="/contact">Get started</a>
             </div>
           </section>
       </main>

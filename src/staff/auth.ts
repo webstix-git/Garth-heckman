@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import {
-  isAdminUser,
+  hasDatabaseAdminAccess,
   toAdminUserFromSupabase,
   type AdminAuthSession,
 } from "@/lib/admin-auth";
@@ -15,7 +15,7 @@ export async function auth(): Promise<AdminAuthSession | null> {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user || !isAdminUser(user)) return null;
+  if (!user || !(await hasDatabaseAdminAccess(user, supabase))) return null;
   return { user: toAdminUserFromSupabase(user) };
 }
 

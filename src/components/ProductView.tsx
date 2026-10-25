@@ -335,7 +335,7 @@ function ProductViewInner({
                     <p className="hint" style={{ textAlign: "center" }}>
                       Want to know when it lands?{" "}
                       <a href="/contact" style={{ color: "var(--acc)", textDecoration: "underline" }}>
-                        Join the list
+                        Get in touch
                       </a>
                       .
                     </p>

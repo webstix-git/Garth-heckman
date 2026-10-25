@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { auth } from "@/auth";
-import { isAdminUser, toAdminUserFromSupabase } from "@/lib/admin-auth";
+import { hasDatabaseAdminAccess, toAdminUserFromSupabase } from "@/lib/admin-auth";
 import { createSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 import type { AdminUser } from "@/types";
 
@@ -86,9 +86,9 @@ export async function updateProfile(
     }
   }
 
-  if (!isAdminUser(user)) {
+  if (!(await hasDatabaseAdminAccess(user, supabase))) {
     throw new Error(
-      "Email updated, but this address is not authorized for admin access. Add it to AUTH_ADMIN_EMAILS or keep role as admin.",
+      "Email updated, but this account is not assigned an active admin membership.",
     );
   }
 
@@ -123,7 +123,7 @@ export async function getProfile(): Promise<AdminUser> {
     error,
   } = await supabase.auth.getUser();
 
-  if (error || !user || !isAdminUser(user)) {
+  if (error || !user || !(await hasDatabaseAdminAccess(user, supabase))) {
     throw new Error(error?.message || "Not signed in");
   }
 

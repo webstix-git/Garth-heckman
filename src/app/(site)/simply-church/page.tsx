@@ -71,18 +71,9 @@ export default function Page() {
               <div className="center">
                 <p className="meta meta--gold">Start one</p>
                 <h2 className="d2 mt4">Would you like to start a church in your living room?</h2>
-                <p className="lede mt4 dim">Leave your details and Garth will get you going.</p>
+                <p className="lede mt4 dim">Send Garth a message with your city and state, and he will get you going.</p>
+                <a className="btn btn--lg mt6" href="/contact">Count me in</a>
               </div>
-              <form className="card mt6" id="scForm" noValidate>
-                <div className="field-row">
-                  <div className="field"><label className="label" htmlFor="cname">Name<span className="req">*</span></label><input className="input" id="cname" required /></div>
-                  <div className="field"><label className="label" htmlFor="cemail">Email<span className="req">*</span></label><input className="input" id="cemail" type="email" required /></div>
-                </div>
-                <div className="field"><label className="label" htmlFor="ccity">City &amp; state</label><input className="input" id="ccity" /></div>
-                <div className="field"><label className="label" htmlFor="cmsg">Anything Garth should know</label><textarea className="textarea" id="cmsg"></textarea></div>
-                <div id="scOk" hidden className="notice notice--ok mt3"><span></span></div>
-                <button className="btn btn--lg btn--block mt4" type="submit">Count me in</button>
-              </form>
             </div>
           </section>
       </main>

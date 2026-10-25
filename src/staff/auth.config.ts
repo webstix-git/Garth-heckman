@@ -1,7 +1,8 @@
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
-  secret: process.env.AUTH_SECRET,
+  // Keep the frontend aligned with the backend's shared session variable.
+  secret: process.env.AUTH_SESSION_SECRET || process.env.AUTH_SECRET,
   trustHost: true,
   pages: {
     signIn: "/admin/login",

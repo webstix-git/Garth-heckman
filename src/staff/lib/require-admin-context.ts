@@ -3,7 +3,7 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getRequestStoreId } from "@/lib/tenant-store";
-import { isAdminUser } from "@/lib/admin-auth";
+import { hasDatabaseAdminAccess } from "@/lib/admin-auth";
 
 export type AdminContext = {
   userId: string;
@@ -19,7 +19,7 @@ export type AdminContext = {
 export async function requireAdminContext(): Promise<AdminContext> {
   const session = await createClient();
   const { data, error } = await session.auth.getUser();
-  if (error || !data.user || !isAdminUser(data.user)) {
+  if (error || !data.user) {
     throw new Error("Admin authentication is required.");
   }
 
@@ -35,6 +35,9 @@ export async function requireAdminContext(): Promise<AdminContext> {
 
   const platformRole = data.user.app_metadata?.role;
   if (membershipError) throw new Error("Unable to verify store membership.");
+  if (!(await hasDatabaseAdminAccess(data.user, admin))) {
+    throw new Error("Admin authentication is required.");
+  }
   if (!membership && platformRole !== "super_admin") {
     throw new Error("You are not authorized for this store.");
   }
@@ -46,4 +49,3 @@ export async function requireAdminContext(): Promise<AdminContext> {
     role: platformRole === "super_admin" ? "super_admin" : membership?.role ?? "viewer",
   };
 }
-

@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-import { isAdminUser } from "@/lib/admin-auth";
+import { hasDatabaseAdminAccess } from "@/lib/admin-auth";
 
 function isAdminLogin(pathname: string) {
   return pathname === "/admin/login" || pathname.startsWith("/admin/login/");
@@ -55,7 +55,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
-  const adminOk = Boolean(user && isAdminUser(user));
+  const adminOk = Boolean(user && (await hasDatabaseAdminAccess(user, supabase)));
 
   if (isStaffApiPath(pathname) && !adminOk) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

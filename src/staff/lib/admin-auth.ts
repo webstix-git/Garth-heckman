@@ -1,26 +1,33 @@
-import type { User } from "@supabase/supabase-js";
+import type { SupabaseClient, User } from "@supabase/supabase-js";
 
 import type { AdminUser } from "@/types";
 
-/** Comma-separated allowlist. Defaults to AUTH_ADMIN_EMAIL. */
-export function getAdminEmailAllowlist(): string[] {
-  const raw =
-    process.env.AUTH_ADMIN_EMAILS ||
-    process.env.AUTH_ADMIN_EMAIL ||
-    "";
-  return raw
-    .split(",")
-    .map((e) => e.trim().toLowerCase())
-    .filter(Boolean);
+/** Platform-level roles are stored in Supabase app_metadata, not user-editable metadata. */
+export function isAdminUser(user: User | null | undefined): boolean {
+  const role = user?.app_metadata?.role;
+  return role === "admin" || role === "Administrator" || role === "super_admin";
 }
 
-export function isAdminUser(user: User | null | undefined): boolean {
-  if (!user?.email) return false;
-  const role = user.app_metadata?.role ?? user.user_metadata?.role;
-  if (role === "admin" || role === "Administrator") return true;
-  const allow = getAdminEmailAllowlist();
-  if (allow.length === 0) return false;
-  return allow.includes(user.email.toLowerCase());
+/**
+ * Store-level admin access comes from the database membership row for this user.
+ * The caller supplies either the session client (RLS-protected) or the server
+ * admin client for server-side authorization checks.
+ */
+export async function hasDatabaseAdminAccess(
+  user: User | null | undefined,
+  client: SupabaseClient,
+): Promise<boolean> {
+  if (!user) return false;
+  if (isAdminUser(user)) return true;
+
+  const { data, error } = await client
+    .from("store_memberships")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .limit(1);
+
+  return !error && Boolean(data?.length);
 }
 
 function metaString(meta: Record<string, unknown>, ...keys: string[]) {
@@ -33,7 +40,7 @@ function metaString(meta: Record<string, unknown>, ...keys: string[]) {
 
 /**
  * Map an auth user → admin UI model.
- * Uses email + user_metadata / app_metadata only.
+ * Uses the authenticated Supabase user for display data only.
  */
 export function toAdminUserFromSupabase(user: User): AdminUser {
   const meta = (user.user_metadata ?? {}) as Record<string, unknown>;

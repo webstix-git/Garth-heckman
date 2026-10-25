@@ -312,7 +312,7 @@ export default async function HomePage() {
               <p className="d3 mt2">Bring Garth to your next event.</p>
             </div>
             <div className="row">
-              <a className="btn btn--ink btn--lg" href="/speaking#enquire">
+              <a className="btn btn--ink btn--lg" href="/contact">
                 Check availability
               </a>
               <a className="btn btn--line btn--lg" href="/contact">

@@ -147,13 +147,11 @@ export default function Page() {
               <h2 className="d2 mt4">Fifteen minutes,<br />no pitch.</h2>
               <p className="lede mt4 dim">
                 Ask Garth to teach your business, church or church staff how to Understand, Attract,
-                Connect and Disciple. Get on the email list, or set up a fifteen-minute discovery
-                call. Connect with Garth at{" "}
+                Connect and Disciple. Set up a fifteen-minute discovery call. Connect with Garth at{" "}
                 <a href="mailto:garthwheckman@gmail.com" style={{ color: "var(--gold-dp)", textDecoration: "underline", textUnderlineOffset: "3px" }}>garthwheckman@gmail.com</a>.
               </p>
               <div className="row mt5" style={{ justifyContent: "center" }}>
                 <a className="btn btn--lg" href="mailto:garthwheckman@gmail.com">Book the call</a>
-                <a className="btn btn--line btn--lg" href="/contact">Join the email list</a>
               </div>
             </div>
           </section>
