@@ -19,7 +19,7 @@ export async function GET() {
         ok: false,
         configured: false,
         message:
-          "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in .env.local",
+          "Missing SUPABASE_URL or SUPABASE_PUBLISHABLE_KEY in .env.local",
       },
       { status: 503 },
     );

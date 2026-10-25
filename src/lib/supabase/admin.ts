@@ -7,7 +7,7 @@ import { createClient } from "@supabase/supabase-js";
  * Optional until SUPABASE_SERVICE_ROLE_KEY is set.
  */
 export function createAdminClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key =
     process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
   if (!url || !key) {
@@ -20,10 +20,10 @@ export function createAdminClient() {
 
 export function isSupabaseConfigured() {
   return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY &&
+    (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      (process.env.SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) &&
       !/YOUR_PROJECT_REF|your_|sb_publishable_xxx/i.test(
-        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "",
+        process.env.SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "",
       ),
   );
 }

@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 import { SiteChrome } from "@/components/chrome/SiteChrome";
 import { formatMoney } from "@/lib/money";
-import { createClient } from "@/lib/supabase/client";
 
 type OrderItem = {
   product_name_snapshot: string;
@@ -47,7 +46,7 @@ export default function AccountPage() {
   }, []);
 
   async function signOut() {
-    await createClient().auth.signOut();
+    await fetch("/api/auth", { method: "DELETE" });
     router.replace("/account/login");
     router.refresh();
   }

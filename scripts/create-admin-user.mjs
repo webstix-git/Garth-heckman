@@ -12,9 +12,9 @@
  *   AUTH_ADMIN_PASSWORD  (required for this script)
  *   AUTH_ADMIN_NAME
  */
-const { createClient } = require("@supabase/supabase-js");
-const fs = require("fs");
-const path = require("path");
+import { createClient } from "@supabase/supabase-js";
+import fs from "node:fs";
+import path from "node:path";
 
 function loadEnv(file) {
   const full = path.resolve(process.cwd(), file);

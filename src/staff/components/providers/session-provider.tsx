@@ -10,11 +10,6 @@ import {
   type ReactNode,
 } from "react";
 
-import { createClient } from "@/lib/supabase/client";
-import {
-  isAdminUser,
-  toAdminUserFromSupabase,
-} from "@/lib/admin-auth";
 import type { AdminUser } from "@/types";
 
 type AdminAuthState = {
@@ -42,35 +37,14 @@ export function AuthSessionProvider({
   const [loading, setLoading] = useState(!initialUser);
 
   const refresh = useCallback(async () => {
-    const supabase = createClient();
-    const {
-      data: { user: next },
-    } = await supabase.auth.getUser();
-    if (next && isAdminUser(next)) {
-      setUser(toAdminUserFromSupabase(next));
-    } else {
-      setUser(null);
-    }
+    const response = await fetch("/api/auth", { cache: "no-store" });
+    if (!response.ok) return setUser(null);
+    const body = await response.json();
+    setUser(body.data?.user ?? null);
   }, []);
 
   useEffect(() => {
-    const supabase = createClient();
-
     void refresh().finally(() => setLoading(false));
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, authSession) => {
-      const next = authSession?.user;
-      if (next && isAdminUser(next)) {
-        setUser(toAdminUserFromSupabase(next));
-      } else {
-        setUser(null);
-      }
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
   }, [refresh]);
 
   const value = useMemo(
