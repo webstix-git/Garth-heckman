@@ -26,6 +26,21 @@ function cleanHost(value: string | null | undefined) {
 
 function localStoreForHost(host: string): TenantStore | null {
   const local = host.replace(/\.localhost$/, "");
+  const configuredGarthHosts = [process.env.NEXT_PUBLIC_SITE_URL, process.env.STOREFRONT_URL]
+    .map(cleanHost)
+    .filter(Boolean);
+
+  // The primary storefront must work before its domain is registered in the
+  // multi-tenant store_domains table. Include the deployed Vercel hostname
+  // and any production hostname explicitly configured for this storefront.
+  if (
+    host === "garth-heckman.vercel.app" ||
+    host === "garthheckman.com" ||
+    host === "www.garthheckman.com" ||
+    configuredGarthHosts.includes(host)
+  ) {
+    return { id: GARTH_STORE_ID, name: "Garth Heckman", slug: "garthheckman", currency: "USD", domain: host };
+  }
   if (host === "fashion.localhost" || local === "fashion") {
     return { id: "1001", name: "Northstar Goods", slug: "northstar-goods", currency: "USD", domain: host };
   }
