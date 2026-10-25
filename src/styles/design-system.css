@@ -288,6 +288,8 @@ h1:has(br),h2:has(br),h3:has(br),h4:has(br),
 .prose li + li { margin-top:.42em; }
 .prose li::marker { color:var(--acc); }
 .prose a { color:var(--acc); text-decoration:underline; text-underline-offset:3px; }
+.prose a.tlink { text-decoration:none; }
+.prose a.seminar-link { border-bottom:0; padding-bottom:0; }
 .prose img { max-width:100%; height:auto; border-radius:4px; margin-block:1.2em; }
 .prose hr { border:0; border-top:1px solid var(--line); margin-block:1.6em; }
 .buybox-desc { line-height:1.55; }

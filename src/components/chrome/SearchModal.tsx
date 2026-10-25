@@ -1,20 +1,22 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Catalog } from "@/lib/catalog";
+import { Catalog, type Product } from "@/lib/catalog";
 import type { BlogPost } from "@/lib/blog";
+import { SEARCH_PAGES } from "@/lib/content";
 import { formatMoney } from "@/lib/money";
 import { WTFU_HREF } from "@/lib/links";
 import { useCart } from "@/components/CartProvider";
 import { IconTrend, IconStore, IconJournal, IconX } from "@/components/icons";
 import { isPayWhatYouWantPrice } from "@/lib/pay-what-you-want";
 
-type GroupId = "all" | "store" | "journal";
+type GroupId = "all" | "store" | "journal" | "pages";
 
 const GROUPS: Array<{ id: GroupId; label: string; icon: ReactNode }> = [
   { id: "all", label: "All", icon: <IconTrend /> },
   { id: "store", label: "Store", icon: <IconStore /> },
   { id: "journal", label: "Blog", icon: <IconJournal /> },
+  { id: "pages", label: "Pages", icon: <IconTrend /> },
 ];
 
 type IndexItem = {
@@ -26,8 +28,18 @@ type IndexItem = {
   hay: string;
 };
 
-function buildIndex(blogPosts: BlogPost[]): IndexItem[] {
+function buildIndex(blogPosts: BlogPost[], products: Product[]): IndexItem[] {
   const out: IndexItem[] = [];
+  SEARCH_PAGES.forEach((p) => {
+    out.push({
+      group: "pages",
+      kicker: "Page",
+      title: p.t,
+      desc: p.d,
+      href: p.href,
+      hay: `${p.t} ${p.d} ${p.tags}`.toLowerCase(),
+    });
+  });
   blogPosts.forEach((p) => {
     out.push({
       group: "journal",
@@ -38,7 +50,7 @@ function buildIndex(blogPosts: BlogPost[]): IndexItem[] {
       hay: `${p.t} ${p.d} ${p.tag} article blog journal`.toLowerCase(),
     });
   });
-  Catalog.all().forEach((p) => {
+  products.forEach((p) => {
     const price =
       isPayWhatYouWantPrice(p.price) ? "Pay what you can" : p.price.amount != null ? formatMoney(p.price.amount) : "Price TBC";
     out.push({
@@ -66,13 +78,19 @@ function score(item: IndexItem, q: string) {
 }
 
 export function SearchModal() {
-  const { searchOpen, closeSearch, openSearch } = useCart();
+  const { searchOpen, closeSearch, openSearch, catalogReady } = useCart();
   const [group, setGroup] = useState<GroupId>("all");
   const [q, setQ] = useState("");
   const [cursor, setCursor] = useState(-1);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
-  const index = useMemo(() => buildIndex(blogPosts), [blogPosts]);
+  // Rebuild after the client catalog finishes hydrating. Without this
+  // dependency, a fast blog response can freeze the index before products
+  // arrive from /api/catalog.
+  const index = useMemo(
+    () => buildIndex(blogPosts, catalogReady ? Catalog.all() : []),
+    [blogPosts, catalogReady],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -193,14 +211,14 @@ export function SearchModal() {
             <label className="sr" htmlFor="qsInput">
               Search this site
             </label>
-            <input
+              <input
               id="qsInput"
               ref={inputRef}
               className="qs__input"
               type="search"
               autoComplete="off"
               spellCheck={false}
-              placeholder="Search the store and blog…"
+              placeholder="Search the site, store and blog…"
               role="combobox"
               aria-expanded={!!q}
               aria-controls="qsResults"

@@ -91,6 +91,56 @@ export default function Page() {
             </div>
           </section>
 
+          <section className="sec tint">
+            <div className="wrap split split-a" style={{ alignItems: "start" }}>
+              <div data-rv>
+                <p className="meta meta--gold">Connected Kingdom Seminar</p>
+                <h2 className="d2 mt3">One day.<br />A more connected church.</h2>
+                <div className="prose mt4">
+                  <p>
+                    A Pastor and Staff that better understand Generations creates a church that is connected
+                    across all ages and stages. Making it a more credible, attractive and effective witness
+                    to people who don&apos;t know Christ.
+                  </p>
+                  <p>
+                    This one-day seminar helps church leaders move from generational awareness to practical
+                    vision, outreach, discipleship and execution.
+                  </p>
+                </div>
+                <p className="mt5">
+                  <a className="btn btn--lg" href="mailto:garthwheckman@gmail.com?subject=Connected%20Kingdom%20Seminar">
+                    Ask about the seminar
+                  </a>
+                </p>
+              </div>
+              <div className="card" data-rv="120">
+                <p className="meta meta--gold">Sessions include</p>
+                <div className="prose mt3">
+                  <ul>
+                    <li><strong>The Connected Church Vision</strong><br />The three dimensions of connection.</li>
+                    <li><strong>Generational Mapping for Mission</strong><br />Profiles and outreach implications.</li>
+                    <li><strong>Mind, Heart &amp; Digital Disconnect</strong><br />Neurological insights into evangelism and discipleship.</li>
+                    <li><strong>Reaching Those You Don&apos;t Know for Christ</strong><br />The unknown, the unseen and the unheard.</li>
+                    <li>
+                      <strong>Follow-up Q&amp;A</strong>
+                      <ul>
+                        <li>Information</li>
+                        <li>Solutions</li>
+                        <li><a className="tlink seminar-link" href="#call">Consultation</a></li>
+                        <li><a className="tlink seminar-link" href="#call">Execution</a></li>
+                        <li><a className="tlink seminar-link" href="/coaching">Coaching</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+                <p className="card__foot">
+                  Reach out to Garth with your questions here: {" "}
+                  <a href="mailto:garthwheckman@gmail.com"><strong>garthwheckman@gmail.com</strong></a>
+                </p>
+              </div>
+            </div>
+          </section>
+
           <section className="sec tint" id="call">
             <div className="wrap-t center">
               <p className="meta meta--gold">Next step</p>
@@ -99,10 +149,10 @@ export default function Page() {
                 Ask Garth to teach your business, church or church staff how to Understand, Attract,
                 Connect and Disciple. Get on the email list, or set up a fifteen-minute discovery
                 call. Connect with Garth at{" "}
-                <a href="mailto:heckman@generations.com" style={{ color: "var(--gold-dp)", textDecoration: "underline", textUnderlineOffset: "3px" }}>heckman@generations.com</a>.
+                <a href="mailto:garthwheckman@gmail.com" style={{ color: "var(--gold-dp)", textDecoration: "underline", textUnderlineOffset: "3px" }}>garthwheckman@gmail.com</a>.
               </p>
               <div className="row mt5" style={{ justifyContent: "center" }}>
-                <a className="btn btn--lg" href="mailto:heckman@generations.com">Book the call</a>
+                <a className="btn btn--lg" href="mailto:garthwheckman@gmail.com">Book the call</a>
                 <a className="btn btn--line btn--lg" href="/contact">Join the email list</a>
               </div>
             </div>

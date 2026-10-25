@@ -77,7 +77,7 @@ export default function Page() {
                 <div className="card mt5">
                   <p className="meta meta--gold">Direct</p>
                   <p className="mt2"><a href="mailto:garthwheckman@gmail.com" style={{ color: "var(--acc)", textDecoration: "underline", textUnderlineOffset: "3px" }}>garthwheckman@gmail.com</a></p>
-                  <p className="body sm mt3">For Bridgeworks and generational work: <a href="mailto:heckman@generations.com" style={{ color: "var(--acc)", textDecoration: "underline", textUnderlineOffset: "3px" }}>heckman@generations.com</a></p>
+                  <p className="body sm mt3">For Bridgeworks and generational work: <a href="mailto:garthwheckman@gmail.com" style={{ color: "var(--acc)", textDecoration: "underline", textUnderlineOffset: "3px" }}>garthwheckman@gmail.com</a></p>
                 </div>
               </div>
 

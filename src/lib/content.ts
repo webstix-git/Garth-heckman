@@ -225,6 +225,36 @@ export const SEARCH_PAGES = [
     tags: "book booking event keynote hire",
   },
   {
+    t: "Bridgeworks",
+    d: "Generational intelligence for churches and businesses. Understand, Attract, Connect and Disciple.",
+    href: "/bridgeworks",
+    tags: "generations connected kingdom church pastors staff leadership retention connection",
+  },
+  {
+    t: "Coaching",
+    d: "Whole-person coaching for nutrition, training, emotional, mental, social and spiritual growth.",
+    href: "/coaching",
+    tags: "coach training wellness nutrition personal development growth",
+  },
+  {
+    t: "Cancer",
+    d: "Hope, resources and a straight conversation from someone who has survived three cancers.",
+    href: "/cancer",
+    tags: "health survivor diagnosis treatment hope resources",
+  },
+  {
+    t: "Simply Church",
+    d: "A church model built around faith, abiding relationships and gathering in living rooms.",
+    href: "/simply-church",
+    tags: "church house church acts 2 ministry community",
+  },
+  {
+    t: "Relationship Recall",
+    d: "Practical relationship coaching that finds the cracks and helps rebuild the foundation.",
+    href: "/relationship-recall",
+    tags: "marriage couples relationships coaching email",
+  },
+  {
     t: "Store",
     d: "Books, downloads and merchandise.",
     href: "/store",
