@@ -69,6 +69,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
+  // The backend owns the admin zone and validates its own signed session.
+  // Running the legacy Supabase staff gate here bounces backend sessions back
+  // to /admin/login.
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    const rewritten = rewriteToBackend(request);
+    if (rewritten) return rewritten;
+  }
+
   // The backend login page posts to /api/auth/session. Authentication requests
   // may not include a Referer header in some browsers, so always proxy the
   // backend auth namespace. Other admin APIs remain scoped to the admin zone
