@@ -20,6 +20,7 @@ import {
   hasDigital,
   hasPhysical,
   hydrateAll,
+  printifyDigitalCartConflict,
   quoteRequestKey,
   readCart,
   readPromo,
@@ -298,7 +299,12 @@ export function addProductToCart(
   cart: CartContextValue,
   p: Product,
   opts?: { variant?: ProductVariant | null; qty?: number; pwywCents?: number },
-) {
+): string | null {
+  const conflict = printifyDigitalCartConflict(cart.lines, p);
+  if (conflict) {
+    cart.toast("Can’t mix these items", conflict, "#cart", "View cart");
+    return null;
+  }
   const variant = opts?.variant ?? null;
   const pwywCents =
     isPayWhatYouWantPrice(p.price) ? opts?.pwywCents ?? p.price.suggested ?? p.price.min ?? 0 : undefined;

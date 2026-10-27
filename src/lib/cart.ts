@@ -153,6 +153,36 @@ export function hasDigital(lines: HydratedLine[]) {
   return lines.some((i) => !i.shipping);
 }
 
+/** Instant-download catalog items (not print books that also include a file). */
+export function isDigitalFulfillment(product: Pick<Product, "type" | "fulfillment">) {
+  return product.fulfillment === "download" || product.type === "digital";
+}
+
+export function isPrintifyFulfillment(product: Pick<Product, "fulfillment"> | { fulfillment?: string }) {
+  return product.fulfillment === "printify";
+}
+
+/**
+ * Printify merchandise and digital downloads cannot share a cart — different
+ * fulfillment paths (print-on-demand vs instant download).
+ */
+export function printifyDigitalCartConflict(
+  existing: Array<Pick<HydratedLine, "fulfillment" | "type">>,
+  adding: Pick<Product, "type" | "fulfillment">,
+): string | null {
+  const cartHasPrintify = existing.some((line) => isPrintifyFulfillment(line));
+  const cartHasDigital = existing.some((line) => isDigitalFulfillment(line));
+  const addingPrintify = isPrintifyFulfillment(adding);
+  const addingDigital = isDigitalFulfillment(adding);
+  if (addingPrintify && cartHasDigital) {
+    return "Merchandise can’t be mixed with digital downloads. Check out your downloads first, or clear the cart.";
+  }
+  if (addingDigital && cartHasPrintify) {
+    return "Digital downloads can’t be mixed with merchandise. Check out your merch first, or clear the cart.";
+  }
+  return null;
+}
+
 /** Totals priced by the store backend for the current cart. */
 export type CartQuote = {
   subtotalCents: number;

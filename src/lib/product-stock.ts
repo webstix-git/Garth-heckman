@@ -49,6 +49,11 @@ export function productStockBadge(p: Product): {
     return { ok: false, label: "Coming soon", v: "" };
   }
 
+  // Printify is made to order — no warehouse stock labels on cards.
+  if (p.fulfillment === "printify") {
+    return { ok: true, label: null, v: "" };
+  }
+
   const backorder = Boolean(p.inventory?.allowBackorder);
 
   if (p.variants?.length) {

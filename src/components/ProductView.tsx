@@ -177,7 +177,8 @@ function ProductViewInner({
       cart.toast("Unavailable", "That combination is not available.");
       return;
     }
-    addProductToCart(cart, p, { variant, qty });
+    const key = addProductToCart(cart, p, { variant, qty });
+    if (!key) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
     cart.toast("Added to cart", p.title, "#cart", "View cart");

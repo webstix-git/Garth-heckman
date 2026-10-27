@@ -84,10 +84,11 @@ export function ProductCard({ p }: { p: Product }) {
 
   function add() {
     if (needsChoice) return;
-    addProductToCart(cart, p, {
+    const key = addProductToCart(cart, p, {
       variant,
       pwywCents: isPayWhatYouWantPrice(p.price) ? (p.price.suggested ?? undefined) : undefined,
     });
+    if (!key) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
     if (isPayWhatYouWantPrice(p.price)) cart.openDrawer();

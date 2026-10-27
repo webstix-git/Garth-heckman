@@ -72,7 +72,8 @@ export function Pwyw({
   }
 
   function go() {
-    addProductToCart(cart, product, { pwywCents: amount, qty: 1 });
+    const key = addProductToCart(cart, product, { pwywCents: amount, qty: 1 });
+    if (!key) return;
     if (compact) {
       router.push("/checkout");
       return;
