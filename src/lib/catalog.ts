@@ -16,6 +16,8 @@ export type ProductMedia = {
   label: string;
   note: string;
   src?: string;
+  /** YouTube (or other) embed URL when kind is "video". */
+  embedUrl?: string;
 };
 
 export type ProductOptionValue = {

@@ -1303,9 +1303,34 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
    name like GENERATIONS would otherwise run straight out of the column. */
 .buybox .d2 { font-size:clamp(2rem, 3.4vw, 3.5rem); }
 @media (max-width:940px){ .pdp { grid-template-columns:minmax(0,1fr); } .buybox { position:static; } }
+.pdp-gallery { display:grid; gap:8px; }
+.pdp-slider { position:relative; }
+.pdp-slider__nav {
+  position:absolute; top:50%; z-index:2; transform:translateY(-50%);
+  display:grid; place-items:center; width:40px; height:40px;
+  border:1px solid var(--line); background:rgba(255,255,255,.92); color:var(--fg);
+  cursor:pointer; transition:background var(--t1), border-color var(--t1);
+}
+.pdp-slider__nav:hover { background:#fff; border-color:var(--fg); }
+.pdp-slider__nav--prev { left:10px; }
+.pdp-slider__nav--next { right:10px; }
+.pdp-slider__dots {
+  position:absolute; left:0; right:0; bottom:12px; z-index:2;
+  display:flex; justify-content:center; gap:6px; pointer-events:none;
+}
+.pdp-slider__dot {
+  pointer-events:auto; width:7px; height:7px; padding:0; border-radius:999px;
+  border:0; background:rgba(255,255,255,.55); cursor:pointer;
+}
+.pdp-slider__dot[aria-selected="true"] { background:var(--fg); width:18px; }
 .thumbs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:8px; }
-.thumb { border:1px solid var(--line); padding:0; transition:border-color var(--t1); }
+.thumb { border:1px solid var(--line); padding:0; transition:border-color var(--t1); background:transparent; cursor:pointer; }
 .thumb[aria-pressed="true"] { border-color:var(--fg); }
+.thumb__frame { position:relative; display:block; }
+.thumb__play {
+  position:absolute; inset:0; display:grid; place-items:center;
+  background:rgba(14,12,10,.35); color:#fff;
+}
 .price { font-size:clamp(2rem,3.6vw,2.75rem); font-weight:800; font-variation-settings:"wdth" 108; letter-spacing:-.045em; line-height:1; font-variant-numeric:tabular-nums; }
 .price del { font-size:16px; color:var(--fg-3); margin-left:8px; font-weight:400; letter-spacing:0; }
 .spec { display:grid; grid-template-columns:minmax(0,.42fr) minmax(0,1fr); gap:16px 24px; font-size:16px; }

@@ -7,7 +7,7 @@ import { formatMoney } from "@/lib/money";
 import { Shot } from "@/components/Shot";
 import { Pwyw } from "@/components/Pwyw";
 import { ProductCard } from "@/components/ProductCard";
-import { IconCheck, IconDownload, IconMail, IconShield, IconTruck } from "@/components/icons";
+import { IconArrow, IconCheck, IconDownload, IconMail, IconPlay, IconShield, IconTruck } from "@/components/icons";
 import { addProductToCart, useCart } from "@/components/CartProvider";
 import { isPayWhatYouWantPrice } from "@/lib/pay-what-you-want";
 import { contentSectionsFromStorefront, ensureSkuInDetailsBody } from "@/lib/product-content-sections";
@@ -145,7 +145,10 @@ function ProductViewInner({
         }
       : null;
   const gallery = variantImage ? [variantImage, ...galleryBase.filter((m) => m.src !== variantImage.src)] : galleryBase;
-  const m = gallery[Math.min(media, gallery.length - 1)] ?? gallery[0];
+  const active = Math.min(Math.max(media, 0), Math.max(gallery.length - 1, 0));
+  const m = gallery[active] ?? gallery[0];
+  const hasSlider = gallery.length > 1;
+  const go = (next: number) => setMedia((next + gallery.length) % gallery.length);
   const isPwyw = isPayWhatYouWantPrice(p.price);
   const showVariantDetails = !hasOptions || (selectionComplete && !!variant);
   const unit = showVariantDetails
@@ -192,28 +195,100 @@ function ProductViewInner({
           </nav>
           <div className="pdp">
             <div>
-              <div>
-                <Shot
-                  variant={m.variant}
-                  ratio={m.ratio || "1-1"}
-                  label={false}
-                  alt={m.label || p.title}
-                  src={m.src}
-                  contain={Boolean(m.src)}
-                />
-                {gallery.length > 1 ? (
-                  <div className="thumbs">
+              <div
+                className="pdp-gallery"
+                onKeyDown={(event) => {
+                  if (!hasSlider) return;
+                  if (event.key === "ArrowRight") {
+                    event.preventDefault();
+                    go(active + 1);
+                  }
+                  if (event.key === "ArrowLeft") {
+                    event.preventDefault();
+                    go(active - 1);
+                  }
+                }}
+              >
+                <div
+                  className="pdp-slider"
+                  onTouchStart={(event) => {
+                    const touch = event.changedTouches[0];
+                    if (touch) (event.currentTarget as HTMLElement).dataset.touchX = String(touch.clientX);
+                  }}
+                  onTouchEnd={(event) => {
+                    if (!hasSlider) return;
+                    const start = Number((event.currentTarget as HTMLElement).dataset.touchX || 0);
+                    const end = event.changedTouches[0]?.clientX ?? start;
+                    const delta = end - start;
+                    if (Math.abs(delta) < 40) return;
+                    go(active + (delta < 0 ? 1 : -1));
+                  }}
+                >
+                  {m.kind === "video" && m.embedUrl ? (
+                    <div className="photo r1-1 pdp-slide" style={{ position: "relative", overflow: "hidden", background: "#0e0c0a" }}>
+                      <iframe
+                        src={m.embedUrl}
+                        title={`${p.title} video`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
+                      />
+                    </div>
+                  ) : (
+                    <Shot
+                      variant={m.variant}
+                      ratio={m.ratio || "1-1"}
+                      label={false}
+                      alt={m.label || p.title}
+                      src={m.src}
+                      contain={Boolean(m.src)}
+                      className="pdp-slide"
+                    />
+                  )}
+                  {hasSlider ? (
+                    <>
+                      <button className="pdp-slider__nav pdp-slider__nav--prev" type="button" aria-label="Previous image" onClick={() => go(active - 1)}>
+                        <IconArrow style={{ transform: "scaleX(-1)" }} />
+                      </button>
+                      <button className="pdp-slider__nav pdp-slider__nav--next" type="button" aria-label="Next image" onClick={() => go(active + 1)}>
+                        <IconArrow />
+                      </button>
+                      <div className="pdp-slider__dots" role="tablist" aria-label="Product images">
+                        {gallery.map((item, index) => (
+                          <button
+                            key={(item.src || item.label) + index}
+                            type="button"
+                            role="tab"
+                            aria-selected={index === active}
+                            aria-label={`Show image ${index + 1}`}
+                            className="pdp-slider__dot"
+                            onClick={() => setMedia(index)}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+                {hasSlider ? (
+                  <div className="thumbs" style={{ gridTemplateColumns: `repeat(${Math.min(gallery.length, 5)}, minmax(0, 1fr))` }}>
                     {gallery.map((x, i) => (
                       <button
                         key={(x.src || x.label) + i}
                         className="thumb"
                         type="button"
                         data-thumb={i}
-                        aria-pressed={i === Math.min(media, gallery.length - 1)}
+                        aria-pressed={i === active}
                         aria-label={`View ${x.label}`}
                         onClick={() => setMedia(i)}
                       >
-                        <Shot variant={x.variant} ratio={x.ratio || "1-1"} label={false} src={x.src} contain={Boolean(x.src)} />
+                        <span className="thumb__frame">
+                          <Shot variant={x.variant} ratio={x.ratio || "1-1"} label={false} src={x.src} contain={Boolean(x.src)} />
+                          {x.kind === "video" ? (
+                            <span className="thumb__play" aria-hidden="true">
+                              <IconPlay />
+                            </span>
+                          ) : null}
+                        </span>
                       </button>
                     ))}
                   </div>

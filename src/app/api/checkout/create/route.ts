@@ -2,20 +2,23 @@ import { NextResponse } from "next/server";
 import { BackendError, backendFetch } from "@/lib/backend-catalog";
 import { checkoutBody, type CheckoutInput } from "@/lib/store-checkout";
 import { clientIp, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { createPayPalOrder, paypalConfigured } from "@/lib/paypal";
 
 export const runtime = "nodejs";
 
+const STORE_NAME = "Garth Heckman";
+
 type BackendCheckout = {
   ok: boolean;
-  order: { order_number: string };
+  order: { id: string; order_number: string; grand_total_cents: number };
   orderToken: string;
   paymentRequired: boolean;
   paymentMethod: string;
 };
 
 /**
- * Places the order with the store backend (which prices it), then opens the matching PayPal order.
- * Free and cash-on-delivery orders are complete straight away.
+ * Places the order with the store backend (which prices it), then opens the matching PayPal order
+ * on this storefront's PayPal account. Free and cash-on-delivery orders are complete straight away.
  */
 export async function POST(request: Request) {
   const limited = rateLimit(`checkout:${clientIp(request)}`, 10, 15 * 60 * 1000);
@@ -32,12 +35,14 @@ export async function POST(request: Request) {
     if (placed.paymentMethod === "cash_on_delivery") {
       return NextResponse.json({ mode: "cash_on_delivery", orderToken: placed.orderToken, orderNumber });
     }
-    const paypal = await backendFetch<{ paypalOrderId: string }>("/api/storefront/paypal/create", {
-      method: "POST",
-      body: { orderToken: placed.orderToken },
-      clientIp: ip,
+    if (!paypalConfigured()) return NextResponse.json({ error: "PayPal is not available right now." }, { status: 503 });
+    const paypalOrderId = await createPayPalOrder({
+      orderId: String(placed.order.id),
+      orderNumber,
+      totalCents: Number(placed.order.grand_total_cents),
+      storeName: STORE_NAME,
     });
-    return NextResponse.json({ mode: "paypal", orderToken: placed.orderToken, orderNumber, paypalOrderId: paypal.paypalOrderId });
+    return NextResponse.json({ mode: "paypal", orderToken: placed.orderToken, orderNumber, paypalOrderId });
   } catch (error) {
     if (error instanceof BackendError) {
       return NextResponse.json({ error: error.message, code: error.code }, { status: error.status >= 500 ? 502 : error.status });

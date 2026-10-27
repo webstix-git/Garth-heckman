@@ -42,11 +42,7 @@ export function YoutubeShortsClipsSection() {
         <div className="between mb5" data-rv="">
           <div>
             <p className="meta meta--gold">Clips</p>
-            <h2 className="d2 mt2">
-              Short version,
-              <br />
-              on YouTube.
-            </h2>
+            <h2 className="d2 mt2">YouTube Shorts</h2>
           </div>
           <p className="body sm" style={{ maxWidth: "34ch" }}>
             Clips post weekly. They open on YouTube rather than playing here. Garth wanted the channel to get the

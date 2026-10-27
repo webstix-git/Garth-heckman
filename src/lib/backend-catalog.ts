@@ -1,6 +1,7 @@
 import "server-only";
 
-import { CURRENCY, type Fulfillment, type Product, type ProductType } from "@/lib/catalog";
+import { CURRENCY, type Fulfillment, type Product, type ProductMedia, type ProductType } from "@/lib/catalog";
+import { extractYoutubeVideoId, youtubeEmbedUrl, youtubeThumbnailUrl } from "@/lib/video-links";
 
 type BackendOptionValue = { label: string; value: string; hex?: string | null };
 
@@ -35,6 +36,7 @@ export type BackendCatalogProduct = {
   pwywGets?: string[] | null;
   image?: string | null;
   images?: string[];
+  youtubeShortsUrl?: string | null;
   categories?: Array<{ id: string; name: string; slug: string }>;
   categorySlugs?: string[];
   collections?: string[];
@@ -138,14 +140,29 @@ export function mapBackendProduct(row: BackendCatalogProduct): Product {
       compareAt,
       listPrice: compareAt,
     },
-    media: images.map((src, index) => ({
-      kind: "image",
-      variant: "default",
-      ratio: "1-1",
-      label: index === 0 ? row.name : `${row.name} image ${index + 1}`,
-      note: "",
-      src,
-    })),
+    media: (() => {
+      const items: ProductMedia[] = images.map((src, index) => ({
+        kind: "image",
+        variant: "default",
+        ratio: "1-1",
+        label: index === 0 ? row.name : `${row.name} image ${index + 1}`,
+        note: "",
+        src,
+      }));
+      const videoId = extractYoutubeVideoId(String(row.youtubeShortsUrl ?? ""));
+      if (videoId) {
+        items.push({
+          kind: "video",
+          variant: "dark",
+          ratio: "1-1",
+          label: "Video",
+          note: "YouTube",
+          src: youtubeThumbnailUrl(videoId),
+          embedUrl: youtubeEmbedUrl(videoId),
+        });
+      }
+      return items;
+    })(),
     descriptionShort: shortDescription || plainText(description).slice(0, 180),
     descriptionLong: description ? [description] : [],
     details: row.details ?? [],
@@ -206,14 +223,14 @@ export class BackendError extends Error {
 }
 
 /** Calls a backend storefront endpoint with the store key attached. */
-export async function backendFetch<T>(path: string, init?: { method?: "GET" | "POST"; body?: unknown; clientIp?: string | null; headers?: Record<string, string> }): Promise<T> {
+export async function backendFetch<T>(path: string, init?: { method?: "GET" | "POST"; body?: unknown; clientIp?: string | null; headers?: Record<string, string>; storeKey?: string }): Promise<T> {
   const { backendUrl, storeKey, configured } = getBackendCatalogConfig();
   if (!configured) throw new BackendError("The store backend is not configured.", 503);
   const response = await fetch(`${backendUrl}${path}`, {
     method: init?.method ?? "GET",
     headers: {
       ...init?.headers,
-      "X-Store-Key": storeKey,
+      "X-Store-Key": init?.storeKey || storeKey,
       ...(init?.body !== undefined ? { "Content-Type": "application/json" } : {}),
       ...(init?.clientIp ? { "X-Forwarded-For": init.clientIp } : {}),
     },
