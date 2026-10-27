@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
-import type { Product } from "@/lib/catalog";
+import type { Product, ProductMedia } from "@/lib/catalog";
 import { Catalog } from "@/lib/catalog";
 import { formatMoney } from "@/lib/money";
 import { Shot } from "@/components/Shot";
@@ -128,12 +128,12 @@ function ProductViewInner({
 
   // Products such as digital downloads may not have artwork. Keep a placeholder
   // gallery item so the product page can still render its title and purchase UI.
-  const galleryBase = p.media.length
+  const galleryBase: ProductMedia[] = p.media.length
     ? p.media.some((x) => x.src)
       ? p.media.filter((x) => x.src)
       : p.media
     : [{ kind: "image", variant: "default", ratio: "1-1", label: p.title, note: "" }];
-  const variantImage =
+  const variantImage: ProductMedia | null =
     variant?.image && selectionComplete
       ? {
           kind: "image",
@@ -144,7 +144,9 @@ function ProductViewInner({
           src: variant.image,
         }
       : null;
-  const gallery = variantImage ? [variantImage, ...galleryBase.filter((m) => m.src !== variantImage.src)] : galleryBase;
+  const gallery: ProductMedia[] = variantImage
+    ? [variantImage, ...galleryBase.filter((item) => item.src !== variantImage.src)]
+    : galleryBase;
   const active = Math.min(Math.max(media, 0), Math.max(gallery.length - 1, 0));
   const m = gallery[active] ?? gallery[0];
   const hasSlider = gallery.length > 1;
