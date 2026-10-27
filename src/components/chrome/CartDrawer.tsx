@@ -147,17 +147,17 @@ export function CartDrawer() {
                 <span className="meta meta--dim">Subtotal</span>
                 <b>{formatMoneyOrFree(subtotal)}</b>
               </div>
-              <p className="hint" style={{ margin: "0 0 14px" }}>
+              <p className="hint drawer__hint">
                 {subtotal === 0
                   ? "Nothing to pay. Just an email address for the file."
                   : physical
                     ? "Shipping calculated at checkout."
                     : "Digital order, no shipping."}
               </p>
-              <a className="btn btn--lg btn--block" href="/checkout">
+              <a className="btn btn--block" href="/checkout">
                 {subtotal === 0 ? "Get it free" : "Checkout"}
               </a>
-              <a className="btn btn--line btn--block mt2" href="/cart">
+              <a className="btn btn--line btn--sm btn--block mt2" href="/cart">
                 View full cart
               </a>
               <button className="btn btn--quiet btn--block mt1" type="button" data-dclose onClick={closeDrawer}>
