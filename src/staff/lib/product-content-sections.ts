@@ -68,11 +68,11 @@ export function buildDefaultContentSections(
       `<p><strong>Returns.</strong> Something arrive damaged? Email Garth and it gets replaced. No forms.</p>`,
     ].join("");
   } else {
-    const limit = digital?.downloadLimit ?? 5;
+    const limit = digital?.downloadLimit ?? 2;
     const months = Math.round((digital?.expiryDays || 365) / 30);
     // Same structure as Details: consecutive <p> blocks, no blank spacers.
     accessBody = [
-      `<p><strong>Download.</strong> The download link appears on your confirmation page the moment payment clears, and is emailed to you as well. Up to ${limit} downloads, link valid for ${months} months.</p>`,
+      `<p><strong>Download.</strong> The download link appears on your confirmation page the moment payment clears, and is emailed to you as well. Up to ${limit} guest downloads from that link (sign in to My Account for unlimited downloads), link valid for ${months} months.</p>`,
       filesLine ? `<p><strong>Files.</strong> ${filesLine}</p>` : "",
     ]
       .filter(Boolean)

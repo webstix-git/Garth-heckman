@@ -6,6 +6,16 @@ import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
+type BackendShipment = {
+  status: string;
+  printifyStatus?: string | null;
+  carrier: string | null;
+  tracking: string | null;
+  trackingUrl: string | null;
+  shippedAt: string | null;
+  deliveredAt: string | null;
+};
+
 type BackendAccountOrder = {
   id: string;
   order_number: string;
@@ -15,6 +25,7 @@ type BackendAccountOrder = {
   grand_total_cents: number;
   items: Array<{ requires_shipping?: boolean }>;
   download: { paid: boolean; token: string | null } | null;
+  shipment: BackendShipment | null;
 };
 
 type BackendAccount = {
@@ -43,12 +54,13 @@ export async function GET(request: Request) {
           last_name: account.customer.last_name || "",
           email: account.customer.email || user.email || "",
         },
-        orders: account.orders.map(({ download, ...order }) => ({
+        orders: account.orders.map(({ download, shipment, ...order }) => ({
           ...order,
           fulfillment_status: order.items.some((item) => Boolean(item.requires_shipping)) ? order.fulfillment_status : "completed",
           downloads: download
-            ? { url: download.token ? `/downloads?token=${encodeURIComponent(download.token)}` : null, locked: !download.paid }
+            ? { token: download.token, locked: !download.paid }
             : null,
+          shipment: shipment ?? null,
         })),
       },
     });

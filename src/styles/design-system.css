@@ -589,6 +589,16 @@ h1:has(br),h2:has(br),h3:has(br),h4:has(br),
 .field.bad .input,.field.bad .select,.field.bad .textarea { border-color:var(--bad); }
 .field.bad .hint { color:var(--bad-dp); }
 .on-dark .field.bad .hint { color:var(--bad); }
+.input-wrap { position:relative; }
+.input-wrap .input { padding-right:48px; }
+.input-wrap__toggle {
+  position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  display:inline-flex; align-items:center; justify-content:center;
+  width:36px; height:36px; padding:0; border:0; background:transparent;
+  color:var(--fg-3); cursor:pointer;
+}
+.input-wrap__toggle:hover { color:var(--fg); }
+.input-wrap__toggle:focus-visible { outline:2px solid var(--gold-dp); outline-offset:2px; }
 .check { display:flex; gap:8px; align-items:flex-start; font-size:16px; color:var(--fg-2); cursor:pointer; }
 /* Same reasoning as the facet rows: the label is the target, but the touch
    floor only applies where there is a finger. */
@@ -1581,6 +1591,28 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .otable td strong { color:var(--fg); }
 .scroll-x { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 
+/* My Account — one card per order so downloads never break table columns */
+.olist { display:flex; flex-direction:column; gap:16px; }
+.oblock { background:var(--bg-2); border:1px solid var(--line); padding:clamp(16px,2vw,24px); }
+.oblock__head {
+  display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between;
+  gap:12px 24px; padding-bottom:16px; border-bottom:1px solid var(--line);
+}
+.oblock__meta { display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; }
+.oblock__items { margin-top:16px; display:flex; flex-direction:column; gap:12px; }
+.oblock__item {
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px 16px; align-items:start;
+}
+.oblock__item-side { text-align:right; white-space:nowrap; }
+.oblock__downloads { margin-top:16px; padding-top:8px; border-top:1px solid var(--line); }
+.oblock__downloads .dl { padding:12px 0; gap:12px; }
+.oblock__downloads .dl:last-child { border-bottom:0; padding-bottom:0; }
+@media (max-width:560px) {
+  .oblock__item { grid-template-columns:1fr; }
+  .oblock__item-side { text-align:left; }
+  .oblock__downloads .dl { flex-wrap:wrap; }
+}
+
 /* --------------------------------------------------------------- 21. PLP */
 /* Featured product above the grid. On a phone the stacked version ran to
    935px, so the first actual product sat 1718px down the page; the cover is
@@ -1941,8 +1973,10 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 /* Same block on a light ground (contact page card). */
 .fcontact--light .fcontact__row { color:var(--fg-2); }
 .fcontact--light .fcontact__row:hover { color:var(--acc); }
-.ftr__mission { font-size:clamp(1.5rem,2.6vw,2.3rem); font-weight:800; text-transform:uppercase; font-variation-settings:"wdth" 108; letter-spacing:-.035em; line-height:.94; color:var(--bone); }
-.ftr__mission em { font-style:normal; color:var(--gold); }
+.ftr__brand { display:inline-flex; align-items:center; gap:16px; text-decoration:none; color:var(--bone); }
+.ftr__brand img { width:clamp(64px,7vw,88px); height:clamp(64px,7vw,88px); object-fit:cover; filter:invert(1) brightness(1.75) saturate(0); }
+.ftr__brand b { display:block; font-size:clamp(15px,1.4vw,20px); font-weight:800; letter-spacing:.13em; text-transform:uppercase; font-variation-settings:"wdth" 90; line-height:1; color:var(--bone); }
+.ftr__brand:hover { color:var(--bone); }
 .ftr .meta--gold { color:var(--gold); }
 .fcol ul { list-style:none; padding:0; display:grid; gap:8px; margin-top:16px; }
 .fcol a { font-size:16px; color:var(--taupe); transition:color var(--t1); }

@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { BackendError, backendFetch } from "@/lib/backend-catalog";
 import { clientIp, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
 /**
  * GET /api/order/download?token=…&file=…
  * The backend checks the order is paid and the download allowance, then this redirects
- * to a short-lived signed file URL.
+ * to a short-lived signed file URL. Signed-in owners get the higher account allowance.
  */
 export async function GET(request: Request) {
   const limited = rateLimit(`fe-download:${clientIp(request)}`, 30, 60 * 1000);
@@ -19,9 +20,15 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "This download link is invalid." }, { status: 400 });
   }
   try {
+    const session = await createClient();
+    const { data } = await session.auth.getSession();
+    const accessToken = data.session?.access_token;
     const result = await backendFetch<{ url: string }>(
       `/api/storefront/order/download?token=${encodeURIComponent(token)}&file=${encodeURIComponent(file)}&format=json`,
-      { clientIp: clientIp(request) },
+      {
+        clientIp: clientIp(request),
+        ...(accessToken ? { headers: { Authorization: `Bearer ${accessToken}` } } : {}),
+      },
     );
     const response = NextResponse.redirect(result.url, 302);
     response.headers.set("Cache-Control", "no-store");

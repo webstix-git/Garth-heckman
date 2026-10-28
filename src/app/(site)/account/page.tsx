@@ -2,10 +2,28 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { SiteChrome } from "@/components/chrome/SiteChrome";
+import { IconDownload, IconTruck } from "@/components/icons";
 import { formatMoney } from "@/lib/money";
+
+type DownloadFile = {
+  id: string;
+  name: string;
+  size: number | null;
+  downloads: number;
+  limit: number | null;
+  expiresAt: string | null;
+  available: boolean;
+  reason: string | null;
+  reasonCode?: "unpaid" | "expired" | "limit" | null;
+};
+
+type OrderDownloads = {
+  token: string;
+  products: Array<{ productId: string; name: string; files: DownloadFile[] }>;
+};
 
 type OrderItem = {
   product_name_snapshot: string;
@@ -16,6 +34,16 @@ type OrderItem = {
   metadata: { slug?: string } | null;
 };
 
+type OrderShipment = {
+  status: string;
+  printifyStatus?: string | null;
+  carrier: string | null;
+  tracking: string | null;
+  trackingUrl: string | null;
+  shippedAt: string | null;
+  deliveredAt: string | null;
+};
+
 type Order = {
   id: string;
   order_number: string;
@@ -23,7 +51,8 @@ type Order = {
   payment_status: string;
   grand_total_cents: number;
   items: OrderItem[];
-  downloads: { url: string | null; locked: boolean } | null;
+  downloads: { token: string | null; locked: boolean } | null;
+  shipment: OrderShipment | null;
 };
 
 type AccountData = {
@@ -31,10 +60,136 @@ type AccountData = {
   orders: Order[];
 };
 
+function fileMeta(file: DownloadFile) {
+  const parts: string[] = [];
+  if (file.size != null) {
+    const mb = file.size / (1024 * 1024);
+    parts.push(`${mb >= 10 ? mb.toFixed(0) : mb.toFixed(1)} MB`);
+  }
+  if (file.limit != null) parts.push(`${Math.max(0, file.limit - file.downloads)} of ${file.limit} downloads left`);
+  if (file.expiresAt) {
+    parts.push(`until ${new Date(file.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`);
+  }
+  return parts.join(" · ");
+}
+
+function shipmentLabel(shipment: OrderShipment) {
+  const key = String(shipment.printifyStatus || shipment.status || "").toLowerCase().replace(/_/g, "-");
+  switch (key) {
+    case "delivered":
+      return shipment.deliveredAt
+        ? `Delivered ${new Date(shipment.deliveredAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`
+        : "Delivered";
+    case "in-transit":
+    case "on-the-way":
+    case "out-for-delivery":
+      return "On its way";
+    case "shipped":
+    case "fulfilled":
+    case "ready-to-ship":
+      return "Shipped";
+    case "in-production":
+    case "production":
+      return "In production";
+    case "sending-to-production":
+      return "Sending to production";
+    case "on-hold":
+    case "onhold":
+      return "On hold";
+    case "has-issues":
+      return "Has issues";
+    case "cancelled":
+    case "canceled":
+      return "Canceled";
+    case "returned":
+      return "Returned";
+    default:
+      return key ? key.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Preparing to ship";
+  }
+}
+
+function OrderShipmentPanel({ shipment }: { shipment: OrderShipment }) {
+  const via = [shipment.carrier, shipment.tracking].filter(Boolean).join(" · ");
+  const awaitingTracking = !shipment.tracking && !["delivered", "cancelled", "canceled"].includes(shipment.status);
+  return (
+    <div className="oblock__downloads">
+      <p className="meta meta--dim" style={{ marginBottom: 8 }}>Shipping</p>
+      <div className="notice notice--info" style={{ margin: 0 }}>
+        <IconTruck />
+        <span>
+          <strong style={{ color: "var(--fg)" }}>{shipmentLabel(shipment)}</strong>
+          {via ? <span className="dim"> · {via}</span> : null}
+          {awaitingTracking && !shipment.trackingUrl ? (
+            <span className="dim"> · Tracking appears once Printify ships.</span>
+          ) : null}
+          {shipment.trackingUrl ? (
+            <>
+              {" "}
+              <a href={shipment.trackingUrl} target="_blank" rel="noopener noreferrer">
+                {shipment.tracking ? "Track package" : "View status"}
+              </a>
+            </>
+          ) : null}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function OrderDownloadsPanel({
+  order,
+  files,
+}: {
+  order: Order;
+  files: OrderDownloads | "loading" | "error" | undefined;
+}) {
+  if (!order.downloads) return null;
+
+  return (
+    <div className="oblock__downloads">
+      <p className="meta meta--dim" style={{ marginBottom: 8 }}>Downloads</p>
+      {order.downloads.locked ? (
+        <p className="xs dim">Downloads unlock once payment is confirmed.</p>
+      ) : files === "loading" || !files ? (
+        <p className="xs dim">Loading downloads…</p>
+      ) : files === "error" ? (
+        <p className="xs dim">Downloads unavailable right now.</p>
+      ) : (
+        files.products.flatMap((product) =>
+          product.files.map((file) => (
+            <div className="dl" key={file.id}>
+              <div className="flex1" style={{ minWidth: 0 }}>
+                <p style={{ fontWeight: 800, overflowWrap: "anywhere" }}>
+                  {product.files.length > 1 ? file.name : product.name}
+                </p>
+                <p className="xs dim">{file.available ? fileMeta(file) : file.reason}</p>
+              </div>
+              {file.available ? (
+                <a
+                  className="btn btn--line btn--sm"
+                  href={`/api/order/download?token=${encodeURIComponent(files.token)}&file=${encodeURIComponent(file.id)}`}
+                >
+                  <IconDownload /> Download
+                </a>
+              ) : (
+                <button className="btn btn--line btn--sm" type="button" disabled>
+                  Unavailable
+                </button>
+              )}
+            </div>
+          )),
+        )
+      )}
+    </div>
+  );
+}
+
 export default function AccountPage() {
   const router = useRouter();
   const [data, setData] = useState<AccountData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [orderDownloads, setOrderDownloads] = useState<Record<string, OrderDownloads | "loading" | "error">>({});
+  const fetchedDownloads = useRef(new Set<string>());
 
   useEffect(() => {
     fetch("/api/customer/account")
@@ -44,6 +199,41 @@ export default function AccountPage() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!data) return;
+    const pending = data.orders.filter(
+      (order) => order.downloads?.token && !fetchedDownloads.current.has(order.id),
+    );
+    if (!pending.length) return;
+
+    for (const order of pending) fetchedDownloads.current.add(order.id);
+    setOrderDownloads((current) => {
+      const next = { ...current };
+      for (const order of pending) next[order.id] = "loading";
+      return next;
+    });
+
+    void Promise.all(
+      pending.map(async (order) => {
+        const token = order.downloads!.token!;
+        try {
+          const response = await fetch(`/api/order?token=${encodeURIComponent(token)}`);
+          const body = await response.json().catch(() => ({}));
+          if (!response.ok || !body.downloads?.products) {
+            setOrderDownloads((current) => ({ ...current, [order.id]: "error" }));
+            return;
+          }
+          setOrderDownloads((current) => ({
+            ...current,
+            [order.id]: { token, products: body.downloads.products },
+          }));
+        } catch {
+          setOrderDownloads((current) => ({ ...current, [order.id]: "error" }));
+        }
+      }),
+    );
+  }, [data]);
 
   async function signOut() {
     await fetch("/api/auth", { method: "DELETE" });
@@ -68,7 +258,11 @@ export default function AccountPage() {
               <div className="empty">
                 <h1 className="d2">Your purchases</h1>
                 <p className="body mt3">Sign in with the account you set up after your purchase.</p>
-                <p className="mt5"><Link className="btn" href="/account/login">Sign in</Link></p>
+                <p className="mt5">
+                  <Link className="btn" href="/account/login">
+                    Sign in
+                  </Link>
+                </p>
               </div>
             ) : null}
 
@@ -78,7 +272,6 @@ export default function AccountPage() {
                   <div>
                     <p className="meta meta--gold">My account</p>
                     <h1 className="d3 mt2">Welcome back, {data.customer.first_name || "there"}</h1>
-                    <p className="body mt3">Your purchases and order history are ready below.</p>
                     <p className="xs dim mt2">Signed in as {data.customer.email}</p>
                   </div>
                   <button className="btn btn--line btn--sm" onClick={() => void signOut()}>
@@ -87,58 +280,68 @@ export default function AccountPage() {
                 </div>
 
                 {data.orders.length ? (
-                  <div className="card mt6 scroll-x">
-                    <table className="otable w-full">
-                      <thead>
-                        <tr>
-                          <th>Order</th>
-                          <th>Date</th>
-                          <th>Payment</th>
-                          <th style={{ textAlign: "right" }}>Total</th>
-                          <th>Product</th>
-                          <th>Type</th>
-                          <th style={{ textAlign: "right" }}>Qty</th>
-                          <th style={{ textAlign: "right" }}>Amount</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.orders.flatMap((order) => {
-                          const items = order.items.length ? order.items : [null];
-                          return items.map((item, index) => (
-                            <tr key={`${order.id}-${index}`}>
-                              {index === 0 ? (
-                                <>
-                                  <td rowSpan={items.length} className="tnum">
-                                    <strong>#{order.order_number}</strong>
-                                    {order.downloads?.url ? (
-                                      <p className="mt2">
-                                        <a className="btn btn--line btn--sm" href={order.downloads.url}>
-                                          Download files
-                                        </a>
-                                      </p>
-                                    ) : order.downloads?.locked ? (
-                                      <p className="xs dim mt2">Downloads unlock once payment is confirmed.</p>
+                  <div className="olist mt6">
+                    {data.orders.map((order) => {
+                      const items = order.items.length ? order.items : [];
+                      return (
+                        <article className="oblock" key={order.id}>
+                          <div className="oblock__head">
+                            <div className="oblock__meta">
+                              <strong className="tnum" style={{ fontSize: "1.05rem" }}>
+                                #{order.order_number}
+                              </strong>
+                              <span className="xs dim">
+                                {new Date(order.placed_at).toLocaleString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                              <span className="badge">{order.payment_status}</span>
+                            </div>
+                            <p className="tnum" style={{ fontWeight: 800, color: "var(--fg)", margin: 0 }}>
+                              {formatMoney(Number(order.grand_total_cents || 0))}
+                            </p>
+                          </div>
+
+                          <div className="oblock__items">
+                            {items.length ? (
+                              items.map((item, index) => (
+                                <div className="oblock__item" key={`${order.id}-item-${index}`}>
+                                  <div style={{ minWidth: 0 }}>
+                                    {item.metadata?.slug ? (
+                                      <Link href={`/product/${item.metadata.slug}`}>
+                                        <strong style={{ overflowWrap: "anywhere" }}>{item.product_name_snapshot}</strong>
+                                      </Link>
+                                    ) : (
+                                      <strong style={{ overflowWrap: "anywhere" }}>{item.product_name_snapshot}</strong>
+                                    )}
+                                    {item.variant_name_snapshot ? (
+                                      <p className="xs dim mt1">{item.variant_name_snapshot}</p>
                                     ) : null}
-                                  </td>
-                                  <td rowSpan={items.length}>{new Date(order.placed_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
-                                  <td rowSpan={items.length}><span className="badge">{order.payment_status}</span></td>
-                                  <td rowSpan={items.length} className="tnum" style={{ textAlign: "right" }}>{formatMoney(Number(order.grand_total_cents || 0))}</td>
-                                </>
-                              ) : null}
-                              <td>
-                                {item?.metadata?.slug ? (
-                                  <Link href={`/product/${item.metadata.slug}`}><strong>{item.product_name_snapshot}</strong></Link>
-                                ) : item ? <strong>{item.product_name_snapshot}</strong> : "—"}
-                                {item?.variant_name_snapshot ? <><br /><span className="xs dim">{item.variant_name_snapshot}</span></> : null}
-                              </td>
-                              <td>{item ? (item.requires_shipping ? "Shipped" : "Digital") : "—"}</td>
-                              <td className="tnum" style={{ textAlign: "right" }}>{item?.quantity ?? "—"}</td>
-                              <td className="tnum" style={{ textAlign: "right" }}>{item ? formatMoney(Number(item.unit_price_cents || 0) * item.quantity) : "—"}</td>
-                            </tr>
-                          ));
-                        })}
-                      </tbody>
-                    </table>
+                                    <p className="xs dim mt1">
+                                      {item.requires_shipping ? "Shipped" : "Digital"}
+                                      {" · "}
+                                      Qty {item.quantity}
+                                    </p>
+                                  </div>
+                                  <div className="oblock__item-side tnum">
+                                    {formatMoney(Number(item.unit_price_cents || 0) * item.quantity)}
+                                  </div>
+                                </div>
+                              ))
+                            ) : (
+                              <p className="xs dim">No line items on this order.</p>
+                            )}
+                          </div>
+
+                          {order.shipment ? <OrderShipmentPanel shipment={order.shipment} /> : null}
+                          <OrderDownloadsPanel order={order} files={orderDownloads[order.id]} />
+                        </article>
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="empty mt6">

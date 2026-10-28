@@ -157,3 +157,21 @@ export function IconPage(props: IconProps) {
     </svg>
   );
 }
+
+export function IconEye(props: IconProps) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" {...props}>
+      <path d="M1.8 9s2.6-4.5 7.2-4.5S16.2 9 16.2 9s-2.6 4.5-7.2 4.5S1.8 9 1.8 9Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+      <circle cx="9" cy="9" r="2.2" stroke="currentColor" strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+export function IconEyeOff(props: IconProps) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true" {...props}>
+      <path d="M7.4 7.4a2.2 2.2 0 0 0 3.2 3.2M4.1 4.6C2.7 5.6 1.8 7.1 1.8 9s2.6 4.5 7.2 4.5c1.4 0 2.6-.3 3.6-.8M7.6 4.6c.45-.07.92-.1 1.4-.1 4.6 0 7.2 4.5 7.2 4.5-.4.7-1 1.4-1.7 2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 3l12 12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    </svg>
+  );
+}

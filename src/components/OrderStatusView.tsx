@@ -14,6 +14,7 @@ type DownloadFile = {
   expiresAt: string | null;
   available: boolean;
   reason: string | null;
+  reasonCode?: "unpaid" | "expired" | "limit" | null;
 };
 
 type OrderPayload = {
@@ -223,7 +224,7 @@ export function OrderStatusView({ mode }: { mode: "confirmation" | "downloads" }
                 <h2 className="d3">{paid ? "Your downloads are ready" : "Downloads"}</h2>
                 <p className="body sm mt2">
                   {paid
-                    ? `Also emailed to ${order.customerEmail}. Keep this link private; it opens your files.`
+                    ? `Also emailed to ${order.customerEmail}. Keep this link private; guest downloads from this link are limited to 2 per file.`
                     : "These unlock as soon as your payment is confirmed."}
                 </p>
                 <div className="mt4">
@@ -246,6 +247,10 @@ export function OrderStatusView({ mode }: { mode: "confirmation" | "downloads" }
                           >
                             <IconDownload /> Download
                           </a>
+                        ) : file.reasonCode === "limit" ? (
+                          <a className="btn btn--sm" href="/account">
+                            Sign in to My Account
+                          </a>
                         ) : (
                           <button className="btn btn--line btn--sm" type="button" disabled>
                             Unavailable
@@ -255,6 +260,13 @@ export function OrderStatusView({ mode }: { mode: "confirmation" | "downloads" }
                     )),
                   )}
                 </div>
+                {mode === "confirmation" ? (
+                  <p className="mt4">
+                    <a className="btn btn--line btn--sm" href="/account">
+                      My account
+                    </a>
+                  </p>
+                ) : null}
               </div>
             ) : null}
 
@@ -357,7 +369,10 @@ export function OrderStatusView({ mode }: { mode: "confirmation" | "downloads" }
                     : "Payment pending"}{" "}
               · {order.number}
             </p>
-            <a className="btn btn--quiet btn--block mt4" href="/store">
+            <a className="btn btn--quiet btn--block mt4" href="/account">
+              My account
+            </a>
+            <a className="btn btn--quiet btn--block mt2" href="/store">
               Keep browsing
             </a>
           </aside>

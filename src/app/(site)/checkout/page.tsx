@@ -4,7 +4,7 @@ import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "rea
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
 import { formatMoney, formatMoneyOrFree } from "@/lib/money";
-import { IconDownload, IconShield, IconTruck } from "@/components/icons";
+import { IconDownload, IconEye, IconEyeOff, IconShield, IconTruck } from "@/components/icons";
 import { PayPalCheckoutButtons } from "@/components/PayPalCheckoutButtons";
 
 type CreateResponse = { mode?: "free" | "paypal" | "cash_on_delivery"; orderToken?: string; paypalOrderId?: string; error?: string };
@@ -26,8 +26,15 @@ function CheckoutPageInner() {
   const payByCod = !free && codOffered && (choice === "cash_on_delivery" || !cart.paypalAvailable);
   const [activeStep, setActiveStep] = useState(0);
   const [accountEmail, setAccountEmail] = useState("");
+  /** idle = no valid email yet; checking = DB lookup; new = show password; exists = hide password */
+  const [emailStatus, setEmailStatus] = useState<"idle" | "checking" | "new" | "exists">("idle");
+  const emailCheckTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const orderTokenRef = useRef("");
   const year = new Date().getFullYear();
+  const isGuest = !accountEmail;
+  const showPasswordFields = isGuest && emailStatus === "new";
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const steps = useMemo(() => {
     const s = ["Contact"];
@@ -80,12 +87,60 @@ function CheckoutPageInner() {
     };
   }, []);
 
+  const checkEmailAccount = useCallback((rawEmail: string) => {
+    if (emailCheckTimer.current) clearTimeout(emailCheckTimer.current);
+    const email = rawEmail.trim().toLowerCase();
+    if (!isGuest || !EMAIL_PATTERN.test(email)) {
+      setEmailStatus("idle");
+      return;
+    }
+    setEmailStatus("checking");
+    emailCheckTimer.current = setTimeout(() => {
+      fetch(`/api/customer/account-status?email=${encodeURIComponent(email)}`)
+        .then(async (response) => ({
+          ok: response.ok,
+          body: await response.json().catch(() => ({})) as { exists?: boolean; hasPassword?: boolean },
+        }))
+        .then((result) => {
+          // Store customers table: email already on file → no password fields. Brand-new email → create password.
+          setEmailStatus(result.ok && result.body?.exists ? "exists" : "new");
+        })
+        .catch(() => setEmailStatus("new"));
+    }, 350);
+  }, [isGuest]);
+
   function validateForm(form: HTMLFormElement): boolean {
     const badEmail = (f: Element) => f instanceof HTMLInputElement && f.type === "email" && !EMAIL_PATTERN.test(f.value.trim());
     const miss = Array.from(form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("[required]")).filter(
       (f) => (f.type === "checkbox" ? !(f as HTMLInputElement).checked : !f.value.trim() || badEmail(f)),
     );
     form.querySelectorAll(".field").forEach((f) => f.classList.remove("bad"));
+    if (isGuest && emailStatus === "checking") {
+      setErr("Checking that email — one moment.");
+      return false;
+    }
+    if (isGuest && emailStatus === "idle") {
+      form.querySelector("#email")?.closest(".field")?.classList.add("bad");
+      setErr("Enter a valid email address.");
+      (form.elements.namedItem("email") as HTMLInputElement | null)?.focus();
+      return false;
+    }
+    if (showPasswordFields) {
+      const password = String((form.elements.namedItem("password") as HTMLInputElement | null)?.value || "");
+      const confirm = String((form.elements.namedItem("passwordConfirm") as HTMLInputElement | null)?.value || "");
+      if (password.length < 8) {
+        form.querySelector("#password")?.closest(".field")?.classList.add("bad");
+        setErr("Create a password with at least 8 characters so you can sign in later.");
+        (form.elements.namedItem("password") as HTMLInputElement | null)?.focus();
+        return false;
+      }
+      if (password !== confirm) {
+        form.querySelector("#passwordConfirm")?.closest(".field")?.classList.add("bad");
+        setErr("Passwords do not match.");
+        (form.elements.namedItem("passwordConfirm") as HTMLInputElement | null)?.focus();
+        return false;
+      }
+    }
     if (!miss.length) {
       setErr("");
       return true;
@@ -100,6 +155,7 @@ function CheckoutPageInner() {
   const checkoutPayload = useCallback(
     (form: HTMLFormElement, paymentMethod: PaymentChoice = "paypal") => {
       const fd = new FormData(form);
+      const password = showPasswordFields ? String(fd.get("password") || "") : "";
       return {
         paymentMethod,
         items: cart.items.map((i) => ({ productId: i.productId, variantId: i.variantId, qty: i.qty, pwywCents: i.pwywCents })),
@@ -115,9 +171,10 @@ function CheckoutPageInner() {
               country: String(fd.get("country") || "United States"),
             }
           : null,
+        ...(password ? { password } : {}),
       };
     },
-    [cart.items, promo?.code, physical],
+    [cart.items, promo?.code, physical, showPasswordFields],
   );
 
   const finish = useCallback(
@@ -304,12 +361,73 @@ function CheckoutPageInner() {
                             autoCorrect="off"
                             spellCheck={false}
                             required
+                            readOnly={Boolean(accountEmail)}
+                            onBlur={(event) => checkEmailAccount(event.currentTarget.value)}
+                            onChange={(event) => checkEmailAccount(event.currentTarget.value)}
                           />
-                          {accountEmail ? <p className="hint">Signed in as {accountEmail}. Your contact details were filled in for you.</p> : null}
-                          <p className="hint">
-                            {digital ? "Your download link and receipt go here." : "Order confirmation and tracking go here."}
-                          </p>
+                          {accountEmail ? (
+                            <p className="hint">Signed in as {accountEmail}. Your contact details were filled in for you.</p>
+                          ) : emailStatus === "exists" ? (
+                            <p className="hint">This email address is already registered with this store.</p>
+                          ) : (
+                            <p className="hint">
+                              {digital ? "Your download link and receipt go here." : "Order confirmation and tracking go here."}
+                            </p>
+                          )}
                         </div>
+                        {showPasswordFields ? (
+                          <>
+                            <div className="field">
+                              <label className="label" htmlFor="password">
+                                Create a password<span className="req">*</span>
+                              </label>
+                              <div className="input-wrap">
+                                <input
+                                  className="input"
+                                  id="password"
+                                  name="password"
+                                  type={showPassword ? "text" : "password"}
+                                  autoComplete="new-password"
+                                  minLength={8}
+                                  required
+                                />
+                                <button
+                                  className="input-wrap__toggle"
+                                  type="button"
+                                  aria-label={showPassword ? "Hide password" : "Show password"}
+                                  onClick={() => setShowPassword((value) => !value)}
+                                >
+                                  {showPassword ? <IconEyeOff /> : <IconEye />}
+                                </button>
+                              </div>
+                              <p className="hint">Use this email and password later to sign in and view orders.</p>
+                            </div>
+                            <div className="field">
+                              <label className="label" htmlFor="passwordConfirm">
+                                Confirm password<span className="req">*</span>
+                              </label>
+                              <div className="input-wrap">
+                                <input
+                                  className="input"
+                                  id="passwordConfirm"
+                                  name="passwordConfirm"
+                                  type={showPasswordConfirm ? "text" : "password"}
+                                  autoComplete="new-password"
+                                  minLength={8}
+                                  required
+                                />
+                                <button
+                                  className="input-wrap__toggle"
+                                  type="button"
+                                  aria-label={showPasswordConfirm ? "Hide password" : "Show password"}
+                                  onClick={() => setShowPasswordConfirm((value) => !value)}
+                                >
+                                  {showPasswordConfirm ? <IconEyeOff /> : <IconEye />}
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        ) : null}
                       </fieldset>
 
                       {physical ? (
@@ -357,10 +475,14 @@ function CheckoutPageInner() {
                               <label className="label" htmlFor="country">
                                 Country<span className="req">*</span>
                               </label>
-                              <select className="select" id="country" name="country" autoComplete="country-name">
-                                <option>United States</option>
-                                <option>Canada</option>
-                              </select>
+                              <input
+                                className="input"
+                                id="country"
+                                name="country"
+                                defaultValue="United States"
+                                readOnly
+                                autoComplete="country-name"
+                              />
                             </div>
                           </div>
                           {printify ? (

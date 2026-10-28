@@ -14,11 +14,12 @@ export function Footer() {
       <div className="wrap" style={{ position: "relative", zIndex: 2 }}>
         <div className="ftr__top">
           <div>
-            <p className="ftr__mission">
-              Make God
-              <br />
-              look <em>good.</em>
-            </p>
+            <a className="ftr__brand" href="/" aria-label="Garth Heckman home">
+              <img src="/assets/img/gh-logo.png" width={732} height={732} alt="" />
+              <span>
+                <b>Garth Heckman</b>
+              </span>
+            </a>
             <p className="body sm mt3" style={{ maxWidth: "32ch", color: "var(--taupe)" }}>
               Coach · Pastor · Author · Generational Strategist. Forty-two years in, still asking better questions.
             </p>

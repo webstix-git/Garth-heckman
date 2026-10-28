@@ -8,6 +8,7 @@ export type CheckoutInput = {
   contact?: { fname?: unknown; lname?: unknown; email?: unknown };
   address?: { line1?: unknown; line2?: unknown; city?: unknown; state?: unknown; zip?: unknown; country?: unknown } | null;
   paymentMethod?: unknown;
+  password?: unknown;
 };
 
 const MAX_LINES = 50;
@@ -36,6 +37,7 @@ export function checkoutBody(input: CheckoutInput) {
         country: text(input.address.country, 60) || "United States",
       }
     : undefined;
+  const password = typeof input.password === "string" ? input.password : "";
   return {
     email: text(input.contact?.email, 254),
     name,
@@ -44,5 +46,6 @@ export function checkoutBody(input: CheckoutInput) {
     items: cartItemsForBackend(input.items),
     couponCode: text(input.couponCode, 64),
     paymentMethod: input.paymentMethod === "cash_on_delivery" ? "cash_on_delivery" : "paypal",
+    ...(password ? { password } : {}),
   };
 }
