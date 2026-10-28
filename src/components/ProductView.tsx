@@ -25,24 +25,41 @@ function Accordion({ product: p }: { product: Product }) {
         ? { ...section, body: ensureSkuInDetailsBody(section.body, p.sku) }
         : section,
   );
+  // All sections open by default; click still toggles each heading.
+  const [openByIndex, setOpenByIndex] = useState<Record<number, boolean>>(() =>
+    Object.fromEntries(sections.map((_, index) => [index, true])),
+  );
 
   return (
-    <div className="acc acc--static mt6">
-      {sections.map((section, index) => (
-        <div key={`${section.heading}-${index}`} className="acc__item open">
-          <button className="acc__btn" type="button" aria-expanded="true">
-            {section.heading || `Section ${index + 1}`} <i></i>
-          </button>
-          <div className="acc__panel">
-            <div>
-              <div
-                className="in prose"
-                dangerouslySetInnerHTML={{ __html: toProseHtml(section.body) }}
-              />
+    <div className="acc mt6" data-acc-react>
+      {sections.map((section, index) => {
+        const open = openByIndex[index] ?? false;
+        return (
+          <div key={`${section.heading}-${index}`} className={open ? "acc__item open" : "acc__item"}>
+            <button
+              className="acc__btn"
+              type="button"
+              aria-expanded={open}
+              onClick={() =>
+                setOpenByIndex((current) => ({
+                  ...current,
+                  [index]: !(current[index] ?? false),
+                }))
+              }
+            >
+              {section.heading || `Section ${index + 1}`} <i></i>
+            </button>
+            <div className="acc__panel">
+              <div>
+                <div
+                  className="in prose"
+                  dangerouslySetInnerHTML={{ __html: toProseHtml(section.body) }}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

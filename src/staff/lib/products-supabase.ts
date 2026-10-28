@@ -23,6 +23,10 @@ import {
   loadProductVariantMatrix,
   syncProductVariantMatrix,
 } from "@/lib/product-variants-supabase";
+import {
+  contentSectionsFromProductRecord,
+  detailsRowsFromDetailsBody,
+} from "@/lib/product-content-sections";
 
 export const GARTH_STORE_ID = getStoreId();
 
@@ -100,9 +104,11 @@ function mapProduct(row: DbProduct, categoryIdOverride?: string): Product {
   const externalUrl =
     typeof row.metadata?.externalUrl === "string" ? row.metadata.externalUrl : undefined;
 
-  const contentSections = Array.isArray(row.metadata?.contentSections)
-    ? (row.metadata!.contentSections as Product["contentSections"])
-    : undefined;
+  const contentSections = contentSectionsFromProductRecord({
+    description: row.description,
+    type,
+    metadata: row.metadata,
+  });
 
   const attributes = Array.isArray(row.metadata?.attributes)
     ? (row.metadata!.attributes as Product["attributes"])
@@ -372,6 +378,30 @@ function toDbPayload(input: ProductInput | Partial<ProductInput>, existing?: DbP
       Boolean(existing?.metadata?.soldIndividually),
   });
 
+  const normalizedSections = Array.isArray(contentSections)
+    ? contentSections
+        .map((section) => ({
+          heading: String(section?.heading || "").trim(),
+          body: String(section?.body || "").trim(),
+        }))
+        .filter((section) => section.heading || section.body)
+        .slice(0, 5)
+    : [];
+  const detailsSection = normalizedSections.find(
+    (section) => section.heading.toLowerCase() === "details",
+  );
+  const detailsFromEditor = detailsSection
+    ? detailsRowsFromDetailsBody(detailsSection.body)
+    : [];
+  const existingDetails = Array.isArray(existing?.metadata?.details)
+    ? (existing!.metadata!.details as Array<{ label?: string; value?: string }>)
+        .map((row) => ({
+          label: String(row?.label || "").trim(),
+          value: String(row?.value || "").trim(),
+        }))
+        .filter((row) => row.label && row.value && row.label.toLowerCase() !== "sku")
+    : [];
+
   const metadata = {
     ...(existing?.metadata || {}),
     admin_type: type,
@@ -383,15 +413,13 @@ function toDbPayload(input: ProductInput | Partial<ProductInput>, existing?: DbP
     ),
     categoryId: input.categoryId ?? existing?.metadata?.categoryId ?? "uncategorized",
     images,
-    contentSections: Array.isArray(contentSections)
-      ? contentSections
-          .map((section) => ({
-            heading: String(section?.heading || "").trim(),
-            body: String(section?.body || "").trim(),
-          }))
-          .filter((section) => section.heading || section.body)
-          .slice(0, 5)
-      : [],
+    contentSections: normalizedSections,
+    // Keep Render admin + storefront auto-build in sync with the same copy.
+    productPageSections: normalizedSections.map((section) => ({
+      title: section.heading,
+      content: section.body,
+    })),
+    details: detailsFromEditor.length ? detailsFromEditor : existingDetails,
     attributes: Array.isArray(attributes)
       ? attributes
           .map((attr) => ({
@@ -512,11 +540,32 @@ function mapRowsToListProducts(
   });
 }
 
+async function loadDigitalFilesForProduct(
+  productId: string,
+  storeId: string,
+): Promise<Array<{ name: string; sizeMb: number | null }>> {
+  const supabase = createSupabaseAdmin();
+  const { data } = await supabase
+    .from("digital_assets")
+    .select("file_label,storage_path")
+    .eq("store_id", storeId)
+    .eq("product_id", productId)
+    .order("created_at");
+  return (data ?? []).map((row) => {
+    const name =
+      String(row.file_label || "").trim() ||
+      String(row.storage_path || "").split("/").pop() ||
+      "Download";
+    return { name, sizeMb: null };
+  });
+}
+
 async function hydrateProductRow(row: DbProduct, storeId: string): Promise<Product> {
   const supabase = createSupabaseAdmin();
-  const [{ byId, bySlug }, joinByProduct] = await Promise.all([
+  const [{ byId, bySlug }, joinByProduct, digitalFiles] = await Promise.all([
     loadCategoryLookup(supabase, storeId),
     loadJoinsForProducts(supabase, [row.id]),
+    loadDigitalFilesForProduct(row.id, storeId),
   ]);
   const categoryId = resolveCategoryIdForProduct(
     mapProduct(row),
@@ -524,7 +573,17 @@ async function hydrateProductRow(row: DbProduct, storeId: string): Promise<Produ
     byId,
     bySlug,
   );
-  const product = applyStorefrontPricing(mapProduct(row, categoryId));
+  const mapped = mapProduct(row, categoryId);
+  const product = applyStorefrontPricing({
+    ...mapped,
+    // Rebuild with file names so Download & access matches the storefront.
+    contentSections: contentSectionsFromProductRecord({
+      description: row.description,
+      type: mapped.type,
+      metadata: row.metadata,
+      digitalFiles,
+    }),
+  });
   return withVariantMatrix(product, storeId);
 }
 

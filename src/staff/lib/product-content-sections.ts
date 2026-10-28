@@ -110,23 +110,105 @@ export function contentSectionsFromStorefront(
   });
 }
 
+function normalizeSectionList(
+  sections: Array<{ heading?: string; body?: string; title?: string; content?: string }> | null | undefined,
+): ProductContentSection[] {
+  if (!Array.isArray(sections)) return [];
+  return sections
+    .map((section) => ({
+      heading: String(section.heading ?? section.title ?? "").trim(),
+      body: String(section.body ?? section.content ?? "").trim(),
+    }))
+    .filter((section) => section.heading || section.body)
+    .map((section) => {
+      const body = toProseHtml(section.body);
+      const isDetails = section.heading.toLowerCase() === "details";
+      return {
+        heading: section.heading,
+        body: isDetails ? stripSkuFromDetailsBody(body) : body,
+      };
+    });
+}
+
+function readMetadataDetails(
+  metadata: Record<string, unknown> | null | undefined,
+): Array<{ label: string; value: string }> {
+  if (!Array.isArray(metadata?.details)) return [];
+  return (metadata.details as Array<{ label?: unknown; value?: unknown }>)
+    .map((row) => ({
+      label: String(row?.label ?? "").trim(),
+      value: String(row?.value ?? "").trim(),
+    }))
+    .filter((row) => row.label && row.value);
+}
+
+function readDownloadSettings(metadata: Record<string, unknown> | null | undefined): {
+  downloadLimit?: number;
+  expiryDays?: number;
+} {
+  const limit = Number(metadata?.downloadLimit);
+  const expiration = metadata?.downloadExpiration;
+  return {
+    ...(Number.isFinite(limit) && limit > 0 ? { downloadLimit: limit } : {}),
+    ...(expiration === "never"
+      ? {}
+      : Number(expiration) > 0
+        ? { expiryDays: Number(expiration) }
+        : { expiryDays: 365 }),
+  };
+}
+
+/**
+ * Build the same Description / Details / Download sections the storefront shows,
+ * from whatever the product row actually stores (contentSections, productPageSections, or details).
+ */
+export function contentSectionsFromProductRecord(input: {
+  description?: string | null;
+  type?: string | null;
+  metadata?: Record<string, unknown> | null;
+  digitalFiles?: Array<{ name: string; sizeMb: number | null }>;
+}): ProductContentSection[] {
+  const metadata = input.metadata ?? {};
+  const fromContent = normalizeSectionList(
+    metadata.contentSections as ProductContentSection[] | undefined,
+  );
+  const fromPage = normalizeSectionList(
+    metadata.productPageSections as Array<{ title?: string; content?: string }> | undefined,
+  );
+  // Ignore heading-only placeholders; storefront details still need to seed the editors.
+  const existing = (fromContent.some((section) => section.body.trim())
+    ? fromContent
+    : fromPage.some((section) => section.body.trim())
+      ? fromPage
+      : []);
+  if (existing.length) return existing;
+
+  const type = String(input.type || "").toLowerCase();
+  const shippingRequired = type === "physical" || type === "bundle";
+  const download = readDownloadSettings(metadata);
+  return buildDefaultContentSections({
+    description: input.description || "",
+    details: readMetadataDetails(metadata),
+    shippingRequired,
+    digital: shippingRequired
+      ? null
+      : {
+          files: input.digitalFiles ?? [],
+          downloadLimit: download.downloadLimit ?? 5,
+          expiryDays: download.expiryDays ?? 365,
+        },
+  });
+}
+
 /** Prefer existing sections; otherwise seed from storefront/catalog defaults. */
 export function withFilledContentSections(
   admin: Product,
   storefront?: StorefrontProduct | null,
 ): Product {
-  const existing = (admin.contentSections || [])
-    .filter((s) => s.heading.trim() || s.body.trim())
-    .map((s) => {
-      const body = toProseHtml(s.body);
-      const isDetails = s.heading.trim().toLowerCase() === "details";
-      return {
-        ...s,
-        // Admin Details editor should not carry SKU — that is the SKU field.
-        body: isDetails ? stripSkuFromDetailsBody(body) : body,
-      };
-    });
-  if (existing.length) return { ...admin, contentSections: existing };
+  const existing = normalizeSectionList(admin.contentSections);
+  if (existing.some((section) => section.body.trim())) {
+    return { ...admin, contentSections: existing };
+  }
 
   if (storefront) {
     return {
@@ -147,6 +229,25 @@ export function withFilledContentSections(
           : null,
     }),
   };
+}
+
+/** Turn Details HTML (`<p><strong>Format:</strong> PDF</p>`) back into metadata.details rows. */
+export function detailsRowsFromDetailsBody(body: string): Array<{ label: string; value: string }> {
+  const html = stripSkuFromDetailsBody(body);
+  const rows: Array<{ label: string; value: string }> = [];
+  const pattern =
+    /<p\b[^>]*>\s*<strong>\s*([^<:]+)\s*:?\s*<\/strong>\s*([\s\S]*?)\s*<\/p>/gi;
+  for (const match of html.matchAll(pattern)) {
+    const label = String(match[1] || "").replace(/<[^>]+>/g, "").trim();
+    const value = String(match[2] || "")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (label && value && label.toLowerCase() !== "sku") {
+      rows.push({ label, value });
+    }
+  }
+  return rows;
 }
 
 /** Remove SKU rows from Details HTML (SKU is edited via the product SKU field). */

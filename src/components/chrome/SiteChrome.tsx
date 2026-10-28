@@ -194,7 +194,8 @@ function SiteBehaviors() {
       }
 
       const acc = (e.target as HTMLElement).closest(".acc__btn");
-      if (acc) {
+      // ProductView accordion is React-controlled — skip legacy DOM toggle there.
+      if (acc && !acc.closest("[data-acc-react]")) {
         const open = acc.getAttribute("aria-expanded") === "true";
         acc.setAttribute("aria-expanded", String(!open));
         acc.closest(".acc__item")?.classList.toggle("open", !open);

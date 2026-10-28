@@ -58,7 +58,12 @@ export type BackendCatalogProduct = {
     downloadLimit?: number | null;
     expiresAfterDays?: number | null;
   } | null;
-  sections?: Array<{ heading?: string | null; body?: string | null }>;
+  sections?: Array<{
+    heading?: string | null;
+    body?: string | null;
+    title?: string | null;
+    content?: string | null;
+  }>;
   details?: Array<{ label: string; value: string }>;
   related?: string[];
   seo?: { title?: string | null; description?: string | null; noindex?: boolean } | null;
@@ -113,7 +118,10 @@ export function mapBackendProduct(row: BackendCatalogProduct): Product {
   const description = row.description?.trim() || "";
   const shortDescription = row.shortDescription?.trim() || "";
   const sections = (row.sections ?? [])
-    .map((section) => ({ heading: String(section.heading ?? "").trim(), body: String(section.body ?? "").trim() }))
+    .map((section) => ({
+      heading: String(section.heading ?? section.title ?? "").trim(),
+      body: String(section.body ?? section.content ?? "").trim(),
+    }))
     .filter((section) => section.heading || section.body);
 
   return {
