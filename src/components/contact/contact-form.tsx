@@ -16,11 +16,16 @@ export function ContactForm() {
     event.preventDefault();
     const formElement = event.currentTarget;
     const form = new FormData(formElement);
-    const name = String(form.get("name") ?? "").trim();
-    const email = String(form.get("email") ?? "").trim();
-    const phone = String(form.get("phone") ?? "").trim();
-    const subject = String(form.get("subject") ?? "").trim();
-    const body = String(form.get("message") ?? "").trim();
+    // Collect every named input — backend stores the full snapshot in jsonb `fields`.
+    const fields: Record<string, string> = {};
+    for (const [key, value] of form.entries()) {
+      if (typeof value !== "string") continue;
+      if (key === "cf-turnstile-response") continue;
+      fields[key] = value.trim();
+    }
+    const name = fields.name ?? "";
+    const email = fields.email ?? "";
+    const phone = fields.phone ?? "";
     if (!name || !email || !phone) {
       setState("error");
       setMessage("Please complete your name, email, and phone.");
@@ -45,15 +50,9 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           formTitle: "Contact Form",
-          name,
-          email,
-          phone,
-          subject,
-          message: body,
+          ...fields,
+          fields,
           turnstileToken: turnstileToken || undefined,
-          fields: {
-            company: String(form.get("company") ?? "").trim(),
-          },
         }),
       });
       const result = (await response.json()) as { error?: string };
