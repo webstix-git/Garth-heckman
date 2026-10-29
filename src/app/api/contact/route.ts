@@ -2,8 +2,14 @@ import { NextResponse } from "next/server";
 
 import { getBackendCatalogConfig } from "@/lib/backend-catalog";
 import { clientIp, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export const runtime = "nodejs";
+
+type ContactBody = {
+  turnstileToken?: string;
+  [key: string]: unknown;
+};
 
 /** Proxy contact submissions so STORE_API_KEY never ships to the browser. */
 export async function POST(request: Request) {
@@ -18,12 +24,19 @@ export async function POST(request: Request) {
     );
   }
 
-  let body: unknown;
+  let body: ContactBody;
   try {
-    body = await request.json();
+    body = (await request.json()) as ContactBody;
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
+
+  const captcha = await verifyTurnstileToken(body.turnstileToken, request, "contact");
+  if (!captcha.ok) {
+    return NextResponse.json({ error: captcha.error }, { status: 403 });
+  }
+
+  const { turnstileToken: _token, ...payloadBody } = body;
 
   const response = await fetch(`${backendUrl}/api/contact-submissions`, {
     method: "POST",
@@ -32,7 +45,7 @@ export async function POST(request: Request) {
       "X-Store-Key": storeKey,
       "X-Forwarded-For": clientIp(request),
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(payloadBody),
     cache: "no-store",
   });
 
