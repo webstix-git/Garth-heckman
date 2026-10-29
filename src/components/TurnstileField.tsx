@@ -1,7 +1,7 @@
 "use client";
 
 import Script from "next/script";
-import { useCallback, useEffect, useId, useRef } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 type TurnstileApi = {
   render: (
@@ -12,7 +12,7 @@ type TurnstileApi = {
       theme?: "light" | "dark" | "auto";
       callback?: (token: string) => void;
       "expired-callback"?: () => void;
-      "error-callback"?: () => void;
+      "error-callback"?: (errorCode?: string) => void;
     },
   ) => string;
   reset: (widgetId?: string) => void;
@@ -31,6 +31,23 @@ type Props = {
   onToken: (token: string | null) => void;
 };
 
+function turnstileErrorHint(code?: string) {
+  const normalized = String(code || "").replace(/\*$/, "");
+  if (normalized.startsWith("110200") || code === "110200") {
+    return "This domain is not allowed on the Turnstile widget. In Cloudflare → Turnstile → widget Settings → Hostname Management, add garthheckman.com (and localhost for local testing).";
+  }
+  if (normalized.startsWith("110100") || normalized.startsWith("110110") || normalized.startsWith("400020")) {
+    return "Invalid Turnstile site key. Check NEXT_PUBLIC_TURNSTILE_SITE_KEY.";
+  }
+  if (normalized.startsWith("400021")) {
+    return "Turnstile site key does not match this domain.";
+  }
+  if (normalized.startsWith("400070")) {
+    return "This Turnstile site key is disabled in the Cloudflare dashboard.";
+  }
+  return "Security check failed to load. Refresh the page, or check Cloudflare Turnstile hostnames / site key.";
+}
+
 /** Explicit Turnstile widget — site key comes from NEXT_PUBLIC_TURNSTILE_SITE_KEY. */
 export function TurnstileField({ action = "contact", theme = "auto", onToken }: Props) {
   const siteKey = String(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "").trim();
@@ -38,6 +55,7 @@ export function TurnstileField({ action = "contact", theme = "auto", onToken }: 
   const widgetIdRef = useRef<string | null>(null);
   const onTokenRef = useRef(onToken);
   const reactId = useId();
+  const [errorHint, setErrorHint] = useState<string | null>(null);
 
   useEffect(() => {
     onTokenRef.current = onToken;
@@ -51,9 +69,21 @@ export function TurnstileField({ action = "contact", theme = "auto", onToken }: 
       sitekey: siteKey,
       action,
       theme,
-      callback: (token) => onTokenRef.current(token),
+      callback: (token) => {
+        setErrorHint(null);
+        onTokenRef.current(token);
+      },
       "expired-callback": () => onTokenRef.current(null),
-      "error-callback": () => onTokenRef.current(null),
+      "error-callback": (errorCode) => {
+        onTokenRef.current(null);
+        setErrorHint(turnstileErrorHint(errorCode));
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("[turnstile]", errorCode || "unknown error", {
+            host: window.location.hostname,
+            siteKeyPrefix: siteKey.slice(0, 12),
+          });
+        }
+      },
     });
   }, [action, siteKey, theme]);
 
@@ -81,6 +111,11 @@ export function TurnstileField({ action = "contact", theme = "auto", onToken }: 
         onReady={mount}
       />
       <div ref={containerRef} id={`cf-turnstile-${reactId.replace(/:/g, "")}`} />
+      {errorHint ? (
+        <p className="hint mt2" style={{ color: "var(--bad-dp)" }}>
+          {errorHint}
+        </p>
+      ) : null}
     </div>
   );
 }

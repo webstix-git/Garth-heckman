@@ -23,7 +23,7 @@ export function hrefFromPrototype(href: string): string {
 export const WTFU_HREF = "/product/wtfu-book";
 
 export const ASK_GARTH_HREF = "/ask-garth";
-export const GARTH_EMAIL = "garthwheckman@gmail.com";
+export const GARTH_EMAIL = "garth.w.heckman@gmail.com";
 export const GARTH_PHONE_DISPLAY = "(952) 240-7152";
 export const GARTH_PHONE_TEL = "+19522407152";
 export const GARTH_ADDRESS_LINE1 = "15097 DuPont Path";
