@@ -16,7 +16,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function CheckoutPageInner() {
   const cart = useCart();
   const router = useRouter();
-  const { lines, subtotal, discount, shipping, tax, total, physical, digital, priced, promo } = cart;
+  const { lines, subtotal, discount, shipping, tax, total, physical, digital, priced, promo, setQty } = cart;
   const free = priced && total === 0;
   const printify = lines.some((line) => line.fulfillment === "printify");
   const [err, setErr] = useState("");
@@ -607,12 +607,41 @@ function CheckoutPageInner() {
                     <aside className="summary">
                       <h2 className="d4 mb4">Order summary</h2>
                       {lines.map((i) => (
-                        <div className="sline" key={i.key}>
-                          <span className="dim">
-                            {i.title}
-                            {i.optionsLabel ? ` (${i.optionsLabel})` : ""}
-                            {i.qty > 1 ? ` × ${i.qty}` : ""}
-                          </span>
+                        <div className="sline sline--item" key={i.key}>
+                          <div className="sline__main">
+                            <span className="dim">
+                              {i.title}
+                              {i.optionsLabel ? ` (${i.optionsLabel})` : ""}
+                            </span>
+                            <div className="qty qty--sm">
+                              <button
+                                type="button"
+                                data-step="down"
+                                aria-label={`Decrease quantity of ${i.title}`}
+                                disabled={placing}
+                                onClick={() => setQty(i.key, i.qty - 1)}
+                              >
+                                −
+                              </button>
+                              <input
+                                type="number"
+                                value={i.qty}
+                                min={1}
+                                aria-label={`Quantity for ${i.title}`}
+                                disabled={placing}
+                                onChange={(e) => setQty(i.key, parseInt(e.target.value, 10) || 1)}
+                              />
+                              <button
+                                type="button"
+                                data-step="up"
+                                aria-label={`Increase quantity of ${i.title}`}
+                                disabled={placing}
+                                onClick={() => setQty(i.key, i.qty + 1)}
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
                           <span className="tnum">{formatMoney(i.unitCents * i.qty)}</span>
                         </div>
                       ))}

@@ -1550,6 +1550,10 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 .summary { position:sticky; top:calc(var(--hdr) + 24px); background:var(--bg-2); border:1px solid var(--line); padding:clamp(16px,2.4vw,32px); }
 .sline { display:flex; justify-content:space-between; gap:16px; font-size:16px; }
 .sline + .sline { margin-top:8px; }
+.sline--item { align-items:flex-start; }
+.sline__main { display:flex; flex-direction:column; align-items:flex-start; gap:10px; min-width:0; flex:1; }
+.sline--item .qty { min-height:36px; }
+.qty button:disabled, .qty input:disabled { opacity:.5; cursor:not-allowed; }
 .stotal { display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-top:16px; padding-top:16px; border-top:1px solid var(--line-2); }
 .stotal b { font-size:1.875rem; font-weight:800; font-variation-settings:"wdth" 106; letter-spacing:-.045em; font-variant-numeric:tabular-nums; }
 .li { display:grid; grid-template-columns:92px minmax(0,1fr) auto; gap:16px; padding:24px 0; border-bottom:1px solid var(--line); align-items:start; }

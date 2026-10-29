@@ -198,7 +198,7 @@ function ProductViewInner({
     if (!key) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
-    cart.toast("Added to cart", p.title, "#cart", "View cart");
+    cart.openDrawer();
   }
 
   return (

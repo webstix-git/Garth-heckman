@@ -91,8 +91,7 @@ export function ProductCard({ p }: { p: Product }) {
     if (!key) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
-    if (isPayWhatYouWantPrice(p.price)) cart.openDrawer();
-    else cart.toast("Added to cart", p.title, "#cart", "View cart");
+    cart.openDrawer();
   }
 
   return (

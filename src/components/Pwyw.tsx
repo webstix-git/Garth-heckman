@@ -5,7 +5,6 @@ import type { Product } from "@/lib/catalog";
 import { formatMoney, formatMoney0 } from "@/lib/money";
 import { IconArrow, IconCheck } from "@/components/icons";
 import { addProductToCart, useCart } from "@/components/CartProvider";
-import { useRouter } from "next/navigation";
 
 export function Pwyw({
   product,
@@ -20,7 +19,6 @@ export function Pwyw({
   const suggested = pr.suggested ?? min;
   const presets = pr.presets;
   const cart = useCart();
-  const router = useRouter();
   const [amount, setAmount] = useState(suggested);
   const [showCustom, setShowCustom] = useState(false);
   const [customDraft, setCustomDraft] = useState(String(Math.round(suggested / 100)));
@@ -74,10 +72,6 @@ export function Pwyw({
   function go() {
     const key = addProductToCart(cart, product, { pwywCents: amount, qty: 1 });
     if (!key) return;
-    if (compact) {
-      router.push("/checkout");
-      return;
-    }
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
     cart.openDrawer();
