@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { hasDatabaseAdminAccess, toAdminUserFromSupabase } from "@/lib/admin-auth";
+import { BackendError, backendFetch } from "@/lib/backend-catalog";
 import { clientIp, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 
@@ -48,13 +49,19 @@ export async function POST(request: NextRequest) {
   if (body.action === "reset") {
     const limited = rateLimit(`fe-password-reset:${clientIp(request)}`, 5, 15 * 60 * 1000);
     if (!limited.ok) return rateLimitResponse(limited.retryAfterSec);
-    const origin = request.nextUrl.origin;
-    const redirectTo = body.customer
-      ? `${origin}/account/reset-password`
-      : `${origin}/admin/login`;
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
-    // Always succeed outwardly so we don't reveal whether the email exists.
-    if (error) console.error("[auth:reset]", error.message);
+    // Branded Resend email via backend generateLink — never Supabase Auth's built-in mailer.
+    try {
+      await backendFetch("/api/auth/password-recovery/request", {
+        method: "POST",
+        body: { email, customer: Boolean(body.customer) },
+        clientIp: clientIp(request),
+      });
+    } catch (error) {
+      // Always succeed outwardly so we don't reveal whether the email exists.
+      if (!(error instanceof BackendError && error.status < 500)) {
+        console.error("[auth:reset]", error instanceof Error ? error.message : error);
+      }
+    }
     return NextResponse.json({ data: null });
   }
 

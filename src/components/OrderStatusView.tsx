@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import { formatMoney } from "@/lib/money";
 import { IconCheck, IconDownload, IconTruck } from "@/components/icons";
+import { SiteChrome } from "@/components/chrome/SiteChrome";
 
 type DownloadFile = {
   id: string;
@@ -61,11 +62,16 @@ function fileKind(name: string) {
   return ext && ext.length <= 4 ? ext : "FILE";
 }
 
-function Shell({ children }: { children: React.ReactNode }) {
+/**
+ * SiteChrome injects TopNav into the first <section> under <main>.
+ * That only works when main+section are in the same client render tree as SiteChrome
+ * (same pattern as /cart) — not when SiteChrome wraps a nested client boundary.
+ */
+function Shell({ children }: { children: ReactNode }) {
   return (
-    <main id="main">
-      <div id="out">{children}</div>
-    </main>
+    <SiteChrome nav="store">
+      <main id="main">{children}</main>
+    </SiteChrome>
   );
 }
 
@@ -91,13 +97,13 @@ function shipmentCopy(shipment: OrderPayload["order"]["shipment"], email: string
 
 function Message({ title, body }: { title: string; body: string }) {
   return (
-    <section className="sec">
+    <section className="phead on-dark grain">
       <div className="wrap">
         <div className="empty">
           <h1 className="d3">{title}</h1>
-          <p className="body mt3">{body}</p>
+          <p className="lede mt3 dim">{body}</p>
           <p className="mt5">
-            <a className="btn" href="/store">
+            <a className="btn btn--hero" href="/store">
               Back to the shop
             </a>
           </p>
@@ -149,7 +155,7 @@ export function OrderStatusView({ mode }: { mode: "confirmation" | "downloads" }
   if (!data) {
     return (
       <Shell>
-        <section className="sec">
+        <section className="phead on-dark grain">
           <div className="wrap">
             <p className="meta meta--dim">Loading your order…</p>
           </div>
