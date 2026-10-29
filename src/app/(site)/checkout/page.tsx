@@ -29,10 +29,14 @@ function CheckoutPageInner() {
   /** idle = no valid email yet; checking = DB lookup; new = show password; exists = hide password */
   const [emailStatus, setEmailStatus] = useState<"idle" | "checking" | "new" | "exists">("idle");
   const emailCheckTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const emailCheckSeq = useRef(0);
   const orderTokenRef = useRef("");
   const year = new Date().getFullYear();
   const isGuest = !accountEmail;
   const showPasswordFields = isGuest && emailStatus === "new";
+  // PayPal createOrder keeps a stale callback — always read the latest email/password gate.
+  const emailGateRef = useRef({ isGuest, emailStatus, showPasswordFields });
+  emailGateRef.current = { isGuest, emailStatus, showPasswordFields };
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
@@ -87,8 +91,6 @@ function CheckoutPageInner() {
     };
   }, []);
 
-  const emailCheckSeq = useRef(0);
-
   const checkEmailAccount = useCallback((rawEmail: string) => {
     if (emailCheckTimer.current) clearTimeout(emailCheckTimer.current);
     const email = rawEmail.trim().toLowerCase();
@@ -108,6 +110,8 @@ function CheckoutPageInner() {
           if (seq !== emailCheckSeq.current) return;
           // Email already in this store / Auth → hide password. Brand-new email → create password.
           setEmailStatus(result.ok && result.body?.exists === true ? "exists" : "new");
+          document.getElementById("email")?.closest(".field")?.classList.remove("bad");
+          setErr("");
         })
         .catch(() => {
           if (seq !== emailCheckSeq.current) return;
@@ -116,23 +120,24 @@ function CheckoutPageInner() {
     }, 350);
   }, [isGuest]);
 
-  function validateForm(form: HTMLFormElement): boolean {
+  const validateForm = useCallback((form: HTMLFormElement): boolean => {
+    const { isGuest: guest, emailStatus: status, showPasswordFields: needPassword } = emailGateRef.current;
     const badEmail = (f: Element) => f instanceof HTMLInputElement && f.type === "email" && !EMAIL_PATTERN.test(f.value.trim());
     const miss = Array.from(form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("[required]")).filter(
       (f) => (f.type === "checkbox" ? !(f as HTMLInputElement).checked : !f.value.trim() || badEmail(f)),
     );
     form.querySelectorAll(".field").forEach((f) => f.classList.remove("bad"));
-    if (isGuest && emailStatus === "checking") {
+    if (guest && status === "checking") {
       setErr("Checking that email — one moment.");
       return false;
     }
-    if (isGuest && emailStatus === "idle") {
+    if (guest && status === "idle") {
       form.querySelector("#email")?.closest(".field")?.classList.add("bad");
       setErr("Enter a valid email address.");
       (form.elements.namedItem("email") as HTMLInputElement | null)?.focus();
       return false;
     }
-    if (showPasswordFields) {
+    if (needPassword) {
       const password = String((form.elements.namedItem("password") as HTMLInputElement | null)?.value || "");
       const confirm = String((form.elements.namedItem("passwordConfirm") as HTMLInputElement | null)?.value || "");
       if (password.length < 8) {
@@ -157,7 +162,7 @@ function CheckoutPageInner() {
     setErr(onlyEmail ? "Enter a valid email address." : `${miss.length} field${miss.length > 1 ? "s need" : " needs"} attention.`);
     miss[0].focus();
     return false;
-  }
+  }, []);
 
   const checkoutPayload = useCallback(
     (form: HTMLFormElement, paymentMethod: PaymentChoice = "paypal") => {
@@ -195,7 +200,11 @@ function CheckoutPageInner() {
 
   const createPayPalOrder = useCallback(async () => {
     const form = document.getElementById("form") as HTMLFormElement | null;
-    if (!form || !validateForm(form)) throw new Error("Please complete the required fields.");
+    if (!form) throw new Error("Please complete the required fields.");
+    if (!validateForm(form)) {
+      // validateForm already set a specific message — don't overwrite it.
+      throw new Error("VALIDATION_FAILED");
+    }
     setPlacing(true);
     try {
       const res = await fetch("/api/checkout/create", {
@@ -214,11 +223,11 @@ function CheckoutPageInner() {
       return data.paypalOrderId;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Could not start checkout.";
-      setErr(message);
+      if (message !== "VALIDATION_FAILED") setErr(message);
       setPlacing(false);
       throw error;
     }
-  }, [checkoutPayload, finish]);
+  }, [checkoutPayload, finish, validateForm]);
 
   const approvePayPalOrder = useCallback(
     async (paypalOrderId: string) => {

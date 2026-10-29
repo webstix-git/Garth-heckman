@@ -73,7 +73,8 @@ export function PayPalCheckoutButtons({ onCreateOrder, onApprove, onError, onCan
                 // PayPal surfaces rejected createOrder promises through onError. Preserve
                 // our validation/server message so the shopper knows what to fix.
                 createOrderFailed = true;
-                onError(error instanceof Error ? error.message : "Could not start checkout.");
+                const message = error instanceof Error ? error.message : "Could not start checkout.";
+                if (message !== "VALIDATION_FAILED") onError(message);
                 throw error;
               }),
             onApprove: (data: { orderID?: string }) => {
