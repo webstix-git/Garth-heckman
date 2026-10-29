@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { LegalShell } from "@/components/LegalShell";
+import { GARTH_EMAIL, GARTH_MAILTO } from "@/lib/links";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "What this site collects, why, and how to ask for it back.",
-};
+export const metadata: Metadata = pageSeo("/privacy");
 
 export default function Page() {
   return (
@@ -19,7 +18,7 @@ export default function Page() {
             This policy is for garthheckman.com and the services attached to it: the store, the
             account lookup, the contact forms, and the email lists those forms can add you to.
             Questions go to{" "}
-            <a href="mailto:garthwheckman@gmail.com">garthwheckman@gmail.com</a>.
+            <a href={GARTH_MAILTO}>{GARTH_EMAIL}</a>.
           </p>
 
           <h3>What we collect</h3>

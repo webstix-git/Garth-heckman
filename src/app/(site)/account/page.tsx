@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { SiteChrome } from "@/components/chrome/SiteChrome";
 import { IconDownload, IconTruck } from "@/components/icons";
+import { mailtoHref } from "@/lib/links";
 import { formatMoney } from "@/lib/money";
 
 type DownloadFile = {
@@ -272,7 +273,10 @@ export default function AccountPage() {
                   <div>
                     <p className="meta meta--gold">My account</p>
                     <h1 className="d3 mt2">Welcome back, {data.customer.first_name || "there"}</h1>
-                    <p className="xs dim mt2">Signed in as {data.customer.email}</p>
+                    <p className="xs dim mt2">
+                      Signed in as{" "}
+                      <a href={mailtoHref(data.customer.email)}>{data.customer.email}</a>
+                    </p>
                   </div>
                   <button className="btn btn--line btn--sm" onClick={() => void signOut()}>
                     Sign out

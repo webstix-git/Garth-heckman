@@ -27,6 +27,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { formatCurrency, formatDate, formatNumber } from "@/lib/format";
+import { mailtoHref } from "@/lib/links";
 import {
   getDashboardStats,
   getOrderStatusOverview,
@@ -212,7 +213,13 @@ export default function DashboardPage() {
                       <Link href={`/admin/contact-submissions/${row.id}`} className="block truncate font-medium hover:underline">
                         {row.name}
                       </Link>
-                      <div className="truncate text-xs text-muted-foreground">{row.email}</div>
+                      <a
+                        href={mailtoHref(row.email)}
+                        className="block truncate text-xs text-muted-foreground hover:underline"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {row.email}
+                      </a>
                     </td>
                     <td className="truncate px-4 py-2.5">{row.subject}</td>
                     <td className="px-4 py-2.5">

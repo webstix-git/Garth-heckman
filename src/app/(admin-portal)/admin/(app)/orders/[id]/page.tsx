@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { formatCurrency, formatDateTime, titleCase } from "@/lib/format";
+import { mailtoHref } from "@/lib/links";
 import { cn } from "@/lib/utils";
 import { deleteOrder, getOrder, updateOrderStatus } from "@/services/orders";
 import { useUnreadOrders } from "@/components/providers/unread-orders-provider";
@@ -139,7 +140,9 @@ export default function OrderDetailPage() {
         <div className="border-t p-5 sm:border-t-0">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Customer</p>
           <p className="mt-2 truncate text-base font-semibold">{o.customerName}</p>
-          <p className="mt-1 truncate text-xs text-muted-foreground">{o.customerEmail}</p>
+          <a href={mailtoHref(o.customerEmail)} className="mt-1 block truncate text-xs text-muted-foreground hover:underline">
+            {o.customerEmail}
+          </a>
         </div>
       </div>
 
@@ -292,7 +295,7 @@ export default function OrderDetailPage() {
               {o.customerName}
             </Link>
             <a
-              href={`mailto:${o.customerEmail}`}
+              href={mailtoHref(o.customerEmail)}
               className="mt-1 block text-sm text-muted-foreground hover:underline"
             >
               {o.customerEmail}

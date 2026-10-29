@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { hasDatabaseAdminAccess, toAdminUserFromSupabase } from "@/lib/admin-auth";
+import { clientIp, rateLimit, rateLimitResponse } from "@/lib/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -10,6 +11,8 @@ type AuthBody = {
   password?: string;
   admin?: boolean;
   action?: "reset";
+  /** Customer forgot-password redirects to /account/reset-password */
+  customer?: boolean;
 };
 
 function message(error: unknown, fallback: string) {
@@ -43,11 +46,15 @@ export async function POST(request: NextRequest) {
 
   const supabase = await createClient();
   if (body.action === "reset") {
+    const limited = rateLimit(`fe-password-reset:${clientIp(request)}`, 5, 15 * 60 * 1000);
+    if (!limited.ok) return rateLimitResponse(limited.retryAfterSec);
     const origin = request.nextUrl.origin;
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${origin}/admin/login`,
-    });
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    const redirectTo = body.customer
+      ? `${origin}/account/reset-password`
+      : `${origin}/admin/login`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    // Always succeed outwardly so we don't reveal whether the email exists.
+    if (error) console.error("[auth:reset]", error.message);
     return NextResponse.json({ data: null });
   }
 

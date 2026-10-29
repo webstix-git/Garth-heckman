@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { Shot } from "@/components/Shot";
+import { GARTH_MAILTO } from "@/lib/links";
 
-export const metadata: Metadata = {
-  title: "Speaking",
-  description: "Bring Garth to your next event. Conferences, churches, staff days and student nights. Forty-two years of material and hundreds of thousands of students.",
-};
+export const metadata: Metadata = pageSeo("/speaking");
 
 export default function Page() {
   return (
@@ -39,11 +39,11 @@ export default function Page() {
 
                   <div className="row mt5">
                     <a className="btn btn--lg" href="/contact">Check availability</a>
-                    <a className="btn btn--line btn--lg" href="mailto:garthwheckman@gmail.com">Email Garth</a>
+                    <a className="btn btn--line btn--lg" href={GARTH_MAILTO}>Email Garth</a>
                   </div>
                 </div>
 
-                <Shot variant="warm" ratio="4-5" label="On stage" note="On stage, hands up" src="/assets/img/room-speaking.png" anchor="top" />
+                <Shot variant="warm" ratio="4-5" label="On stage" note="On stage, hands up" src="/assets/img/room-speaking.png" anchor="top" priority alt="Garth Heckman speaking on stage" />
               </div>
             </div>
           </section>
@@ -66,6 +66,14 @@ export default function Page() {
               </div>
             </div>
           </section>
+        <RelatedLinks
+          title="Related"
+          links={[
+            { href: "/work", label: "What I do", note: "All six rooms of Garth’s work in one place." },
+            { href: "/bridgeworks", label: "Bridgeworks", note: "Generational intelligence for the whole room." },
+            { href: "/contact", label: "Check availability", note: "Tell us about your event and date." },
+          ]}
+        />
       </main>
     </SiteChrome>
   );

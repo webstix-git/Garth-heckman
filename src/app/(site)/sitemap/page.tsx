@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { LegalShell } from "@/components/LegalShell";
 import { listPublishedPosts } from "@/lib/blog-public";
 import { listStorefrontProducts } from "@/lib/catalog-public";
 import { WORK } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "Sitemap",
-  description: "Every public page on Garth Heckman's site, in one list.",
-};
+export const metadata: Metadata = pageSeo("/sitemap");
 
 export default async function Page() {
   const [blogPosts, products] = await Promise.all([
@@ -35,6 +33,9 @@ export default async function Page() {
       links: [
         { href: "/podcast", label: "The podcast" },
         { href: "/blog", label: "Blog" },
+        { href: "/shorts", label: "YouTube Shorts" },
+        { href: "/speaking", label: "Speaking" },
+        { href: "/coaching", label: "Coaching" },
         ...blogPosts.map((p) => ({ href: `/blog/${p.slug}`, label: p.t })),
       ],
     },
@@ -42,18 +43,7 @@ export default async function Page() {
       heading: "Store",
       links: [
         { href: "/store", label: "All products" },
-        { href: "/cart", label: "Cart" },
-        { href: "/account", label: "Orders and downloads" },
         ...products.map((p) => ({ href: `/product/${p.slug}`, label: p.title })),
-      ],
-    },
-    {
-      heading: "This site",
-      links: [
-        { href: "/sitemap", label: "Sitemap" },
-        { href: "/service-index", label: "Service Index" },
-        { href: "/ai-policy", label: "AI Policy" },
-        { href: "/privacy", label: "Privacy Policy" },
       ],
     },
   ];
@@ -61,9 +51,9 @@ export default async function Page() {
   return (
     <LegalShell title="Sitemap" lede="Every public page, grouped the way the site is actually used.">
       <div className="wrap">
-        <div className="grid g3 hair" data-rv>
+        <div className="sitemap-stack" data-rv>
           {SITE.map((group) => (
-            <div key={group.heading}>
+            <section key={group.heading} className="sitemap-stack__group">
               <p className="meta meta--gold">{group.heading}</p>
               <ul className="sitemap-list">
                 {group.links.map((link) => (
@@ -72,7 +62,7 @@ export default async function Page() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </section>
           ))}
         </div>
       </div>

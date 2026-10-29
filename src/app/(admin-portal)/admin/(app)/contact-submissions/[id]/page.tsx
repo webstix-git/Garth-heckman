@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { formatDateTime, initials, titleCase } from "@/lib/format";
+import { mailtoHref, telHref } from "@/lib/links";
 import {
   deleteSubmission,
   getSubmission,
@@ -81,14 +82,14 @@ export default function ContactDetailPage() {
             <div className="min-w-0 flex-1">
               <p className="text-sm font-medium">{s.name}</p>
               <a
-                href={`mailto:${s.email}`}
+                href={mailtoHref(s.email)}
                 className="mt-0.5 block truncate text-sm text-muted-foreground hover:underline"
               >
                 {s.email}
               </a>
               {s.phone ? (
                 <a
-                  href={`tel:${s.phone}`}
+                  href={telHref(s.phone)}
                   className="mt-0.5 block text-sm text-muted-foreground hover:underline"
                 >
                   {s.phone}

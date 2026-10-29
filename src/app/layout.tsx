@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
+import { Analytics } from "@/components/seo/Analytics";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { fetchStoreSettings } from "@/lib/settings-supabase";
+import { pageSeo, siteVerificationMetadata, SITE_NAME } from "@/lib/seo";
 import { robotsMetadata } from "@/lib/seo-robots";
+import { getSiteUrl } from "@/lib/site-url";
+import { organizationSchema, personSchema, websiteSchema } from "@/lib/structured-data";
 import { GARTH_STORE_ID, getRequestStore } from "@/lib/tenant-store";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -15,15 +20,27 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
   const { settings } = await fetchStoreSettings();
+  const home = pageSeo("/", { globalNoindex: settings.seo?.noindex });
+  const canonicalHome = `${getSiteUrl()}/`;
   return {
-    metadataBase: new URL("https://garthheckman.com"),
+    metadataBase: new URL(getSiteUrl()),
     title: {
-      default: "Garth Heckman | Coach, Pastor, Author, Generational Strategist",
-      template: "%s | Garth Heckman",
+      default: typeof home.title === "object" && home.title && "absolute" in home.title
+        ? String(home.title.absolute)
+        : `${SITE_NAME} | Coach, Pastor & Generational Strategist`,
+      template: `%s | ${SITE_NAME}`,
     },
-    description:
-      "Forty-two years in ministry, business and coaching. Speaking, coaching, Simply Church, Bridgeworks, and the WTFU book.",
-    openGraph: { type: "website", siteName: "Garth Heckman", locale: "en_US" },
+    description: home.description,
+    openGraph: home.openGraph,
+    twitter: home.twitter,
+    alternates: {
+      canonical: canonicalHome,
+      languages: {
+        en: canonicalHome,
+        "x-default": canonicalHome,
+      },
+    },
+    verification: siteVerificationMetadata(),
     robots: robotsMetadata({ globalNoindex: settings.seo?.noindex }),
   };
 }
@@ -35,7 +52,13 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
-      <body className="min-h-full antialiased">{children}</body>
+      <body className="min-h-full antialiased">
+        <JsonLd id="ld-organization" data={organizationSchema()} />
+        <JsonLd id="ld-person" data={personSchema()} />
+        <JsonLd id="ld-website" data={websiteSchema()} />
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

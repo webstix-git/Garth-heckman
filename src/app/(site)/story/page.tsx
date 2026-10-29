@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
 import { Forge } from "@/components/Forge";
 import { Shot } from "@/components/Shot";
 import { YoutubeShortsClipsSection } from "@/components/YoutubeShortsClipsSection";
 
-export const metadata: Metadata = {
-  title: "My Story",
-  description: "Raised by the best. Raised in ministry for ministry. Forged by fire. Forty-two years of ministry, business, survival and six grandchildren.",
-};
+export const metadata: Metadata = pageSeo("/story");
 
 export default function Page() {
   return (

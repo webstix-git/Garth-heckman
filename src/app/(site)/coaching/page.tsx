@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { Shot } from "@/components/Shot";
+import { GARTH_EMAIL, GARTH_MAILTO } from "@/lib/links";
 
-export const metadata: Metadata = {
-  title: "Coaching",
-  description: "Nutrition, wellness, certified personal training and the emotional, mental, social and spiritual work underneath it. Coaching for the whole person.",
-};
+export const metadata: Metadata = pageSeo("/coaching");
 
 export default function Page() {
   return (
@@ -118,10 +118,18 @@ export default function Page() {
               </p>
               <div className="row mt5" style={{ justifyContent: "center" }}>
                 <a className="btn btn--lg" href="/contact">Start a conversation</a>
-                <a className="btn btn--line btn--lg" href="mailto:garthwheckman@gmail.com">garthwheckman@gmail.com</a>
+                <a className="btn btn--line btn--lg" href={GARTH_MAILTO}>{GARTH_EMAIL}</a>
               </div>
             </div>
           </section>
+        <RelatedLinks
+          title="Related"
+          links={[
+            { href: "/speaking", label: "Speaking", note: "Bring Garth into the room for your next event." },
+            { href: "/relationship-recall", label: "Relationship Recall", note: "Weekly emails that rebuild the foundation." },
+            { href: "/contact", label: "Start a conversation", note: "Send a short note about where you are." },
+          ]}
+        />
       </main>
     </SiteChrome>
   );

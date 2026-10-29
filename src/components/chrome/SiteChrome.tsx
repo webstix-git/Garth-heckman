@@ -12,6 +12,7 @@ import {
 } from "react";
 import type { NavId } from "@/lib/nav";
 import { AskBar } from "@/components/chrome/AskBar";
+import { BackToTop } from "@/components/chrome/BackToTop";
 import { StickyBar, TopNav } from "@/components/chrome/Nav";
 import { Footer, Sheet } from "@/components/chrome/Footer";
 import { CartDrawer } from "@/components/chrome/CartDrawer";
@@ -278,6 +279,7 @@ export function SiteChrome({
       {withAskBar(withTopNav(children, nav, sheetOpen, toggleSheet))}
       <Sheet nav={nav} open={sheetOpen} onClose={() => setSheetOpen(false)} />
       <Footer />
+      <BackToTop />
       <CartDrawer />
       <SearchModal />
       <Toasts />

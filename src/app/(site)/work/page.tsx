@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { WorkSwitcher } from "@/components/WorkSwitcher";
 
-export const metadata: Metadata = {
-  title: "What I Do",
-  description: "Coaching, speaking, cancer, Simply Church, Relationship Recall and Bridgeworks. Six rooms, same job.",
-};
+export const metadata: Metadata = pageSeo("/work");
 
 export default function WorkPage() {
   return (
@@ -50,6 +49,14 @@ export default function WorkPage() {
             </div>
           </div>
         </section>
+        <RelatedLinks
+          title="Go deeper"
+          links={[
+            { href: "/speaking", label: "Speaking", note: "Book Garth for conferences and churches." },
+            { href: "/coaching", label: "Coaching", note: "Whole-person coaching for people ready to move." },
+            { href: "/store", label: "Store", note: "Books, downloads, and merch." },
+          ]}
+        />
       </main>
     </SiteChrome>
   );

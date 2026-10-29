@@ -18,8 +18,18 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    // Product and editorial imagery will come from Supabase storage.
-    remotePatterns: [{ protocol: "https", hostname: "*.supabase.co" }],
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [64, 96, 128, 256, 384],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
+    // Product and editorial imagery from Supabase (+ production CDN).
+    remotePatterns: [
+      { protocol: "https", hostname: "*.supabase.co" },
+      { protocol: "https", hostname: "garthheckman.com" },
+      { protocol: "https", hostname: "www.garthheckman.com" },
+      { protocol: "https", hostname: "i.ytimg.com" },
+      { protocol: "https", hostname: "img.youtube.com" },
+    ],
   },
 
   async rewrites() {
@@ -53,7 +63,47 @@ const nextConfig: NextConfig = {
       "contact-submissions",
       "profile",
     ];
+
+    /** Old Wix / prior site paths → current App Router pages (301). */
+    const oldSite: Array<{ source: string; destination: string }> = [
+      // Marketing / nav pages
+      { source: "/event-list", destination: "/simply-church" },
+      { source: "/inquiry-services-page", destination: "/contact" },
+      { source: "/start-here", destination: "/work" },
+      { source: "/single-project", destination: "/work" },
+      { source: "/brotherhood", destination: "/simply-church" },
+      { source: "/shop", destination: "/store" },
+      { source: "/the-movement", destination: "/work" },
+      { source: "/train-with-garth", destination: "/coaching" },
+
+      // Simply Church event calendar (all dated event-detail URLs)
+      { source: "/event-details", destination: "/simply-church" },
+      { source: "/event-details/:path*", destination: "/simply-church" },
+
+      // Store / catalog
+      { source: "/category/all-products", destination: "/store" },
+      { source: "/category/:path*", destination: "/store" },
+
+      // Product pages (old /product-page/:slug → current /product/:slug)
+      { source: "/product-page/wtfu-by-garth-heckman", destination: "/product/wtfu-book" },
+      { source: "/product-page/365-days-of-strength", destination: "/product/365-quotes" },
+      { source: "/product-page/365-cancer-fighter-journal", destination: "/product/365-day-journal" },
+      { source: "/product-page/cancer-terminology-made-simple", destination: "/product/cancer-terminology" },
+      {
+        source: "/product-page/the-faith-based-cancer-survival-mindset-manual",
+        destination: "/product/faith-based-cancer-survival-mindset-manual",
+      },
+      {
+        source: "/product-page/nourishing-your-body-through-cancer",
+        destination: "/product/nourishing-your-body-through-cancer",
+      },
+      // Bundle had no 1:1 product — land on cancer resources / store
+      { source: "/product-page/faith-based-cancer-bundle", destination: "/cancer" },
+      { source: "/product-page/:slug", destination: "/store" },
+    ];
+
     return [
+      ...oldSite.map((r) => ({ ...r, permanent: true })),
       { source: "/categories", destination: "/store", permanent: false },
       { source: "/categories/:path*", destination: "/store", permanent: false },
       ...legacy.map((segment) => ({
@@ -70,6 +120,9 @@ const nextConfig: NextConfig = {
   },
 
   async headers() {
+    const publicRobots =
+      "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
+    const privateRobots = "noindex, nofollow";
     return [
       {
         source: "/:path*",
@@ -80,11 +133,19 @@ const nextConfig: NextConfig = {
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
           { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
           { key: "X-DNS-Prefetch-Control", value: "off" },
+          { key: "X-Robots-Tag", value: publicRobots },
           ...(process.env.NODE_ENV === "production"
             ? [{ key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" }]
             : []),
         ],
       },
+      // Private / transactional routes override the public X-Robots-Tag.
+      ...["/account/:path*", "/checkout", "/checkout/:path*", "/cart", "/downloads", "/order-confirmation", "/admin/:path*"].map(
+        (source) => ({
+          source,
+          headers: [{ key: "X-Robots-Tag", value: privateRobots }],
+        }),
+      ),
     ];
   },
 };

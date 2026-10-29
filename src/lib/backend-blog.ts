@@ -30,8 +30,18 @@ function estimateRead(text: string) {
   return `${Math.max(1, Math.round(words / 200))} min`;
 }
 
+/** Prefer a short first line so the pair reads as two balanced display lines. */
+const TITLE_LINE_BREAKS: Record<string, [string, string]> = {
+  "name the thing that will actually end it": [
+    "Name the thing",
+    "that will actually end it",
+  ],
+};
+
 function splitTitle(title: string): [string, string] {
   const cleaned = title.trim();
+  const preset = TITLE_LINE_BREAKS[cleaned.toLowerCase()];
+  if (preset) return preset;
   const mid = Math.floor(cleaned.length / 2);
   const before = cleaned.lastIndexOf(" ", mid);
   const after = cleaned.indexOf(" ", mid);

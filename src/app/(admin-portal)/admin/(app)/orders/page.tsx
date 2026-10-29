@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { mailtoHref } from "@/lib/links";
 import { replaceQuery } from "@/lib/query-url";
 import { downloadAdminExport } from "@/lib/download-export";
 import { deleteOrder, deleteOrders, listOrders } from "@/services/orders";
@@ -82,7 +83,13 @@ export default function OrdersPage() {
       cell: (row) => (
         <div>
           <div>{row.customerName}</div>
-          <div className="text-xs text-muted-foreground">{row.customerEmail}</div>
+          <a
+            href={mailtoHref(row.customerEmail)}
+            className="text-xs text-muted-foreground hover:underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {row.customerEmail}
+          </a>
         </div>
       ),
     },

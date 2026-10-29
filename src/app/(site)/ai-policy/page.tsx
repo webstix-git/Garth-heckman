@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { LegalShell } from "@/components/LegalShell";
+import { GARTH_EMAIL, GARTH_MAILTO } from "@/lib/links";
 
-export const metadata: Metadata = {
-  title: "AI Policy",
-  description: "How this site uses artificial intelligence, and what it does not do with it.",
-};
+export const metadata: Metadata = pageSeo("/ai-policy");
 
 export default function Page() {
   return (
@@ -18,7 +17,7 @@ export default function Page() {
           <p>
             This page is the straight version of how artificial intelligence shows up here. If you
             want a human, email{" "}
-            <a href="mailto:garthwheckman@gmail.com">garthwheckman@gmail.com</a>.
+            <a href={GARTH_MAILTO}>{GARTH_EMAIL}</a>.
           </p>
 
           <h3>What AI is used for</h3>

@@ -14,6 +14,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { formatDateTime } from "@/lib/format";
+import { mailtoHref, telHref } from "@/lib/links";
 import { deleteSubmission, listSubmissions } from "@/services/contact";
 import type { ContactStatus, ContactSubmission } from "@/types";
 
@@ -38,11 +39,28 @@ export default function ContactSubmissionsPage() {
           <Link href={`/admin/contact-submissions/${row.id}`} className="font-medium hover:underline">
             {row.name}
           </Link>
-          <p className="text-xs text-muted-foreground">{row.email}</p>
+          <a
+            href={mailtoHref(row.email)}
+            className="text-xs text-muted-foreground hover:underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {row.email}
+          </a>
         </div>
       ),
     },
-    { id: "phone", header: "Phone", cell: (row) => row.phone },
+    {
+      id: "phone",
+      header: "Phone",
+      cell: (row) =>
+        row.phone ? (
+          <a href={telHref(row.phone)} className="hover:underline" onClick={(e) => e.stopPropagation()}>
+            {row.phone}
+          </a>
+        ) : (
+          "—"
+        ),
+    },
     { id: "subject", header: "Subject", cell: (row) => row.subject },
     {
       id: "status",

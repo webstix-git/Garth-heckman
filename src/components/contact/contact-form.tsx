@@ -16,9 +16,9 @@ export function ContactForm() {
     const phone = String(form.get("phone") ?? "").trim();
     const subject = String(form.get("subject") ?? "").trim();
     const body = String(form.get("message") ?? "").trim();
-    if (!name || !email || !phone || !subject || !body) {
+    if (!name || !email || !phone) {
       setState("error");
-      setMessage("Please complete your name, email, phone, subject, and message.");
+      setMessage("Please complete your name, email, and phone.");
       return;
     }
     if (phone.replace(/\D/g, "").length < 7) {
@@ -59,33 +59,34 @@ export function ContactForm() {
   return (
     <form className="card" onSubmit={submit} noValidate>
       <p className="meta meta--gold">Send a message</p>
+      <p className="body sm mt2 dim">Fields marked with an asterisk (*) are required.</p>
       <div className="field-row mt4">
         <div className="field">
-          <label className="label" htmlFor="contact-name">Name<span className="req">*</span></label>
+          <label className="label" htmlFor="contact-name">Name:<span className="req">*</span></label>
           <input className="input" id="contact-name" name="name" autoComplete="name" placeholder="Enter your name" required />
         </div>
         <div className="field">
-          <label className="label" htmlFor="contact-email">Email<span className="req">*</span></label>
+          <label className="label" htmlFor="contact-email">Email:<span className="req">*</span></label>
           <input className="input" id="contact-email" name="email" type="email" autoComplete="email" placeholder="your.email@example.com" required />
         </div>
       </div>
       <div className="field-row">
         <div className="field">
-          <label className="label" htmlFor="contact-phone">Phone<span className="req">*</span></label>
+          <label className="label" htmlFor="contact-phone">Phone:<span className="req">*</span></label>
           <input className="input" id="contact-phone" name="phone" type="tel" autoComplete="tel" placeholder="Your phone number" required />
         </div>
         <div className="field">
-          <label className="label" htmlFor="contact-company">Company</label>
+          <label className="label" htmlFor="contact-company">Company:</label>
           <input className="input" id="contact-company" name="company" autoComplete="organization" placeholder="Optional" />
         </div>
       </div>
       <div className="field">
-        <label className="label" htmlFor="contact-subject">Subject<span className="req">*</span></label>
-        <input className="input" id="contact-subject" name="subject" placeholder="How can we help?" required />
+        <label className="label" htmlFor="contact-subject">Subject:</label>
+        <input className="input" id="contact-subject" name="subject" placeholder="How can we help?" />
       </div>
       <div className="field">
-        <label className="label" htmlFor="contact-message">Message<span className="req">*</span></label>
-        <textarea className="textarea" id="contact-message" name="message" required placeholder="Tell us how we can help." />
+        <label className="label" htmlFor="contact-message">Message:</label>
+        <textarea className="textarea" id="contact-message" name="message" placeholder="Tell us how we can help." />
       </div>
       {state !== "idle" && (
         <div className={`notice ${state === "sent" ? "notice--ok" : state === "error" ? "notice--bad" : "notice--info"} mt3`}>

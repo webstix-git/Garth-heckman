@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import type { ReactNode } from "react";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
 import { ASK_TOPICS } from "@/lib/ask-garth";
 import { ASK_GARTH_MAILTO, GARTH_EMAIL } from "@/lib/links";
 
-export const metadata: Metadata = {
-  title: "Straight from Garth",
-  description:
-    "Five topics, five questions, five answers. Nutrition, training, personal development, spiritual life, and marriage, in his own words.",
-};
+export const metadata: Metadata = pageSeo("/ask-garth");
 
 function Inline({ text }: { text: string }) {
   const nodes: ReactNode[] = [];

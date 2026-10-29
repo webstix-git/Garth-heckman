@@ -367,18 +367,43 @@ h1:has(br),h2:has(br),h3:has(br),h4:has(br),
    2. On scroll: a full-width bar slides down and stays. Edge to edge. */
 
 /* ---- 1. Open header, in-page ---- */
-.topnav { position:absolute; top:clamp(20px,2.3vw,10px); left:0; right:0; z-index:50; }
-.topnav__in { display:flex; align-items:center; gap:clamp(16px,3vw,48px); }
+.topnav { position:absolute; top:20px; left:0; right:0; z-index:50; }
+.topnav__in { display:flex; align-items:center; justify-content:space-between; gap:clamp(12px,2vw,48px); min-width:0; }
 .topnav__links { display:flex; align-items:center; gap:clamp(16px,2vw,32px); margin-left:auto; }
-.topnav__cta { display:flex; align-items:center; gap:24px; flex:none; }
+.topnav__cta { display:flex; align-items:center; gap:16px; flex:none; margin-left:auto; }
 @media (max-width:1150px){ .topnav__links { display:none; } }
 
-.mark { display:inline-flex; align-items:center; gap:16px; flex:none; min-height:90px; }
-.mark img { width:80px; height:80px; object-fit:cover; }
+.mark { display:inline-flex; align-items:center; gap:16px; flex:none; min-width:0; min-height:90px; }
+.mark img { width:80px; height:80px; object-fit:cover; flex:none; }
 .on-dark .mark img,.hero .mark img,.stickybar .mark img,.sheet .mark img { filter:invert(1) brightness(1.75) saturate(0); }
-.mark b { display:block; font-size:clamp(13px,1.2vw,16px); font-weight:800; letter-spacing:.13em; text-transform:uppercase; font-variation-settings:"wdth" 90; line-height:1; }
-.mark s { display:block; text-decoration:none; margin-top:4px; font-size:13px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; font-variation-settings:"wdth" 82; color:var(--fg-3); }
+.mark span { min-width:0; }
+.mark b { display:block; font-size:clamp(13px,1.2vw,16px); font-weight:800; letter-spacing:.13em; text-transform:uppercase; font-variation-settings:"wdth" 90; line-height:1; white-space:nowrap; }
+.mark s { display:block; text-decoration:none; margin-top:4px; font-size:13px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; font-variation-settings:"wdth" 82; color:var(--fg-3); white-space:nowrap; }
+/* Burger mode (~iPad / 1024): mark + icons + WTFU + burger won't fit.
+   Drop the gold CTA (still in the sheet) and shrink the mark. */
+@media (max-width:1120px){
+  .mark { gap:12px; min-height:64px; }
+  .mark img { width:56px; height:56px; }
+  .mark b { font-size:13px; letter-spacing:.1em; }
+  .mark s { display:none; }
+  .topnav__cta,.stickybar__cta { gap:10px; }
+  .topnav__cta .btn--hero,.stickybar__cta .btn--hero { display:none !important; }
+}
 @media (max-width:620px){ .mark s { display:none; } }
+/* Phone: logo + name + CTA cluster must fit the padded column. */
+@media (max-width:520px){
+  .mark { gap:10px; min-height:56px; }
+  .mark img { width:48px; height:48px; }
+  .mark b { font-size:12px; letter-spacing:.1em; }
+  .topnav__in,.stickybar__in { gap:10px; }
+  .topnav__cta,.stickybar__cta { gap:8px; }
+}
+@media (max-width:380px){
+  .mark b { display:none; }
+  .mark { min-height:48px; }
+  .mark img { width:44px; height:44px; }
+  .topnav__cta,.stickybar__cta { gap:6px; }
+}
 
 /* Nav links, shared by the open header and the sticky bar. */
 .navlink {
@@ -413,7 +438,7 @@ h1:has(br),h2:has(br),h3:has(br),h4:has(br),
 .stickybar .mark s { display:none; }
 .stickybar__links { display:flex; align-items:center; gap:clamp(16px,1.6vw,24px); margin-left:auto; }
 .stickybar__links .navlink { font-size:16px; }
-.stickybar__cta { display:flex; align-items:center; gap:24px; flex:none; }
+.stickybar__cta { display:flex; align-items:center; gap:16px; flex:none; margin-left:auto; }
 /* The bar is dark, so the CTA must flip to a gold fill. The default ink
    fill made it invisible against the bar. */
 .stickybar .btn--hero { --bg-b:var(--gold); --fg-b:var(--ink); --bd-b:var(--gold); }
@@ -461,13 +486,27 @@ h1:has(br),h2:has(br),h3:has(br),h4:has(br),
   padding:16px var(--gutter) 40px; overflow-y:auto;
   opacity:0; pointer-events:none; transform:translateY(-10px);
   transition:opacity var(--t2) var(--ease), transform var(--t2) var(--ease);
+  /* Remap light-theme aliases — .navlink uses --fg-2 and was invisible on ink. */
+  --bg:var(--ink); --bg-2:var(--char); --fg:var(--bone); --fg-2:var(--taupe); --fg-3:var(--ash);
+  --acc:var(--gold); --line:rgba(244,241,234,.14); --line-2:rgba(244,241,234,.28);
 }
 .sheet.open { opacity:1; pointer-events:auto; transform:none; }
 .sheet__top { display:flex; align-items:center; justify-content:space-between; }
 .sheet nav { display:grid; margin-top:24px; }
-.sheet nav a { font-size:clamp(22px,7vw,32px); font-weight:800; text-transform:uppercase; font-variation-settings:"wdth" 106; letter-spacing:-.03em; padding:16px 0; border-bottom:1px solid rgba(244,241,234,.14); }
-.sheet nav a[aria-current="page"] { color:var(--gold); }
-.sheet nav a.sheet__ask { color:var(--gold); }
+.sheet nav a,
+.sheet .navlink {
+  font-size:clamp(22px,7vw,32px); font-weight:800; text-transform:uppercase;
+  font-variation-settings:"wdth" 106; letter-spacing:-.03em; padding:16px 0;
+  border-bottom:1px solid rgba(244,241,234,.14);
+  color:#F4F4F2 !important; /* beat .navlink's light-theme --fg-2 on ink */
+  white-space:normal;
+}
+.sheet .navlink::after { display:none; }
+.sheet nav a:hover,
+.sheet .navlink:hover { color:var(--gold) !important; }
+.sheet nav a[aria-current="page"],
+.sheet .navlink[aria-current="page"] { color:var(--gold) !important; }
+.sheet nav a.sheet__ask { color:var(--gold) !important; }
 
 /* -------------------------------------------------------------- 6. BUTTONS */
 .btn {
@@ -721,8 +760,13 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 /* Room for the open header at the top of whichever section carries it.
    Doubled class so it beats .phead's own padding-block regardless of
    source order, otherwise the breadcrumb rides up over the mark. */
-.has-topnav.has-topnav { padding-top:clamp(96px,9vw,144px); }
+/* Clear the absolute topnav (20px + ~90px mark). Old 96px let the hero kick
+   slide up under the icons at 1024. */
+.has-topnav.has-topnav { padding-top:clamp(128px,12vw,168px); }
 .has-topnav.hero .hero__grid { padding-top:0; }
+@media (max-width:1120px){
+  .has-topnav.has-topnav { padding-top:clamp(104px,11vw,132px); }
+}
 
 .hero { position:relative; }
 .hero__grid {
@@ -734,9 +778,7 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 /* The portrait is a hard-cropped transparent PNG, so its bottom edge is a
    straight cut. Left hanging in mid-air that cut reads as a floating
    rectangle, so it is pushed down until the player (z-index 6) covers the
-   crop line and the figure appears to stand behind the bar.
-   Only in the side-by-side layout: below 941px the image stacks ABOVE the
-   copy, where a negative bottom margin would drag the text over the face. */
+   crop line and the figure appears to stand behind the bar. */
 @media (min-width:941px){
   /* How far it drops is bounded on both sides. The crop line is at the very
      bottom of the PNG and the cross pendant sits at ~93% of its height, so
@@ -760,9 +802,12 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 /* 16px to match .row. At 8px two large buttons read as one split control. */
 .hero__cta { display:flex; flex-wrap:wrap; gap:16px; margin-top:clamp(32px,3.4vw,48px); }
 .hero__shot .shot { min-height:clamp(320px,40vw,540px); height:100%; }
+/* ≤940: copy first, portrait second (below). Tuck the crop under the player. */
 @media (max-width:940px){
-  .hero__grid { grid-template-columns:minmax(0,1fr); align-items:start; padding-bottom:clamp(152px,26vw,192px); }
-  .hero__shot { order:-1; } .hero__shot .shot { min-height:340px; }
+  .hero__grid { grid-template-columns:minmax(0,1fr); align-items:start; padding-bottom:clamp(120px,22vw,168px); }
+  .hero__shot { order:2; margin-bottom:clamp(-48px,-8vw,-28px); }
+  .hero__shot .shot,.hero__shot .cutout { min-height:0; max-width:min(100%,420px); margin-inline:auto; }
+  .hero__shot .shot { min-height:300px; }
 }
 @media (max-width:560px){
   .hero__shot .shot { min-height:0; aspect-ratio:4/5; }
@@ -771,6 +816,9 @@ input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 
 .phead { position:relative; padding-block:clamp(24px,3.4vw,56px) clamp(40px,5vw,80px); }
 .phead > .wrap,.phead > .wrap-t,.phead > .wrap-n { position:relative; z-index:2; }
+/* Authored two-line titles — keep each line intact (no 3rd/4th wrap). */
+.phead__t { font-size:clamp(1.35rem,5.2vw,4.35rem); text-wrap:wrap; }
+.phead__t .d1__line { display:block; white-space:nowrap; }
 .crumbs { display:flex; flex-wrap:wrap; gap:8px; align-items:center; color:var(--fg-3); }
 .crumbs s { text-decoration:none; opacity:.45; }
 .crumbs a:hover { color:var(--acc); }
@@ -1973,6 +2021,56 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 /* Same block on a light ground (contact page card). */
 .fcontact--light .fcontact__row { color:var(--fg-2); }
 .fcontact--light .fcontact__row:hover { color:var(--acc); }
+.fcontact--light .fcontact__row svg { color:var(--acc); }
+
+/* Contact page: details panel beside the form. */
+.contact-aside {
+  position:sticky;
+  top:calc(var(--hdr) + 24px);
+}
+.contact-aside__list {
+  font-style:normal;
+  display:grid;
+  gap:0;
+  margin-top:20px;
+}
+.contact-aside__row {
+  display:grid;
+  grid-template-columns:28px minmax(0,1fr);
+  gap:14px;
+  align-items:start;
+  padding:18px 0;
+  border-top:1px solid var(--line);
+  color:var(--fg-2);
+  text-decoration:none;
+  transition:color var(--t1);
+}
+.contact-aside__row:first-child { border-top:0; padding-top:4px; }
+.contact-aside__row:last-child { padding-bottom:0; }
+.contact-aside__row svg {
+  flex:none;
+  width:18px;
+  height:18px;
+  margin-top:2px;
+  color:var(--acc);
+}
+.contact-aside__row:hover { color:var(--acc); }
+.contact-aside__label {
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  font-variation-settings:"wdth" 82;
+  color:var(--acc);
+  margin-bottom:6px;
+}
+.contact-aside__value {
+  display:block;
+  font-size:var(--fs-body);
+  line-height:1.45;
+  color:inherit;
+}
 .ftr__brand { display:inline-flex; align-items:center; gap:16px; text-decoration:none; color:var(--bone); }
 .ftr__brand img { width:clamp(64px,7vw,88px); height:clamp(64px,7vw,88px); object-fit:cover; filter:invert(1) brightness(1.75) saturate(0); }
 .ftr__brand b { display:block; font-size:clamp(15px,1.4vw,20px); font-weight:800; letter-spacing:.13em; text-transform:uppercase; font-variation-settings:"wdth" 90; line-height:1; color:var(--bone); }
@@ -1989,9 +2087,35 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
   margin-top:16px;
 }
 .fcol--split .fcol__pair ul { margin-top:0; align-content:start; }
-.sitemap-list { list-style:none; padding:0; display:grid; gap:8px; margin-top:16px; }
-.sitemap-list a { color:var(--fg-2); }
+.sitemap-stack { display:grid; gap:clamp(28px,4vw,48px); text-align:left; margin-inline:0; max-width:none; min-width:0; }
+.sitemap-stack__group { min-width:0; text-align:left; }
+.sitemap-list { list-style:none; padding:0; display:grid; gap:10px; margin-top:14px; text-align:left; min-width:0; }
+.sitemap-list li { min-width:0; }
+.sitemap-list a {
+  color:var(--fg-2);
+  display:block;
+  width:100%;
+  max-width:100%;
+  line-height:1.45;
+  font-size:18px;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
 .sitemap-list a:hover { color:var(--acc); }
+@media (max-width:600px){
+  .sitemap-stack { gap:28px; }
+  .sitemap-list { gap:4px; margin-top:12px; }
+  .sitemap-list a {
+    font-size:18px;
+    padding-block:10px;
+    min-height:44px;
+    display:flex;
+    align-items:center;
+  }
+}
+@media (max-width:940px){
+  .contact-aside { position:static; top:auto; }
+}
 
 /* Touch: a stacked list of links is not "inline text", so the 24px exemption
    in WCAG 2.5.8 does not apply to it. Give each row a real target height
@@ -2019,6 +2143,27 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 @media (max-width:540px){ .ftr__top { grid-template-columns:minmax(0,1fr); } }
 
 /* -------------------------------------------------------------- 24. TOAST */
+/* Back to top — appears after scroll; sits above toasts on the right. */
+.totop {
+  position:fixed; right:20px; bottom:20px; z-index:125;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; padding:0; border:1px solid var(--line-2);
+  background:var(--bg-2); color:var(--fg); cursor:pointer;
+  opacity:0; visibility:hidden; transform:translateY(8px);
+  transition:opacity var(--t2) var(--ease), transform var(--t2) var(--ease), visibility var(--t2),
+    background var(--t1), color var(--t1), border-color var(--t1);
+  pointer-events:none;
+}
+.totop.show { opacity:1; visibility:visible; transform:none; pointer-events:auto; }
+.totop:hover { background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.totop:focus-visible { outline:2px solid var(--gold-dp); outline-offset:2px; }
+@media (max-width:720px) {
+  .totop { right:16px; bottom:calc(16px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .totop { transition:opacity var(--t1), visibility var(--t1); transform:none; }
+}
+
 .toasts { position:fixed; right:20px; bottom:20px; z-index:140; display:grid; gap:8px; max-width:min(370px, calc(100vw - 40px)); }
 .toast { background:var(--ink); color:var(--bone); border-left:3px solid var(--gold); padding:16px; font-size:16px; animation:t-in var(--t2) var(--out) both; box-shadow:0 10px 34px rgba(14,12,10,.2); }
 .toast b { display:block; margin-bottom:4px; font-size:13px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; font-variation-settings:"wdth" 82; color:var(--gold); }

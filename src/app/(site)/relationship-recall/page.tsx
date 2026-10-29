@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { Shot } from "@/components/Shot";
 
-export const metadata: Metadata = {
-  title: "Relationship Recall",
-  description: "Most coaching paints a burning house. Relationship Recall finds the cracks in the foundation, exposes them and rebuilds. One email a week.",
-};
+export const metadata: Metadata = pageSeo("/relationship-recall");
 
 export default function Page() {
   return (
@@ -87,6 +86,14 @@ export default function Page() {
               <a className="btn btn--lg mt5" href="/contact">Get started</a>
             </div>
           </section>
+        <RelatedLinks
+          title="Related"
+          links={[
+            { href: "/coaching", label: "Coaching", note: "One-to-one work when email is not enough." },
+            { href: "/ask-garth", label: "Straight from Garth", note: "Direct answers on marriage and more." },
+            { href: "/contact", label: "Get the first email", note: "Ask Garth to start you on the weekly list." },
+          ]}
+        />
       </main>
     </SiteChrome>
   );

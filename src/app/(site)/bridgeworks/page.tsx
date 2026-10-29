@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { Shot } from "@/components/Shot";
+import { GARTH_EMAIL, GARTH_MAILTO, mailtoHref } from "@/lib/links";
 
-export const metadata: Metadata = {
-  title: "Bridgeworks",
-  description: "Ask Garth to teach your business, church or church staff how to Understand, Attract, Connect and Disciple. Generational intelligence for the whole room.",
-};
+export const metadata: Metadata = pageSeo("/bridgeworks");
 
 export default function Page() {
   return (
@@ -108,7 +108,7 @@ export default function Page() {
                   </p>
                 </div>
                 <p className="mt5">
-                  <a className="btn btn--lg" href="mailto:garthwheckman@gmail.com?subject=Connected%20Kingdom%20Seminar">
+                  <a className="btn btn--lg" href={mailtoHref(GARTH_EMAIL, "Connected Kingdom Seminar")}>
                     Ask about the seminar
                   </a>
                 </p>
@@ -135,7 +135,7 @@ export default function Page() {
                 </div>
                 <p className="card__foot">
                   Reach out to Garth with your questions here: {" "}
-                  <a href="mailto:garthwheckman@gmail.com"><strong>garthwheckman@gmail.com</strong></a>
+                  <a href={GARTH_MAILTO}><strong>{GARTH_EMAIL}</strong></a>
                 </p>
               </div>
             </div>
@@ -148,13 +148,21 @@ export default function Page() {
               <p className="lede mt4 dim">
                 Ask Garth to teach your business, church or church staff how to Understand, Attract,
                 Connect and Disciple. Set up a fifteen-minute discovery call. Connect with Garth at{" "}
-                <a href="mailto:garthwheckman@gmail.com" style={{ color: "var(--gold-dp)", textDecoration: "underline", textUnderlineOffset: "3px" }}>garthwheckman@gmail.com</a>.
+                <a href={GARTH_MAILTO} style={{ color: "var(--gold-dp)", textDecoration: "underline", textUnderlineOffset: "3px" }}>{GARTH_EMAIL}</a>.
               </p>
               <div className="row mt5" style={{ justifyContent: "center" }}>
-                <a className="btn btn--lg" href="mailto:garthwheckman@gmail.com">Book the call</a>
+                <a className="btn btn--lg" href={GARTH_MAILTO}>Book the call</a>
               </div>
             </div>
           </section>
+        <RelatedLinks
+          title="Related"
+          links={[
+            { href: "/speaking", label: "Speaking", note: "Book Garth for your next conference or staff day." },
+            { href: "/work", label: "What I do", note: "See every room of the work." },
+            { href: "/contact", label: "Contact", note: "Ask about a Bridgeworks date for your team." },
+          ]}
+        />
       </main>
     </SiteChrome>
   );

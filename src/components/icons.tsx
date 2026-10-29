@@ -10,11 +10,28 @@ export function IconArrow(props: IconProps) {
   );
 }
 
+export function IconArrowUp(props: IconProps) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" {...props}>
+      <path d="M8 12.5V3.5M4 7l4-4 4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function IconBag(props: IconProps) {
   return (
     <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true" {...props}>
       <path d="M3.4 5.5h11.2l-.9 9.3a1.2 1.2 0 0 1-1.2 1.1H5.5a1.2 1.2 0 0 1-1.2-1.1L3.4 5.5Z" stroke="currentColor" strokeWidth="1.3" />
       <path d="M6.3 7.3V4.9a2.7 2.7 0 0 1 5.4 0v2.4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function IconUser(props: IconProps) {
+  return (
+    <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden="true" {...props}>
+      <circle cx="9" cy="6.2" r="2.6" stroke="currentColor" strokeWidth="1.3" />
+      <path d="M3.8 14.6c.7-2.4 2.6-3.6 5.2-3.6s4.5 1.2 5.2 3.6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
     </svg>
   );
 }

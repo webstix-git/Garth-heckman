@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Shot } from "@/components/Shot";
 import {
   getPublishedPost,
   otherPublishedPosts,
 } from "@/lib/blog-public";
 import { fetchStoreSettings } from "@/lib/settings-supabase";
-import { robotsMetadata } from "@/lib/seo-robots";
+import { dynamicPageSeo } from "@/lib/seo";
+import { articleSchema, breadcrumbSchema } from "@/lib/structured-data";
 
 export const dynamic = "force-dynamic";
 
@@ -20,15 +22,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     fetchStoreSettings(),
   ]);
   if (!post) return { title: "Blog" };
-  return {
-    title: post.seo?.title || post.t,
+  const title = post.seo?.title || post.t;
+  return dynamicPageSeo({
+    path: `/blog/${post.slug}`,
+    title,
     description: post.seo?.description || post.lede,
-    robots: robotsMetadata({
-      globalNoindex: settings.seo?.noindex,
-      noindex: post.seo?.noindex,
-      nofollow: post.seo?.nofollow,
-    }),
-  };
+    image: post.img || null,
+    type: "article",
+    noindex: post.seo?.noindex,
+    nofollow: post.seo?.nofollow,
+    globalNoindex: settings.seo?.noindex,
+  });
 }
 
 export default async function BlogPostPage({ params }: Props) {
@@ -36,9 +40,28 @@ export default async function BlogPostPage({ params }: Props) {
   const post = await getPublishedPost(slug);
   if (!post) notFound();
   const more = await otherPublishedPosts(slug);
+  const parsed = Date.parse(post.date);
 
   return (
     <SiteChrome nav="blog">
+      <JsonLd
+        id="ld-article"
+        data={articleSchema({
+          title: post.t,
+          description: post.seo?.description || post.lede,
+          slug: post.slug,
+          image: post.img || null,
+          datePublished: Number.isFinite(parsed) ? new Date(parsed).toISOString() : null,
+        })}
+      />
+      <JsonLd
+        id="ld-article-crumbs"
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+          { name: post.t, path: `/blog/${post.slug}` },
+        ])}
+      />
       <main id="main">
         <article>
           <header className="phead on-dark grain">
@@ -53,12 +76,11 @@ export default async function BlogPostPage({ params }: Props) {
               <p className="meta meta--gold">
                 Article · {post.read} read · {post.dateLong}
               </p>
-              <h1 className="d1 mt3" style={{ fontSize: "clamp(2.4rem,6vw,5rem)" }}>
+              <h1 className="d1 phead__t mt3">
                 {post.h1[1] ? (
                   <>
-                    {post.h1[0]}
-                    <br />
-                    {post.h1[1]}
+                    <span className="d1__line">{post.h1[0]}</span>
+                    <span className="d1__line">{post.h1[1]}</span>
                   </>
                 ) : (
                   post.h1[0] || post.t

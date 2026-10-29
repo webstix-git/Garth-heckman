@@ -14,6 +14,7 @@ import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { mailtoHref, telHref } from "@/lib/links";
 import { replaceQuery } from "@/lib/query-url";
 import { downloadAdminExport } from "@/lib/download-export";
 import { toast } from "sonner";
@@ -42,8 +43,30 @@ export default function CustomersPage() {
         </Link>
       ),
     },
-    { id: "email", header: "Email", cell: (row) => row.email },
-    { id: "phone", header: "Phone", cell: (row) => row.phone },
+    {
+      id: "email",
+      header: "Email",
+      cell: (row) =>
+        row.email ? (
+          <a href={mailtoHref(row.email)} className="hover:underline" onClick={(e) => e.stopPropagation()}>
+            {row.email}
+          </a>
+        ) : (
+          "—"
+        ),
+    },
+    {
+      id: "phone",
+      header: "Phone",
+      cell: (row) =>
+        row.phone ? (
+          <a href={telHref(row.phone)} className="hover:underline" onClick={(e) => e.stopPropagation()}>
+            {row.phone}
+          </a>
+        ) : (
+          "—"
+        ),
+    },
     { id: "orders", header: "Orders", cell: (row) => row.orderCount },
     {
       id: "spent",

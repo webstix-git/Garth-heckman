@@ -13,6 +13,7 @@ import { PaymentStatusBadge } from "@/components/shared/payment-status-badge";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { useAsyncData } from "@/hooks/use-async-data";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { mailtoHref, telHref } from "@/lib/links";
 import { getCustomer } from "@/services/customers";
 import { listOrdersByCustomer } from "@/services/orders";
 
@@ -37,8 +38,30 @@ export default function CustomerDetailPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <DetailCard title="Profile">
           <DetailRow label="Name" value={`${c.firstName} ${c.lastName}`} />
-          <DetailRow label="Email" value={c.email} />
-          <DetailRow label="Phone" value={c.phone} />
+          <DetailRow
+            label="Email"
+            value={
+              c.email ? (
+                <a href={mailtoHref(c.email)} className="hover:underline">
+                  {c.email}
+                </a>
+              ) : (
+                "—"
+              )
+            }
+          />
+          <DetailRow
+            label="Phone"
+            value={
+              c.phone ? (
+                <a href={telHref(c.phone)} className="hover:underline">
+                  {c.phone}
+                </a>
+              ) : (
+                "—"
+              )
+            }
+          />
           <DetailRow label="Joined" value={formatDate(c.createdAt)} />
           <DetailRow label="Notes" value={c.notes ?? "—"} />
         </DetailCard>

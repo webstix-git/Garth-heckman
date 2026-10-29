@@ -2,13 +2,18 @@ import type { Metadata } from "next";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
 import { listCustomPosts } from "@/lib/custom-posts-server";
 import { SHORTS_POST_TYPE, postView, usedCategories } from "@/lib/custom-posts";
+import { pageSeo } from "@/lib/seo";
 import ShortsClient from "./ShortsClient";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const list = await listCustomPosts(SHORTS_POST_TYPE, { limit: 1 });
-  return { title: list?.type.name || "YouTube Shorts", description: list?.type.description || undefined };
+  if (!list?.type) return pageSeo("/shorts");
+  return pageSeo("/shorts", {
+    ...(list.type.name ? { title: list.type.name } : {}),
+    ...(list.type.description ? { description: list.type.description } : {}),
+  });
 }
 
 export default async function ShortsPage() {

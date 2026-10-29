@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
 import { NowPlaying } from "@/components/NowPlaying";
 import { WorkSwitcher } from "@/components/WorkSwitcher";
@@ -11,13 +12,7 @@ import { formatMoney } from "@/lib/money";
 import { getRequestStore } from "@/lib/tenant-store";
 import { TenantStorefrontHome } from "@/components/TenantStorefrontHome";
 
-export const metadata: Metadata = {
-  title: {
-    absolute: "Garth Heckman | Coach, Pastor, Author, Generational Strategist",
-  },
-  description:
-    "Forty-two years in ministry, business and coaching. The podcast, the coaching, the church, the book. Make God look good.",
-};
+export const metadata: Metadata = pageSeo("/");
 
 export default async function HomePage() {
   const tenant = await getRequestStore();

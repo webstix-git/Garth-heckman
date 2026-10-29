@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { LegalShell } from "@/components/LegalShell";
-import { IconArrow } from "@/components/icons";
+import { IconArrow, IconMail, IconPhone, IconPin } from "@/components/icons";
 import { WORK } from "@/lib/content";
+import {
+  GARTH_ADDRESS_LINE1,
+  GARTH_ADDRESS_LINE2,
+  GARTH_EMAIL,
+  GARTH_MAILTO,
+  GARTH_MAPS_HREF,
+  GARTH_PHONE_DISPLAY,
+  GARTH_TEL,
+} from "@/lib/links";
 
-export const metadata: Metadata = {
-  title: "Service Index",
-  description: "Coaching, speaking, cancer, Simply Church, Relationship Recall and Bridgeworks. Six rooms, same job.",
-};
+export const metadata: Metadata = pageSeo("/service-index");
 
 const MORE = [
   {
@@ -69,6 +76,38 @@ export default function Page() {
             </div>
           ))}
         </div>
+
+        <aside className="card contact-aside mt7" data-rv>
+          <p className="meta meta--gold">Get in touch</p>
+          <p className="body sm mt2 dim">Prefer not to use the form? Reach Garth directly.</p>
+          <address className="contact-aside__list">
+            <a className="contact-aside__row" href={GARTH_MAPS_HREF} target="_blank" rel="noopener">
+              <IconPin />
+              <span>
+                <span className="contact-aside__label">Address</span>
+                <span className="contact-aside__value">
+                  {GARTH_ADDRESS_LINE1}
+                  <br />
+                  {GARTH_ADDRESS_LINE2}
+                </span>
+              </span>
+            </a>
+            <a className="contact-aside__row" href={GARTH_TEL}>
+              <IconPhone />
+              <span>
+                <span className="contact-aside__label">Phone</span>
+                <span className="contact-aside__value">{GARTH_PHONE_DISPLAY}</span>
+              </span>
+            </a>
+            <a className="contact-aside__row" href={GARTH_MAILTO}>
+              <IconMail />
+              <span>
+                <span className="contact-aside__label">Email</span>
+                <span className="contact-aside__value">{GARTH_EMAIL}</span>
+              </span>
+            </a>
+          </address>
+        </aside>
       </div>
     </LegalShell>
   );

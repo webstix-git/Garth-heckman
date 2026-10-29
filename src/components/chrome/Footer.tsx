@@ -1,7 +1,17 @@
 "use client";
 
 import { SOCIALS } from "@/lib/nav";
-import { ASK_GARTH_HREF, WTFU_HREF } from "@/lib/links";
+import {
+  ASK_GARTH_HREF,
+  GARTH_ADDRESS_LINE1,
+  GARTH_ADDRESS_LINE2,
+  GARTH_EMAIL,
+  GARTH_MAILTO,
+  GARTH_MAPS_HREF,
+  GARTH_PHONE_DISPLAY,
+  GARTH_TEL,
+  WTFU_HREF,
+} from "@/lib/links";
 import { IconMail, IconPhone, IconPin, IconX } from "@/components/icons";
 import { NavLinks } from "@/components/chrome/Nav";
 import { useCart } from "@/components/CartProvider";
@@ -105,25 +115,20 @@ export function Footer() {
           <div className="fcol fcol--contact">
             <p className="meta meta--gold">Get in touch</p>
             <address className="fcontact">
-              <a className="fcontact__row" href="mailto:garthwheckman@gmail.com">
+              <a className="fcontact__row" href={GARTH_MAILTO}>
                 <IconMail />
-                <span>garthwheckman@gmail.com</span>
+                <span>{GARTH_EMAIL}</span>
               </a>
-              <a className="fcontact__row" href="tel:+19522407152">
+              <a className="fcontact__row" href={GARTH_TEL}>
                 <IconPhone />
-                <span>(952) 240-7152</span>
+                <span>{GARTH_PHONE_DISPLAY}</span>
               </a>
-              <a
-                className="fcontact__row"
-                href="https://maps.google.com/?q=15097+DuPont+Path,+Apple+Valley,+MN+55124"
-                target="_blank"
-                rel="noopener"
-              >
+              <a className="fcontact__row" href={GARTH_MAPS_HREF} target="_blank" rel="noopener">
                 <IconPin />
                 <span>
-                  15097 DuPont Path
+                  {GARTH_ADDRESS_LINE1}
                   <br />
-                  Apple Valley, MN 55124
+                  {GARTH_ADDRESS_LINE2}
                 </span>
               </a>
             </address>

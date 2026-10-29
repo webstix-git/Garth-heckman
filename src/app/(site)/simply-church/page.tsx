@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { Shot } from "@/components/Shot";
 
-export const metadata: Metadata = {
-  title: "Simply Church",
-  description: "A thousand churches gathering in living rooms across the country. Acts 2, minus the building. Start one where you are.",
-};
+export const metadata: Metadata = pageSeo("/simply-church");
 
 export default function Page() {
   return (
@@ -76,6 +75,14 @@ export default function Page() {
               </div>
             </div>
           </section>
+        <RelatedLinks
+          title="Related"
+          links={[
+            { href: "/bridgeworks", label: "Bridgeworks", note: "Generational tools for the whole church." },
+            { href: "/speaking", label: "Speaking", note: "Bring Garth to your next gathering." },
+            { href: "/contact", label: "Start a Simply Church", note: "Tell Garth your city and state." },
+          ]}
+        />
       </main>
     </SiteChrome>
   );

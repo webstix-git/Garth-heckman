@@ -263,7 +263,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     priced: Boolean(quote),
     quoteError: current?.error ?? "",
     paypalAvailable: quote?.paypal !== false,
-    codAvailable: quote?.cashOnDelivery === true,
+    codAvailable: false,
     physical,
     digital,
     drawerOpen,

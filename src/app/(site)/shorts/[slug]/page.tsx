@@ -5,7 +5,8 @@ import { Shot } from "@/components/Shot";
 import { getCustomPost, listCustomPosts } from "@/lib/custom-posts-server";
 import { SHORTS_POST_TYPE, formatPostDate, postView, type PostView } from "@/lib/custom-posts";
 import { fetchStoreSettings } from "@/lib/settings-supabase";
-import { robotsMetadata } from "@/lib/seo-robots";
+import { dynamicPageSeo, pageSeo } from "@/lib/seo";
+import { mailtoHref, telHref } from "@/lib/links";
 
 export const dynamic = "force-dynamic";
 
@@ -14,14 +15,15 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const [found, site] = await Promise.all([getCustomPost(SHORTS_POST_TYPE, slug), fetchStoreSettings().catch(() => null)]);
-  if (!found) return { title: "YouTube Shorts" };
+  if (!found) return pageSeo("/shorts");
   const view = postView(found.post);
-  return {
+  return dynamicPageSeo({
+    path: `/shorts/${view.slug}`,
     title: view.title,
-    description: view.description || undefined,
-    openGraph: view.image ? { images: [view.image] } : undefined,
-    robots: robotsMetadata({ globalNoindex: site?.settings.seo?.noindex }),
-  };
+    description: view.description,
+    image: view.image,
+    globalNoindex: site?.settings.seo?.noindex,
+  });
 }
 
 function Extra({ item }: { item: PostView["extras"][number] }) {
@@ -41,8 +43,8 @@ function Extra({ item }: { item: PostView["extras"][number] }) {
       </a>
     );
   }
-  if (item.type === "email" && typeof value === "string") return <a href={`mailto:${value}`}>{value}</a>;
-  if (item.type === "phone" && typeof value === "string") return <a href={`tel:${value.replace(/[^\d+]/g, "")}`}>{value}</a>;
+  if (item.type === "email" && typeof value === "string") return <a href={mailtoHref(value)}>{value}</a>;
+  if (item.type === "phone" && typeof value === "string") return <a href={telHref(value)}>{value}</a>;
   if (item.type === "checkbox") return <>{value ? "Yes" : "No"}</>;
   if (item.type === "date" || item.type === "datetime") return <>{formatPostDate(String(value), "long")}</>;
   if (Array.isArray(value)) {

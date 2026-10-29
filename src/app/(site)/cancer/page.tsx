@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
+import { pageSeo } from "@/lib/seo";
 import { SiteChrome } from "@/components/chrome/SiteChrome";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { TripleCGrid } from "@/components/TripleCGrid";
 import { Shot } from "@/components/Shot";
+import { GARTH_EMAIL, GARTH_MAILTO } from "@/lib/links";
 
-export const metadata: Metadata = {
-  title: "Cancer",
-  description: "Triple C survivor. Hope, resources and a straight conversation for people in the middle of the fight.",
-};
+export const metadata: Metadata = pageSeo("/cancer");
 
 export default function Page() {
   return (
@@ -154,10 +154,18 @@ export default function Page() {
               </div>
               <div className="row">
                 <a className="btn btn--ink btn--lg" href="/contact">Get in touch</a>
-                <a className="btn btn--line btn--lg" href="mailto:garthwheckman@gmail.com">garthwheckman@gmail.com</a>
+                <a className="btn btn--line btn--lg" href={GARTH_MAILTO}>{GARTH_EMAIL}</a>
               </div>
             </div>
           </section>
+        <RelatedLinks
+          title="Related"
+          links={[
+            { href: "/story", label: "My story", note: "How Garth got here—ministry, survival, and six grandchildren." },
+            { href: "/coaching", label: "Coaching", note: "Whole-person coaching when you are ready to rebuild." },
+            { href: "/contact", label: "Get in touch", note: "Send a note. Bad days count." },
+          ]}
+        />
       </main>
     </SiteChrome>
   );

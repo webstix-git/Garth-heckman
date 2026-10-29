@@ -3,7 +3,7 @@
 import { WTFU_HREF } from "@/lib/links";
 import { NAV, type NavId } from "@/lib/nav";
 import { useCart } from "@/components/CartProvider";
-import { IconBag, IconSearch } from "@/components/icons";
+import { IconBag, IconSearch, IconUser } from "@/components/icons";
 
 export function Mark({ small = false, href = "/" }: { small?: boolean; href?: string }) {
   return (
@@ -62,6 +62,14 @@ export function CartBtn() {
   );
 }
 
+export function AccountBtn() {
+  return (
+    <a className="iconbtn" href="/account" aria-label="My account" title="My account">
+      <IconUser />
+    </a>
+  );
+}
+
 export function TopNav({ nav, sheetOpen, onSheet }: { nav: NavId; sheetOpen: boolean; onSheet: () => void }) {
   return (
     <div className="topnav">
@@ -72,6 +80,7 @@ export function TopNav({ nav, sheetOpen, onSheet }: { nav: NavId; sheetOpen: boo
         </nav>
         <div className="topnav__cta">
           <SearchBtn />
+          <AccountBtn />
           <CartBtn />
           <a className="btn btn--hero hide-s" href={WTFU_HREF}>
             Get WTFU
@@ -113,6 +122,7 @@ export function StickyBar({
         </nav>
         <div className="stickybar__cta">
           <SearchBtn />
+          <AccountBtn />
           <CartBtn />
           <a className="btn btn--hero hide-s" href={WTFU_HREF}>
             Get WTFU

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 const VARIANT: Record<string, string> = {
@@ -17,6 +18,16 @@ function normalizeRatio(ratio?: string) {
   return String(ratio || "4-3").replace(/\//g, "-");
 }
 
+function canOptimize(src: string) {
+  if (src.startsWith("/")) return true;
+  try {
+    const host = new URL(src).hostname;
+    return host.endsWith("supabase.co") || host.endsWith("garthheckman.com");
+  } catch {
+    return false;
+  }
+}
+
 export function Shot({
   variant = "default",
   ratio = "4-3",
@@ -27,6 +38,7 @@ export function Shot({
   contain = false,
   alt,
   anchor,
+  priority = false,
 }: {
   variant?: string;
   ratio?: string;
@@ -37,23 +49,49 @@ export function Shot({
   contain?: boolean;
   alt?: string;
   anchor?: "top" | "center";
+  /** Eager-load hero / LCP images. */
+  priority?: boolean;
 }) {
   const ratioClass = normalizeRatio(ratio);
   const [failed, setFailed] = useState(false);
   const showPhoto = Boolean(src) && !failed;
+  const altText = alt ?? (label === false ? "" : label || "");
 
-  if (showPhoto) {
+  if (showPhoto && src) {
+    const objectPosition = anchor === "top" ? "top center" : "center";
+    const objectFit = contain ? "contain" : "cover";
     return (
       <div
         className={`photo r${ratioClass}${contain ? " photo--contain" : ""}${
           anchor === "top" ? " photo--top" : ""
         } ${className}`.trim()}
       >
-        <img
-          src={src}
-          alt={alt ?? (label === false ? "" : label || "")}
-          onError={() => setFailed(true)}
-        />
+        {canOptimize(src) ? (
+          <Image
+            src={src}
+            alt={altText}
+            fill
+            sizes="(max-width: 940px) 100vw, (max-width: 1400px) 50vw, 720px"
+            priority={priority}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            style={{ objectFit, objectPosition }}
+            onError={() => setFailed(true)}
+          />
+        ) : (
+          // External hosts outside next.config remotePatterns keep native img + lazy attrs.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={src}
+            alt={altText}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            fetchPriority={priority ? "high" : "auto"}
+            width={1200}
+            height={900}
+            onError={() => setFailed(true)}
+          />
+        )}
         <span className="shot__tick">
           <i></i>
           <i></i>
