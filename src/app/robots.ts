@@ -19,6 +19,7 @@ export default function robots(): MetadataRoute.Robots {
           "/cart",
           "/downloads",
           "/order-confirmation",
+          "/thank-you",
         ],
       },
     ],

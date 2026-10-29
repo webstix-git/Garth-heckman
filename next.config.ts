@@ -140,7 +140,7 @@ const nextConfig: NextConfig = {
         ],
       },
       // Private / transactional routes override the public X-Robots-Tag.
-      ...["/account/:path*", "/checkout", "/checkout/:path*", "/cart", "/downloads", "/order-confirmation", "/admin/:path*"].map(
+      ...["/account/:path*", "/checkout", "/checkout/:path*", "/cart", "/downloads", "/order-confirmation", "/thank-you", "/admin/:path*"].map(
         (source) => ({
           source,
           headers: [{ key: "X-Robots-Tag", value: privateRobots }],

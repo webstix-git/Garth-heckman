@@ -1,10 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 /** Standalone contact form — posts to same-origin /api/contact (server holds the store key). */
 export function ContactForm() {
-  const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const router = useRouter();
+  const [state, setState] = useState<"idle" | "sending" | "error">("idle");
   const [message, setMessage] = useState("");
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -48,8 +50,7 @@ export function ContactForm() {
       const result = (await response.json()) as { error?: string };
       if (!response.ok) throw new Error(result.error ?? "Unable to send your message.");
       formElement.reset();
-      setState("sent");
-      setMessage("Thanks — your message has been sent.");
+      router.push("/thank-you");
     } catch (error) {
       setState("error");
       setMessage(error instanceof Error ? error.message : "Unable to send your message.");
@@ -89,7 +90,7 @@ export function ContactForm() {
         <textarea className="textarea" id="contact-message" name="message" placeholder="Tell us how we can help." />
       </div>
       {state !== "idle" && (
-        <div className={`notice ${state === "sent" ? "notice--ok" : state === "error" ? "notice--bad" : "notice--info"} mt3`}>
+        <div className={`notice ${state === "error" ? "notice--bad" : "notice--info"} mt3`}>
           <span>{state === "sending" ? "Sending your message…" : message}</span>
         </div>
       )}

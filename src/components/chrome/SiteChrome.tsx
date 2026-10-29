@@ -18,18 +18,23 @@ import { Footer, Sheet } from "@/components/chrome/Footer";
 import { CartDrawer } from "@/components/chrome/CartDrawer";
 import { SearchModal } from "@/components/chrome/SearchModal";
 import { useCart } from "@/components/CartProvider";
+function isMainElement(node: ReactNode): node is ReactElement<{ children?: ReactNode }> {
+  return isValidElement(node) && node.type === "main";
+}
+
 function withTopNav(node: ReactNode, nav: NavId, sheetOpen: boolean, onSheet: () => void): ReactNode {
   const arr = Children.toArray(node);
-  const main = arr[0];
+  // Prefer the real <main> — JsonLd / scripts before it used to steal the slot
+  // and the open header never injected (e.g. /contact).
+  const mainIndex = arr.findIndex(isMainElement);
+  const main = mainIndex >= 0 ? arr[mainIndex] : arr[0];
   if (!isValidElement(main)) return node;
 
   const mainEl = main as ReactElement<{ children?: ReactNode }>;
   const mainKids = Children.toArray(mainEl.props.children);
   let target = mainKids[0];
-  let wrapArticle = false;
 
   if (isValidElement(target) && target.type === "article") {
-    wrapArticle = true;
     const articleKids = Children.toArray((target as ReactElement<{ children?: ReactNode }>).props.children);
     target = articleKids[0];
     if (!isValidElement(target)) return node;
@@ -38,47 +43,60 @@ function withTopNav(node: ReactNode, nav: NavId, sheetOpen: boolean, onSheet: ()
     const newArticle = cloneElement(articleEl, {
       children: [patched, ...Children.toArray(articleEl.props.children).slice(1)],
     });
-    return cloneElement(mainEl, {
+    const patchedMain = cloneElement(mainEl, {
       children: [newArticle, ...mainKids.slice(1)],
     });
+    if (mainIndex < 0) return patchedMain;
+    return [...arr.slice(0, mainIndex), patchedMain, ...arr.slice(mainIndex + 1)];
   }
 
   if (!isValidElement(target)) return node;
-  void wrapArticle;
   const patched = patchSection(target as ReactElement<{ className?: string; style?: CSSProperties; children?: ReactNode }>, nav, sheetOpen, onSheet);
-  return cloneElement(mainEl, {
+  const patchedMain = cloneElement(mainEl, {
     children: [patched, ...mainKids.slice(1)],
   });
+  if (mainIndex < 0) return patchedMain;
+  return [...arr.slice(0, mainIndex), patchedMain, ...arr.slice(mainIndex + 1)];
 }
 
 /** The gold notice follows the page banner, so the header stays the first thing on the page. */
 function withAskBar(node: ReactNode): ReactNode {
   const arr = Children.toArray(node);
-  const main = arr[0];
+  const mainIndex = arr.findIndex(isMainElement);
+  const main = mainIndex >= 0 ? arr[mainIndex] : arr[0];
   if (!isValidElement(main)) return node;
 
   const mainEl = main as ReactElement<{ children?: ReactNode }>;
   const kids = Children.toArray(mainEl.props.children);
   const first = kids[0];
 
+  const replaceMain = (patchedMain: ReactElement) => {
+    if (mainIndex < 0) return patchedMain;
+    return [...arr.slice(0, mainIndex), patchedMain, ...arr.slice(mainIndex + 1)];
+  };
+
   if (isValidElement(first) && first.type === "article") {
     const article = first as ReactElement<{ children?: ReactNode }>;
     const articleKids = Children.toArray(article.props.children);
     if (!articleKids.length) return node;
-    return cloneElement(mainEl, {
-      children: [
-        cloneElement(article, {
-          children: [articleKids[0], <AskBar key="askbar" />, ...articleKids.slice(1)],
-        }),
-        ...kids.slice(1),
-      ],
-    });
+    return replaceMain(
+      cloneElement(mainEl, {
+        children: [
+          cloneElement(article, {
+            children: [articleKids[0], <AskBar key="askbar" />, ...articleKids.slice(1)],
+          }),
+          ...kids.slice(1),
+        ],
+      }),
+    );
   }
 
   if (!kids.length) return node;
-  return cloneElement(mainEl, {
-    children: [kids[0], <AskBar key="askbar" />, ...kids.slice(1)],
-  });
+  return replaceMain(
+    cloneElement(mainEl, {
+      children: [kids[0], <AskBar key="askbar" />, ...kids.slice(1)],
+    }),
+  );
 }
 
 function patchSection(
