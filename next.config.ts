@@ -43,9 +43,19 @@ const nextConfig: NextConfig = {
         ]
       : [];
 
+    // Admin UI is proxied from the backend, but browser fetch("/api/...") hits
+    // this frontend origin. Local route handlers win first; anything else
+    // (contact-submissions, orders, store settings, …) goes to the backend.
+    const adminApiProxy = adminBackendUrl
+      ? [{ source: "/api/:path*", destination: `${adminBackendUrl}/api/:path*` }]
+      : [];
+
     return {
       beforeFiles: adminZone,
-      afterFiles: [{ source: "/api/store/:path*", destination: "/api/staff/:path*" }],
+      afterFiles: [
+        { source: "/api/store/:path*", destination: "/api/staff/:path*" },
+        ...adminApiProxy,
+      ],
     };
   },
 
