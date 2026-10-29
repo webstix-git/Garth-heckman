@@ -38,17 +38,41 @@ export async function POST(request: Request) {
 
   const { turnstileToken: _token, ...payloadBody } = body;
 
-  const response = await fetch(`${backendUrl}/api/contact-submissions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Store-Key": storeKey,
-      "X-Forwarded-For": clientIp(request),
-    },
-    body: JSON.stringify(payloadBody),
-    cache: "no-store",
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${backendUrl}/api/contact-submissions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Store-Key": storeKey,
+        "X-Forwarded-For": clientIp(request),
+      },
+      body: JSON.stringify(payloadBody),
+      cache: "no-store",
+    });
+  } catch {
+    return NextResponse.json(
+      { error: "Unable to reach the contact service. Please try again shortly." },
+      { status: 502 },
+    );
+  }
 
-  const payload = await response.json().catch(() => ({}));
+  const raw = await response.text();
+  let payload: Record<string, unknown> = {};
+  if (raw) {
+    try {
+      payload = JSON.parse(raw) as Record<string, unknown>;
+    } catch {
+      return NextResponse.json(
+        {
+          error:
+            response.status >= 500
+              ? "Contact service error. Please try again shortly."
+              : "Unexpected response from the contact service.",
+        },
+        { status: response.status >= 400 ? response.status : 502 },
+      );
+    }
+  }
   return NextResponse.json(payload, { status: response.status });
 }

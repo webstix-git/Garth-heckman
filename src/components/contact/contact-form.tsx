@@ -55,7 +55,17 @@ export function ContactForm() {
           turnstileToken: turnstileToken || undefined,
         }),
       });
-      const result = (await response.json()) as { error?: string };
+      const raw = await response.text();
+      let result: { error?: string } = {};
+      try {
+        result = raw ? (JSON.parse(raw) as { error?: string }) : {};
+      } catch {
+        throw new Error(
+          response.ok
+            ? "Unexpected response from the server."
+            : `Unable to send your message (${response.status}).`,
+        );
+      }
       if (!response.ok) throw new Error(result.error ?? "Unable to send your message.");
       formElement.reset();
       setTurnstileToken(null);
