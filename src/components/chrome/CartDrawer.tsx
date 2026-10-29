@@ -9,7 +9,7 @@ import { IconX } from "@/components/icons";
 import { isPayWhatYouWantPrice } from "@/lib/pay-what-you-want";
 
 export function CartDrawer() {
-  const { lines, count, subtotal, physical, drawerOpen, closeDrawer, setQty, remove } = useCart();
+  const { lines, count, subtotal, physical, drawerOpen, closeDrawer, remove } = useCart();
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -72,24 +72,9 @@ export function CartDrawer() {
                         {i.pwywCents != null
                           ? `Your contribution: ${formatMoney(i.unitCents)}`
                           : i.optionsLabel || (i.shipping ? "Ships to you" : "Digital download")}
+                        {i.qty > 1 ? ` · Qty ${i.qty}` : ""}
                       </p>
                       <div className="dline__ctl">
-                        <div className="qty qty--sm">
-                          <button type="button" data-step="down" aria-label="Decrease" onClick={() => setQty(i.key, i.qty - 1)}>
-                            −
-                          </button>
-                          <input
-                            type="number"
-                            value={i.qty}
-                            min={1}
-                            data-dqty
-                            aria-label={`Quantity for ${i.title}`}
-                            onChange={(e) => setQty(i.key, parseInt(e.target.value, 10) || 1)}
-                          />
-                          <button type="button" data-step="up" aria-label="Increase" onClick={() => setQty(i.key, i.qty + 1)}>
-                            +
-                          </button>
-                        </div>
                         <a
                           href="#"
                           className="dline__x"
