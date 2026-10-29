@@ -52,12 +52,15 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
+      <head>
+        {/* Search Console GA verification requires the tag in <head>, not body. */}
+        <Analytics />
+      </head>
       <body className="min-h-full antialiased">
         <JsonLd id="ld-organization" data={organizationSchema()} />
         <JsonLd id="ld-person" data={personSchema()} />
         <JsonLd id="ld-website" data={websiteSchema()} />
         {children}
-        <Analytics />
       </body>
     </html>
   );

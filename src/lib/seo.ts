@@ -243,7 +243,12 @@ export function dynamicPageSeo(input: {
 }
 
 export function siteVerificationMetadata(): Metadata["verification"] | undefined {
-  const google = (process.env.NEXT_PUBLIC_GSC_VERIFICATION || process.env.GOOGLE_SITE_VERIFICATION || "").trim();
+  // Search Console HTML-tag token (content=…). Env override, else Garth live token.
+  const google = (
+    process.env.NEXT_PUBLIC_GSC_VERIFICATION
+    || process.env.GOOGLE_SITE_VERIFICATION
+    || "NGghwgyrEC9HPRki8064X8Z8H0vFt1gl60b7o5hmp4o"
+  ).trim();
   if (!google) return undefined;
   return { google };
 }
