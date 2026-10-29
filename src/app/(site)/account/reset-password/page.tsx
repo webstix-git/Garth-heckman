@@ -1,14 +1,39 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconEye, IconEyeOff } from "@/components/icons";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
 
+type RecoveryParams = {
+  tokenHash: string | null;
+  type: string | null;
+  code: string | null;
+  access: string | null;
+  refresh: string | null;
+  next: string | null;
+  authError: string | null;
+};
+
+function readRecoveryParams(): RecoveryParams {
+  const query = new URLSearchParams(window.location.search);
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  return {
+    tokenHash: query.get("token_hash"),
+    type: query.get("type"),
+    code: query.get("code"),
+    access: hash.get("access_token"),
+    refresh: hash.get("refresh_token"),
+    next: query.get("next"),
+    authError: hash.get("error_description") || query.get("error_description"),
+  };
+}
+
 export default function CustomerResetPasswordPage() {
   const router = useRouter();
   const supabase = useMemo(() => createBrowserSupabase(), []);
+  const started = useRef(false);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -17,38 +42,77 @@ export default function CustomerResetPasswordPage() {
   const [checking, setChecking] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [nextPath, setNextPath] = useState<string | null>(null);
 
   useEffect(() => {
+    // Recovery tokens are one-time. Guard against React remount / Strict Mode double-run.
+    if (started.current) return;
+    started.current = true;
+
     let cancelled = false;
     async function establish() {
-      const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-      const authError = hash.get("error_description");
-      if (authError) {
+      const params = readRecoveryParams();
+      if (params.next) setNextPath(params.next);
+
+      if (params.authError) {
         if (!cancelled) {
-          setError(authError);
+          setError(params.authError);
           setChecking(false);
         }
         return;
       }
-      const code = new URLSearchParams(window.location.search).get("code");
-      const access = hash.get("access_token");
-      const refresh = hash.get("refresh_token");
+
+      // Remount after a successful verify: session is already there, URL tokens were cleared.
+      const existing = await supabase.auth.getSession();
+      if (existing.data.session) {
+        if (!cancelled) {
+          setReady(true);
+          setChecking(false);
+        }
+        return;
+      }
+
       const result =
-        access && refresh
-          ? await supabase.auth.setSession({ access_token: access, refresh_token: refresh })
-          : code
-            ? await supabase.auth.exchangeCodeForSession(code)
-            : { error: new Error("Missing recovery link") };
+        params.tokenHash && params.type
+          ? await supabase.auth.verifyOtp({
+              token_hash: params.tokenHash,
+              type: params.type as "recovery",
+            })
+          : params.access && params.refresh
+            ? await supabase.auth.setSession({
+                access_token: params.access,
+                refresh_token: params.refresh,
+              })
+            : params.code
+              ? await supabase.auth.exchangeCodeForSession(params.code)
+              : { error: new Error("Missing recovery link"), data: { session: null } };
+
       if (cancelled) return;
+
       if (result.error) {
-        setError("This reset link is invalid or expired. Request a new one from the sign-in page.");
-        setReady(false);
+        // Race: another run may have already established the session.
+        const again = await supabase.auth.getSession();
+        if (again.data.session) {
+          setReady(true);
+          setError("");
+        } else {
+          setError("This reset link is invalid or expired. Request a new one from the sign-in page.");
+          setReady(false);
+        }
       } else {
         setReady(true);
-        window.history.replaceState({}, document.title, "/account/reset-password");
+        setError("");
+        window.history.replaceState(
+          {},
+          document.title,
+          params.next
+            ? `/account/reset-password?next=${encodeURIComponent(params.next)}`
+            : "/account/reset-password",
+        );
       }
       setChecking(false);
     }
+
     void establish();
     return () => {
       cancelled = true;
@@ -78,7 +142,7 @@ export default function CustomerResetPasswordPage() {
       return;
     }
     await supabase.auth.signOut();
-    router.replace("/account/login?reset=1");
+    router.replace(nextPath && nextPath.startsWith("/") ? nextPath : "/account/login?reset=1");
     router.refresh();
   }
 

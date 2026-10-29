@@ -7,7 +7,8 @@ import Script from "next/script";
  * into NEXT_PUBLIC_GSC_VERIFICATION (wired via root metadata.verification).
  */
 export function Analytics() {
-  const gaId = (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "").trim();
+  // GA4 Measurement ID — env override, else Garth live property.
+  const gaId = (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-4KN6XGHGLR").trim();
   const gtmId = (process.env.NEXT_PUBLIC_GTM_ID || "").trim();
 
   if (!gaId && !gtmId) return null;
