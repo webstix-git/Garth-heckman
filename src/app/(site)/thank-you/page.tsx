@@ -4,8 +4,8 @@ import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { GARTH_EMAIL, GARTH_MAILTO, GARTH_PHONE_DISPLAY, GARTH_TEL } from "@/lib/links";
 
 export const metadata: Metadata = {
-  title: "Thank you",
-  description: "Your message was sent. Garth’s team will get back to you soon.",
+  title: "Contact Thank You",
+  description: "Thanks for contacting us! We will get in touch with you shortly.",
   robots: { index: false, follow: false },
   alternates: { canonical: "/thank-you" },
 };
@@ -23,22 +23,21 @@ export default function ThankYouPage() {
               <s>/</s>
               <span>Thank you</span>
             </nav>
-            <h1 className="d1">Message sent.</h1>
-            <p className="lede mt5 mw dim">
-              Thanks for writing. Someone on the team will read it and reply as soon as they can. If it is urgent, call{" "}
+            <h1 className="d1">Contact Thank You</h1>
+          </div>
+        </section>
+
+        <section className="sec">
+          <div className="wrap" style={{ textAlign: "left" }}>
+            <h2 className="d3">Thank You for Reaching Out!</h2>
+            <p className="lede mt4 dim">
+              Thank you for contacting us. We’ve received your message. Call{" "}
               <a href={GARTH_TEL}>{GARTH_PHONE_DISPLAY}</a> or email{" "}
               <a href={GARTH_MAILTO}>{GARTH_EMAIL}</a>.
             </p>
-            <div className="hero__cta" style={{ marginTop: "clamp(32px,3.4vw,48px)" }}>
-              <a className="btn btn--lg" href="/">
-                Back to home
-              </a>
-              <a className="btn btn--line btn--lg" href="/store">
-                Shop the store
-              </a>
-            </div>
           </div>
         </section>
+
         <RelatedLinks
           title="While you wait"
           links={[

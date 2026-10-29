@@ -120,15 +120,26 @@ export function ContactForm() {
       </div>
       <div className="field">
         <label className="label" htmlFor="contact-subject">
-          Subject:
+          Subject: <span className="dim" style={{ fontWeight: 500, letterSpacing: 0, textTransform: "none" }}>(optional)</span>
         </label>
-        <input className="input" id="contact-subject" name="subject" placeholder="How can we help?" />
+        <input
+          className="input"
+          id="contact-subject"
+          name="subject"
+          placeholder="Optional"
+          autoComplete="off"
+        />
       </div>
       <div className="field">
         <label className="label" htmlFor="contact-message">
-          Message:
+          Message: <span className="dim" style={{ fontWeight: 500, letterSpacing: 0, textTransform: "none" }}>(optional)</span>
         </label>
-        <textarea className="textarea" id="contact-message" name="message" placeholder="Tell us how we can help." />
+        <textarea
+          className="textarea"
+          id="contact-message"
+          name="message"
+          placeholder="Optional"
+        />
       </div>
       <TurnstileField action="contact" theme="auto" onToken={setTurnstileToken} />
       {state !== "idle" && (
