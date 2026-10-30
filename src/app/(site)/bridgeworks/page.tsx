@@ -35,6 +35,98 @@ export default function Page() {
             </div>
           </section>
 
+          <section className="sec">
+            <div className="wrap split split-a" style={{ alignItems: "start" }}>
+              <div>
+                <h2 className="d2">Reaching Every Generation for Christ</h2>
+                <div className="prose mt4">
+                  <p>
+                    <em>
+                      “Too many pastors are more worried about butts in seats than souls in
+                      hell.”
+                    </em>{" "}
+                    (Phillip Anthony Mitchel)
+                  </p>
+                  <p>
+                    It’s a blunt line, but most pastors already feel its weight. They don’t
+                    want empty pews for the sake of numbers. They want people found, discipled,
+                    and brought home. And in many small churches, that calling comes wrapped in
+                    real fears: a shrinking congregation, tight budgets, conflict that could
+                    split the church, and the quiet worry that the work isn’t bearing fruit.
+                  </p>
+                  <p>
+                    Behind many of those fears is something rarely named: <em>a generation gap.</em>
+                  </p>
+                  <p>
+                    Boomers, Gen X, Millennials, and Gen Z often worship, communicate, serve,
+                    and give differently. When those differences go unexamined, they become
+                    misunderstandings. Younger families drift away without anyone knowing why.
+                    Longtime members feel their church is being taken from them. Leaders burn
+                    out trying to please everyone, and the people outside the church never feel
+                    invited in.
+                  </p>
+                  <p>
+                    <strong>That’s where Garth Heckman comes in.</strong>
+                  </p>
+                  <p>
+                    With more than four decades of experience as a pastor, entrepreneur,
+                    author, speaker, and coach, Garth has lived on both sides of the pulpit. He
+                    helps pastors and church leaders:
+                  </p>
+                  <ul>
+                    <li>
+                      <strong>Understand each generation</strong> without stereotypes, seeing the values,
+                      hopes, and wounds that shape how people approach faith and community
+                    </li>
+                    <li>
+                      <strong>Build trust across age groups</strong> so your congregation becomes a family,
+                      not a collection of camps
+                    </li>
+                    <li>
+                      <strong>Communicate with clarity</strong> in sermons, staff meetings, and everyday
+                      conversations
+                    </li>
+                    <li>
+                      <strong>Lead through change</strong> without leaving people behind
+                    </li>
+                    <li>
+                      <strong>Reach people for Christ</strong> by removing barriers the gospel was never
+                      meant to carry
+                    </li>
+                  </ul>
+                  <p>
+                    Garth doesn’t hand down a formula. His coaching starts with listening well
+                    and asking thoughtful questions, then helping you discover solutions that
+                    fit your values, your people, and your mission. Every church is different,
+                    and your path forward should be too.
+                  </p>
+                  <p>
+                    The goal was never full seats. It’s full lives, changed by the gospel,
+                    across every generation God has placed in your community.
+                  </p>
+                  <p>
+                    <strong>Ready to bridge the gap? Let’s talk.</strong>{" "}
+                    <a href={GARTH_MAILTO}>{GARTH_EMAIL}</a>
+                    {" "}and the Bridgeworks website:{" "}
+                    <a href="https://generations.com" target="_blank" rel="noopener noreferrer">
+                      Generations.com
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div>
+                <Shot
+                  variant="cool"
+                  ratio="4-3"
+                  label="Bridgeworks"
+                  note="Reaching every generation"
+                  src="/assets/img/room-bridgeworks.png"
+                  anchor="top"
+                />
+              </div>
+            </div>
+          </section>
+
           <section className="sec tint">
             <div className="wrap split split-a" style={{ alignItems: "start" }}>
               <div data-rv>

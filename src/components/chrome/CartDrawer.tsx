@@ -9,7 +9,8 @@ import { IconX } from "@/components/icons";
 import { isPayWhatYouWantPrice } from "@/lib/pay-what-you-want";
 
 export function CartDrawer() {
-  const { lines, count, subtotal, physical, drawerOpen, closeDrawer, remove } = useCart();
+  const { lines, count, subtotal, physical, drawerOpen, closeDrawer, remove, catalogReady } = useCart();
+  const loading = !catalogReady;
 
   useEffect(() => {
     if (!drawerOpen) return;
@@ -50,7 +51,12 @@ export function CartDrawer() {
           </button>
         </div>
         <div className="drawer__body" data-dbody="">
-          {!lines.length ? (
+          {loading ? (
+            <div className="cart-loading" style={{ padding: "48px 0", textAlign: "center" }} aria-busy="true" aria-live="polite">
+              <span className="cart-loading__spin" aria-hidden="true" />
+              <p className="body mt4">Loading your cart…</p>
+            </div>
+          ) : !lines.length ? (
             <div style={{ padding: "48px 0", textAlign: "center" }}>
               <p className="d4">Your cart is empty.</p>
               <p className="body sm mt2">Books, downloads and merchandise, all in one place.</p>
@@ -117,7 +123,7 @@ export function CartDrawer() {
           )}
         </div>
         <div className="drawer__foot" data-dfoot="">
-          {!lines.length ? (
+          {loading ? null : !lines.length ? (
             <>
               <a className="btn btn--block" href="/store">
                 Shop the store

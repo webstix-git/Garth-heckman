@@ -6,26 +6,12 @@ import { IconArrow, IconCheck, IconInfo, IconShield, IconTruck } from "@/compone
 import { validateCart } from "@/lib/cart";
 import { formatMoney, formatMoneyOrFree } from "@/lib/money";
 import { useCart } from "@/components/CartProvider";
-import { useState } from "react";
 
 export default function CartPage() {
   const cart = useCart();
-  const { lines, subtotal, discount, shipping, tax, total, physical, digital, promo, priced } = cart;
+  const { lines, subtotal, discount, shipping, tax, total, physical, digital, promo, priced, catalogReady } = cart;
   const issues = validateCart(cart.items);
-  const [promoIn, setPromoIn] = useState("");
-  const [promoMsg, setPromoMsg] = useState("");
-  const [checking, setChecking] = useState(false);
-
-  async function submitPromo() {
-    setChecking(true);
-    const r = await cart.applyPromo(promoIn);
-    setChecking(false);
-    setPromoMsg(r.ok ? "" : r.msg);
-    if (r.ok) {
-      setPromoIn("");
-      cart.announce(r.msg);
-    }
-  }
+  const loading = !catalogReady;
 
   function issueFor(key: string) {
     return issues.find((x) => x.key === key);
@@ -45,7 +31,12 @@ export default function CartPage() {
             </nav>
             <h1 className="d2">Your cart</h1>
             <div id="body" className="mt6">
-              {!lines.length ? (
+              {loading ? (
+                <div className="empty cart-loading" aria-busy="true" aria-live="polite">
+                  <span className="cart-loading__spin" aria-hidden="true" />
+                  <p className="body mt4">Loading your cart…</p>
+                </div>
+              ) : !lines.length ? (
                 <div className="empty">
                   <h2 className="d3">Nothing in here yet.</h2>
                   <p className="body mt3 mw-s" style={{ marginInline: "auto" }}>
@@ -135,32 +126,9 @@ export default function CartPage() {
                                 </div>
                               ) : null}
                               <div className="li__act">
-                                <div className="qty">
-                                  <button
-                                    type="button"
-                                    data-step="down"
-                                    aria-label={`Decrease quantity of ${i.title}`}
-                                    onClick={() => cart.setQty(i.key, i.qty - 1)}
-                                  >
-                                    −
-                                  </button>
-                                  <input
-                                    type="number"
-                                    value={i.qty}
-                                    min={1}
-                                    data-qty
-                                    aria-label={`Quantity for ${i.title}`}
-                                    onChange={(e) => cart.setQty(i.key, parseInt(e.target.value, 10) || 1)}
-                                  />
-                                  <button
-                                    type="button"
-                                    data-step="up"
-                                    aria-label={`Increase quantity of ${i.title}`}
-                                    onClick={() => cart.setQty(i.key, i.qty + 1)}
-                                  >
-                                    +
-                                  </button>
-                                </div>
+                                <p className="meta meta--dim" aria-label={`Quantity for ${i.title}`}>
+                                  Qty {i.qty}
+                                </p>
                                 <button
                                   className="btn btn--bad btn--sm"
                                   data-remove
@@ -240,60 +208,6 @@ export default function CartPage() {
                           <span className="tnum">{formatMoney(tax)}</span>
                         </div>
                       ) : null}
-                      <details className="promo" open={!!promo}>
-                        <summary>Have a promo code?</summary>
-                        {promo ? (
-                          <p className="promo__on">
-                            <IconCheck />
-                            <b>{promo.code}</b> {promo.label}{" "}
-                            <button
-                              type="button"
-                              className="btn btn--quiet btn--sm"
-                              id="promoOff"
-                              onClick={() => {
-                                cart.clearPromo();
-                                cart.announce("Promo code removed.");
-                              }}
-                            >
-                              Remove
-                            </button>
-                          </p>
-                        ) : (
-                          <>
-                            <div className="promo__row">
-                              <label className="sr" htmlFor="promoIn">
-                                Promo code
-                              </label>
-                              <input
-                                className="input"
-                                id="promoIn"
-                                placeholder="Enter code"
-                                autoComplete="off"
-                                value={promoIn}
-                                onChange={(e) => setPromoIn(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    e.preventDefault();
-                                    void submitPromo();
-                                  }
-                                }}
-                              />
-                              <button
-                                className="btn btn--line btn--sm"
-                                id="promoGo"
-                                type="button"
-                                disabled={checking}
-                                onClick={() => void submitPromo()}
-                              >
-                                {checking ? "Checking…" : "Apply"}
-                              </button>
-                            </div>
-                            <p className={`promo__msg${promoMsg ? " bad" : ""}`} id="promoMsg" role="alert">
-                              {promoMsg}
-                            </p>
-                          </>
-                        )}
-                      </details>
                       <div className="stotal">
                         <span className="label" style={{ margin: 0 }}>
                           Total

@@ -1630,6 +1630,13 @@ fieldset + fieldset { margin-top:40px; padding-top:40px; border-top:1px solid va
 .on-dark .notice--warn { color:var(--warn); background:transparent; border-color:var(--warn); }
 
 .empty { text-align:center; padding:clamp(48px,8vw,112px) 24px; border:1px dashed var(--line-2); }
+.cart-loading { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.cart-loading__spin {
+  width:36px; height:36px; border-radius:50%;
+  border:2px solid var(--line-2); border-top-color:var(--fg);
+  animation: cart-spin .7s linear infinite;
+}
+@keyframes cart-spin { to { transform: rotate(360deg); } }
 .dl { display:flex; align-items:center; gap:16px; padding:16px 0; border-bottom:1px solid var(--line); }
 .dl__ic { width:44px; height:54px; flex:none; background:var(--bg-3); border:1px solid var(--line); display:grid; place-items:center; font-size:13px; font-weight:800; letter-spacing:.04em; color:var(--fg-3); }
 

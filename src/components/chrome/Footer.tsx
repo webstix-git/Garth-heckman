@@ -150,7 +150,7 @@ export function Footer() {
               <a href="/privacy">Privacy Policy</a>
             </nav>
           </div>
-          <a className="ftr__by" href="https://www.webstix.com/" target="_blank" rel="noopener">
+          <a className="ftr__by" href="https://webstix.com/" target="_blank" rel="noopener">
             <span>Designed by</span>
             <img src="/assets/img/webstix.png" width="99" height="20" alt="Webstix" />
           </a>

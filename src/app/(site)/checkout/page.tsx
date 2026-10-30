@@ -16,7 +16,8 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function CheckoutPageInner() {
   const cart = useCart();
   const router = useRouter();
-  const { lines, subtotal, discount, shipping, tax, total, physical, digital, priced, promo } = cart;
+  const { lines, subtotal, discount, shipping, tax, total, physical, digital, priced, promo, catalogReady } = cart;
+  const loading = !catalogReady;
   const free = priced && total === 0;
   const printify = lines.some((line) => line.fulfillment === "printify");
   const [err, setErr] = useState("");
@@ -309,7 +310,12 @@ function CheckoutPageInner() {
           <div className="wrap-n">
             <h1 className="d2 mb5">Checkout</h1>
             <div id="body">
-              {!lines.length ? (
+              {loading ? (
+                <div className="empty cart-loading" aria-busy="true" aria-live="polite">
+                  <span className="cart-loading__spin" aria-hidden="true" />
+                  <p className="body mt4">Loading checkout…</p>
+                </div>
+              ) : !lines.length ? (
                 <div className="empty">
                   <h2 className="d3">Your cart is empty.</h2>
                   <p className="body mt3">Nothing to check out yet.</p>
